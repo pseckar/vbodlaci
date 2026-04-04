@@ -1,0 +1,72 @@
+@page "/admin/courses"
+@model Vbodlaci.Web.Areas.Admin.Pages.Courses.IndexModel
+@{
+    ViewData["Title"] = "Administrace kurzů";
+}
+
+<section class="hero-card">
+    <h1>Administrace kurzů</h1>
+    <p>Správa dynamického obsahu kurzů: vytvoření, úprava i odstranění.</p>
+    <div class="cta-row">
+        <a class="button button-primary" asp-page="/Courses/Create" asp-area="Admin">Přidat nový kurz</a>
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
+{
+    <section class="content-card">
+        <p>@Model.StatusMessage</p>
+    </section>
+}
+
+<section class="table-card">
+    <table>
+        <thead>
+            <tr>
+                <th>Název</th>
+                <th>Datum</th>
+                <th>Kapacita</th>
+                <th>Stav</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Courses.Count == 0)
+            {
+                <tr>
+                    <td colspan="5">Zatím není vytvořen žádný kurz.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var course in Model.Courses)
+                {
+                    <tr>
+                        <td>
+                            <strong>@course.Title</strong>
+                            <div class="small-text">/@course.Slug</div>
+                        </td>
+                        <td>@course.StartDate.ToString("dd.MM.yyyy")</td>
+                        <td>@course.Capacity</td>
+                        <td>
+                            @if (course.IsPublished)
+                            {
+                                <span class="badge badge-live">Publikováno</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-draft">Koncept</span>
+                            }
+                        </td>
+                        <td>
+                            <div class="cta-row">
+                                <a class="button button-secondary" asp-page="/Courses/Edit" asp-area="Admin" asp-route-id="@course.Id">Upravit</a>
+                                <a class="button button-danger" asp-page="/Courses/Delete" asp-area="Admin" asp-route-id="@course.Id">Smazat</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</section>

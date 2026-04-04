@@ -1,0 +1,66 @@
+@page "/admin/courses/upravit/{id:guid}"
+@model Vbodlaci.Web.Areas.Admin.Pages.Courses.EditModel
+@{
+    ViewData["Title"] = "Upravit kurz";
+}
+
+<section class="hero-card">
+    <h1>Upravit kurz</h1>
+    <p>Aktualizuj informace o kurzu. Změny se projeví okamžitě po uložení.</p>
+</section>
+
+<section class="form-card">
+    <form method="post" class="form-grid">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="field-row">
+            <label asp-for="Input.Title"></label>
+            <input asp-for="Input.Title" />
+            <span asp-validation-for="Input.Title" class="text-danger"></span>
+        </div>
+
+        <div class="field-row">
+            <label asp-for="Input.Slug"></label>
+            <input asp-for="Input.Slug" />
+            <span asp-validation-for="Input.Slug" class="text-danger"></span>
+        </div>
+
+        <div class="field-row">
+            <label asp-for="Input.ShortDescription"></label>
+            <textarea asp-for="Input.ShortDescription" rows="3"></textarea>
+            <span asp-validation-for="Input.ShortDescription" class="text-danger"></span>
+        </div>
+
+        <div class="field-row">
+            <label asp-for="Input.Description"></label>
+            <textarea asp-for="Input.Description" rows="6"></textarea>
+            <span asp-validation-for="Input.Description" class="text-danger"></span>
+        </div>
+
+        <div class="field-row">
+            <label asp-for="Input.StartDate"></label>
+            <input asp-for="Input.StartDate" />
+            <span asp-validation-for="Input.StartDate" class="text-danger"></span>
+        </div>
+
+        <div class="field-row">
+            <label asp-for="Input.Capacity"></label>
+            <input asp-for="Input.Capacity" />
+            <span asp-validation-for="Input.Capacity" class="text-danger"></span>
+        </div>
+
+        <div class="checkbox-field">
+            <input asp-for="Input.IsPublished" />
+            <label asp-for="Input.IsPublished"></label>
+        </div>
+
+        <div class="cta-row">
+            <button type="submit" class="button button-primary">Uložit změny</button>
+            <a class="button button-secondary" asp-page="/Courses/Index" asp-area="Admin">Zpět</a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

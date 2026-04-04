@@ -1,0 +1,38 @@
+@page "/"
+@model IndexModel
+@{
+    ViewData["Title"] = "Úvod";
+}
+
+<section class="hero-card">
+    <h1>Prostor pro seberozvoj, který má hloubku i směr</h1>
+    <p>
+        Web slouží jako přehled technik a kurzů, které pomáhají posílit vnitřní stabilitu,
+        pozornost i dlouhodobé návyky. Cílem je nabídnout praktické metody použitelné v běžném životě.
+    </p>
+    <div class="pill-list">
+        <span class="pill">Mindfulness</span>
+        <span class="pill">Práce s dechem</span>
+        <span class="pill">Journaling</span>
+        <span class="pill">Skupinové kurzy</span>
+    </div>
+    <div class="cta-row">
+        <a class="button button-primary" asp-page="/Kurzy">Prohlédnout kurzy</a>
+        <a class="button button-secondary" asp-page="/Techniky">Zjistit více o technikách</a>
+    </div>
+</section>
+
+<section class="section-grid">
+    <article class="content-card">
+        <h2>Praktický přístup</h2>
+        <p>Každá technika je popsaná jasně, bez složité teorie, s důrazem na konkrétní využití.</p>
+    </article>
+    <article class="content-card">
+        <h2>Kurzy s kapacitou</h2>
+        <p>Dynamická nabídka kurzů umožňuje jednoduše spravovat termíny, publikaci i omezení míst.</p>
+    </article>
+    <article class="content-card">
+        <h2>Připraveno pro růst</h2>
+        <p>Aplikace je od začátku navržená tak, aby šla později rozšířit o přihlášky a newsletter.</p>
+    </article>
+</section>

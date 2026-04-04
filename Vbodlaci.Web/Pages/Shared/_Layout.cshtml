@@ -1,0 +1,46 @@
+@using Vbodlaci.Web.Application.Security
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - V bodlácích</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Vbodlaci.Web.styles.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="page-background"></div>
+    <div class="site-shell">
+        <header class="site-header">
+            <div class="container nav-shell">
+                <a class="brand" asp-area="" asp-page="/Index">V bodlácích</a>
+                <nav class="main-nav">
+                    <a asp-area="" asp-page="/Index">Úvod</a>
+                    <a asp-area="" asp-page="/Techniky">Techniky</a>
+                    <a asp-area="" asp-page="/Kurzy">Kurzy</a>
+                    @if (User.Identity?.IsAuthenticated == true && User.IsInRole(AppRoles.Admin))
+                    {
+                        <a asp-area="Admin" asp-page="/Courses/Index">Administrace</a>
+                    }
+                </nav>
+                <div class="auth-nav">
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </header>
+
+        <main role="main" class="container page-content">
+            @RenderBody()
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <p>&copy; @DateTime.UtcNow.Year V bodlácích</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
