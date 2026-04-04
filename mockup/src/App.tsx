@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 
 type Page = "home" | "breathwork" | "course";
 
@@ -101,9 +101,9 @@ function HomePage({ onOpenBreathwork, onOpenCourse }: { onOpenBreathwork: () => 
     return (
         <>
             <header className="py-6 text-center md:py-8">
-                <h1 className="font-serif text-5xl leading-none md:text-7xl">V bodláčí</h1>
+                <h1 className="font-serif uppercase text-5xl leading-none md:text-7xl">V bodláčí</h1>
                 <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-[#5f675d] md:text-lg">
-                    Tři propojené služby, jedna osoba, jeden přirozený svět.
+                    Místo odpočinku, vnímání a skutečného kontaktu. Prostor pro práci s dechem, setkávání s koňmi a citlivou péči o zvířata, který klade důraz na jemnost, bezpečí a přirozenost.
                 </p>
             </header>
 
@@ -138,7 +138,7 @@ function HomePage({ onOpenBreathwork, onOpenCourse }: { onOpenBreathwork: () => 
                                     </div>
                                     <p className="mt-3 text-sm leading-6 text-[#5c645c] md:text-[15px]">{service.short}</p>
                                     <div className="mt-5 border-t border-[#ebe5f1] pt-4 text-sm font-medium text-[#2f4a3a]">
-                                        Zjistit víc o službě
+                                        Zjistit více
                                     </div>
                                 </div>
                             </div>
@@ -152,15 +152,15 @@ function HomePage({ onOpenBreathwork, onOpenCourse }: { onOpenBreathwork: () => 
                     <div className="rounded-[2.25rem] border border-white/60 bg-[linear-gradient(180deg,#f8f4ec_0%,#ede4f3_100%)] p-8 shadow-xl shadow-[#907ea8]/10 md:p-10">
                         <h2 className="font-serif text-3xl leading-tight md:text-5xl">Jedna osoba. Tři podoby práce.</h2>
                         <p className="mt-5 max-w-2xl text-base leading-8 text-[#555d56]">
-                            Jeden citlivý přístup, který se v různých podobách projevuje skrze dech, práci s koňmi a veterinární péči. Každá oblast má vlastní charakter, ale všechny spojuje stejná osobní značka, podobná atmosféra a důraz na vnímavost, bezpečí a skutečný kontakt.
+                            Jsem Veronika, průvodkyně a lektorka, která se věnuje práci s dechem, setkávání s koňmi a citlivé péči o zvířata. Snažím se vytvářet bezpečný a vnímavý prostor pro všechny, kteří chtějí zpomalit, lépe vnímat své tělo a navázat hlubší kontakt se sebou i s okolním světem.
                         </p>
                     </div>
                     <div className="rounded-[2.25rem] border border-white/70 bg-white/60 p-5 shadow-xl shadow-[#8b809d]/10 backdrop-blur">
                         <div className="flex h-full min-h-[340px] flex-col justify-end rounded-[1.8rem] bg-[linear-gradient(180deg,#d7e0d4_0%,#f4eadf_50%,#dacfe8_100%)] p-6">
                             <div className="max-w-sm rounded-[1.4rem] bg-white/70 p-5">
-                                <div className="font-serif text-2xl">Přírodní editorial</div>
+                                <div className="font-serif text-2xl">Veronika Bodláková</div>
                                 <p className="mt-3 text-sm leading-6 text-[#5c645d]">
-                                    Jemné přechody, botanické linky a klidná atmosféra, která drží celý web pohromadě. Vizuál má působit přirozeně, lehce a důvěryhodně, bez zbytečné okázalosti.
+                                    Lektorka a průvodkyně, která se věnuje práci s dechem, setkávání s koňmi a citlivé péči o zvířata.
                                 </p>
                             </div>
                         </div>
@@ -169,7 +169,7 @@ function HomePage({ onOpenBreathwork, onOpenCourse }: { onOpenBreathwork: () => 
             </section>
 
             <section className="pb-14 md:pb-24">
-                <h2 className="mb-8 font-serif text-3xl md:text-5xl">Kurzy napříč všemi oblastmi</h2>
+                <h2 className="mb-8 font-serif text-3xl md:text-5xl">Nejbližší kurzy</h2>
                 <div className="grid gap-5 lg:grid-cols-3">
                     {homeCourses.map((course) => (
                         <CourseCard key={course.title} course={course} onOpen={onOpenCourse} />
@@ -200,7 +200,7 @@ function HomePage({ onOpenBreathwork, onOpenCourse }: { onOpenBreathwork: () => 
                     <div className="rounded-[2.25rem] border border-white/70 bg-white/70 p-7 shadow-xl shadow-[#8d7fa2]/10 backdrop-blur md:p-8">
                         <h2 className="font-serif text-3xl md:text-4xl">Kontakt</h2>
                         <p className="mt-4 max-w-lg text-sm leading-7 text-[#5e665d]">
-                            Pro otázky, individuální domluvu nebo rezervaci napiš zprávu. Kontakt má působit jednoduše, lidsky a bez zbytečných bariér, aby bylo snadné udělat první krok.
+                            Pro otázky, individuální domluvu nebo rezervaci napiš zprávu.
                         </p>
                         <div className="mt-6 grid gap-4">
                             <input className="rounded-2xl border border-[#ddd6e6] bg-[#fcfbf8] px-5 py-4 text-sm outline-none" placeholder="Jméno" />
@@ -212,7 +212,7 @@ function HomePage({ onOpenBreathwork, onOpenCourse }: { onOpenBreathwork: () => 
                     <div className="rounded-[2.25rem] border border-white/70 bg-[linear-gradient(180deg,#f7f2ea_0%,#ece4f3_100%)] p-7 shadow-xl shadow-[#8d7fa2]/10 md:p-8">
                         <h2 className="font-serif text-3xl md:text-4xl">Newsletter</h2>
                         <p className="mt-4 max-w-lg text-sm leading-7 text-[#5d655d]">
-                            Přihlášení k odběru novinek o nových termínech, kurzech a dění napříč všemi třemi oblastmi značky.
+                            Přihlášení k odběru novinek o nových termínech, kurzech a obecně dění V bodláčí.
                         </p>
                         <div className="mt-8 rounded-[1.8rem] bg-white/75 p-5 shadow-sm backdrop-blur-sm">
                             <label className="text-sm text-[#61695f]">Tvůj e-mail</label>
@@ -255,7 +255,7 @@ function BreathworkPage({ onBackHome, onOpenCourse }: { onBackHome: () => void; 
                     <div className="rounded-[2.25rem] border border-white/70 bg-[linear-gradient(180deg,#edf2e8_0%,#f5ece2_52%,#e8e0f1_100%)] p-8 shadow-xl shadow-[#907ea8]/10 md:p-10">
                         <h2 className="font-serif text-3xl leading-tight md:text-5xl">Prostor, kde dech není výkon, ale cesta zpět k sobě.</h2>
                         <p className="mt-5 text-base leading-8 text-[#555d56]">
-                            Jemný a vědomě vedený prostor pro práci s dechem, regulaci nervového systému a prohlubování kontaktu se sebou. Stránka má působit klidněji než homepage a dát návštěvníkovi jasnější představu o tom, co může čekat.
+                            Jemný a vědomě vedený prostor pro práci s dechem, regulaci nervového systému a prohlubování kontaktu se sebou.
                         </p>
                     </div>
                     <div className="rounded-[2.25rem] border border-white/70 bg-white/70 p-5 shadow-xl shadow-[#8b809d]/10 backdrop-blur">
@@ -263,7 +263,7 @@ function BreathworkPage({ onBackHome, onOpenCourse }: { onBackHome: () => void; 
                             <div className="max-w-sm rounded-[1.4rem] bg-white/72 p-5">
                                 <div className="font-serif text-2xl">Klidná atmosféra</div>
                                 <p className="mt-3 text-sm leading-6 text-[#5c645d]">
-                                    Velká fotka, světlo, dech a klid. Obrazový blok může nést hlavní atmosféru služby a dát stránce víc prostoru, jemnosti a zpomalení.
+                                    Světlo, dech a klid. 
                                 </p>
                             </div>
                         </div>
@@ -345,6 +345,9 @@ function BreathworkPage({ onBackHome, onOpenCourse }: { onBackHome: () => void; 
                     </div>
                     <div className="rounded-[2.25rem] border border-white/70 bg-[linear-gradient(180deg,#f7f2ea_0%,#ece4f3_100%)] p-7 shadow-xl shadow-[#8d7fa2]/10 md:p-8">
                         <h2 className="font-serif text-3xl md:text-4xl">Newsletter</h2>
+                        <p className="mt-4 max-w-lg text-sm leading-7 text-[#5d655d]">
+                            Přihlášení k odběru novinek o nových termínech, kurzech a obecně o Dechu v bodláčí.
+                        </p>
                         <div className="mt-8 rounded-[1.8rem] bg-white/75 p-5 shadow-sm backdrop-blur-sm">
                             <label className="text-sm text-[#61695f]">Tvůj e-mail</label>
                             <input className="mt-3 w-full rounded-2xl border border-[#ddd6e6] bg-[#fcfbf8] px-5 py-4 text-sm outline-none" placeholder="jmeno@email.cz" />
@@ -375,7 +378,7 @@ function CoursePage({ onBack }: { onBack: () => void }) {
                     <div className="rounded-[2.25rem] border border-white/70 bg-[linear-gradient(180deg,#edf2e8_0%,#f5ece2_52%,#e8e0f1_100%)] p-8 shadow-xl shadow-[#907ea8]/10 md:p-10">
                         <h2 className="font-serif text-3xl leading-tight md:text-5xl">Jemně vedený večerní breathwork.</h2>
                         <p className="mt-5 text-base leading-8 text-[#555d56]">
-                            Konkrétní večerní setkání zaměřené na dech, zklidnění a postupné usazení do těla. Detail kurzu má dát rychlou a srozumitelnou odpověď na to, co návštěvníka čeká a jestli je kurz pro něj vhodný.
+                            Konkrétní večerní setkání zaměřené na dech, zklidnění a postupné usazení do těla.
                         </p>
                     </div>
                     <div className="rounded-[2.25rem] border border-white/70 bg-white/70 p-5 shadow-xl shadow-[#8b809d]/10 backdrop-blur">
@@ -383,7 +386,7 @@ function CoursePage({ onBack }: { onBack: () => void }) {
                             <div className="max-w-sm rounded-[1.4rem] bg-white/72 p-5">
                                 <div className="font-serif text-2xl">Klidný večerní formát</div>
                                 <p className="mt-3 text-sm leading-6 text-[#5c645d]">
-                                    Hero blok s fotkou nebo atmosférou kurzu. Může ukazovat prostor, světlo, detail místa nebo náladu večera, aby detail působil víc konkrétně a živě.
+                                    Vhodné pro všechny, kteří chtějí večer zpomalit, zklidnit mysl a vytvořit si prostor pro jemný návrat k sobě.
                                 </p>
                             </div>
                         </div>
@@ -418,9 +421,6 @@ function CoursePage({ onBack }: { onBack: () => void }) {
             <section className="pb-16 md:pb-24">
                 <div className="rounded-[2.25rem] border border-white/70 bg-white/70 p-7 shadow-xl shadow-[#8d7fa2]/10 backdrop-blur md:p-8">
                     <h2 className="font-serif text-3xl md:text-4xl">Přihlášení na kurz</h2>
-                    <p className="mt-4 max-w-2xl text-sm leading-7 text-[#5e665d]">
-                        Jednoduchý formulář pro závazné přihlášení na konkrétní termín. Textově může působit klidně a srozumitelně, aby návštěvník přesně věděl, co odesílá.
-                    </p>
                     <div className="mt-6 grid max-w-3xl gap-4">
                         <input className="rounded-2xl border border-[#ddd6e6] bg-[#fcfbf8] px-5 py-4 text-sm outline-none" placeholder="Jméno" />
                         <input className="rounded-2xl border border-[#ddd6e6] bg-[#fcfbf8] px-5 py-4 text-sm outline-none" placeholder="E-mail" />
@@ -436,9 +436,6 @@ function CoursePage({ onBack }: { onBack: () => void }) {
 
             <section className="pb-16 md:pb-24">
                 <h2 className="mb-3 font-serif text-3xl md:text-4xl">Další termíny breathwork</h2>
-                <p className="mb-8 max-w-2xl text-sm leading-7 text-[#5d655d]">
-                    Pod detailem konkrétního kurzu může být užitečné nabídnout i další vypsané termíny, aby uživatel nemusel zpět o úroveň výš a mohl si rovnou vybrat jinou variantu.
-                </p>
                 <div className="grid gap-5 lg:grid-cols-3">
                     {breathworkCourses.map((course) => (
                         <CourseCard key={`course-detail-${course.title}`} course={course} onOpen={() => {}} />
