@@ -1,0 +1,15 @@
+﻿@page
+@model Vbodlaci.Web.Areas.Admin.Pages.IndexModel
+@{
+    ViewData["Title"] = "Administrace";
+}
+
+<section class="section">
+    <h1>Administrace V bodláčí</h1>
+    <p class="muted">Správa kurzů, dotazů a newsletteru.</p>
+    <div class="switcher">
+        <a asp-page="/Courses/Index"><div class="title">Kurzy</div><div class="desc">Vytváření, úpravy, publikace a rušení termínů.</div></a>
+        <a asp-page="/Contacts/Index"><div class="title">Kontaktní zprávy</div><div class="desc">Read-only přehled dotazů z webu.</div></a>
+        <a asp-page="/Newsletter/Index"><div class="title">Newsletter odběratelé</div><div class="desc">Seznam odběratelů a export do CSV.</div></a>
+    </div>
+</section>

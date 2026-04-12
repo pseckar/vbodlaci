@@ -1,0 +1,12 @@
+﻿{
+  "name": "vbodlaci-browser-smoke",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "smoke": "node smoke.mjs"
+  },
+  "dependencies": {
+    "playwright": "^1.55.0"
+  }
+}

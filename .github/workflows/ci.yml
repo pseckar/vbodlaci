@@ -1,4 +1,4 @@
-name: ci
+﻿name: ci
 
 on:
   push:
@@ -10,6 +10,23 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: vbodlaci
+          POSTGRES_USER: vbodlaci
+          POSTGRES_PASSWORD: vbodlaci_dev_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U vbodlaci -d vbodlaci"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      ConnectionStrings__DefaultConnection: Host=localhost;Port=5432;Database=vbodlaci;Username=vbodlaci;Password=vbodlaci_dev_password
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -27,3 +44,53 @@ jobs:
 
       - name: Test
         run: dotnet test ./Vbodlaci.sln --configuration Release --no-build
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install browser smoke dependencies
+        working-directory: tests/browser-smoke
+        run: |
+          npm install
+          npx playwright install --with-deps chromium
+
+      - name: Run browser smoke
+        shell: bash
+        run: |
+          mkdir -p artifacts/browser-smoke
+          ASPNETCORE_ENVIRONMENT=Testing Logging__EventLog__LogLevel__Default=None dotnet run --no-launch-profile --project ./Vbodlaci.Web/Vbodlaci.Web.csproj --configuration Release --no-build --urls http://127.0.0.1:5270 > artifacts/browser-smoke/app.log 2>&1 &
+          APP_PID=$!
+          READY=0
+          for i in {1..40}; do
+            if curl -sSf http://127.0.0.1:5270/ >/dev/null; then
+              READY=1
+              break
+            fi
+            if ! kill -0 $APP_PID 2>/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$READY" -ne 1 ]; then
+            echo "App did not become ready"
+            tail -n 200 artifacts/browser-smoke/app.log || true
+            exit 1
+          fi
+
+          pushd tests/browser-smoke
+          BASE_URL=http://127.0.0.1:5270 SMOKE_ARTIFACT_DIR=../../artifacts/browser-smoke SMOKE_REPORT_PATH=../../artifacts/browser-smoke/smoke-report.json npm run smoke
+          popd
+
+          kill $APP_PID || true
+          wait $APP_PID || true
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-smoke-artifacts
+          path: artifacts/browser-smoke
+

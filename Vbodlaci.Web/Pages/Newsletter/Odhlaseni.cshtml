@@ -1,0 +1,11 @@
+﻿@page "/newsletter/odhlaseni/{token}"
+@model Vbodlaci.Web.Pages.Newsletter.OdhlaseniModel
+@{
+    ViewData["Title"] = "Odhlášení z newsletteru";
+}
+
+<section class="section">
+    <h1>Odhlášení z newsletteru</h1>
+    <p>@Model.Message</p>
+    <a class="button button-secondary" asp-page="/Index">Zpět na hlavní stránku</a>
+</section>

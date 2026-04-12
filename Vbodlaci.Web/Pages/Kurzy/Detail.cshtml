@@ -1,0 +1,116 @@
+﻿@page "/kurzy/{slug}"
+@model Vbodlaci.Web.Pages.Kurzy.DetailModel
+@{
+    ViewData["Title"] = Model.Course?.Title ?? "Detail kurzu";
+}
+
+@if (Model.Course is null)
+{
+    <section class="section">
+        <h1>Kurz nebyl nalezen</h1>
+    </section>
+    return;
+}
+
+<section class="section hero">
+    <a class="button button-secondary" asp-page="/Index">← Zpět na hlavní stránku</a>
+    <div class="status-badge status-@Model.Course.Status.ToString().ToLowerInvariant()">
+        @switch (Model.Course.Status)
+        {
+            case Vbodlaci.Web.Domain.Courses.CourseStatus.Published:
+                @:Vypsaný kurz
+                break;
+            case Vbodlaci.Web.Domain.Courses.CourseStatus.Canceled:
+                @:Zrušený kurz
+                break;
+            default:
+                @:Koncept
+                break;
+        }
+    </div>
+    <h1>@Model.Course.Title</h1>
+    <p>@Model.Course.ShortDescription</p>
+</section>
+
+<section class="section grid-2">
+    <article class="section">
+        <h2>Základní informace</h2>
+        <p><strong>Termín:</strong> @Model.Course.StartDateTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
+        @if (Model.Course.EndDateTime.HasValue)
+        {
+            <p><strong>Konec:</strong> @Model.Course.EndDateTime.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
+        }
+        <p><strong>Místo:</strong> @Model.Course.CityOrArea</p>
+        @if (!string.IsNullOrWhiteSpace(Model.Course.VenueText))
+        {
+            <p><strong>Upřesnění:</strong> @Model.Course.VenueText</p>
+        }
+        <p><strong>Cena:</strong> @Model.Course.PriceText</p>
+        @if (Model.Course.CapacityInfo.HasValue)
+        {
+            <p><strong>Kapacita:</strong> @Model.Course.CapacityInfo</p>
+        }
+        @if (Model.Course.RegistrationDeadline.HasValue)
+        {
+            <p><strong>Přihlášení do:</strong> @Model.Course.RegistrationDeadline.Value.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
+        }
+    </article>
+    <article class="section">
+        <h2>Co tě čeká</h2>
+        <p>@Model.Course.WhatToExpect</p>
+    </article>
+</section>
+
+<section class="section">
+    <h2>Průběh a obsah</h2>
+    <p>@Model.Course.FullDescription</p>
+</section>
+
+<section class="section" id="registrace">
+    <h2>Přihlášení na kurz</h2>
+
+    @if (Model.IsCanceled)
+    {
+        <p class="field-error">Tento kurz je zrušený. Přihlášení je uzavřené.</p>
+    }
+    else
+    {
+        <form method="post" asp-page="/Kurzy/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid">
+            <label class="hidden-honeypot" asp-for="Registration.Honeypot">Nechte prázdné</label>
+            <input class="hidden-honeypot" asp-for="Registration.Honeypot" autocomplete="off" />
+
+            <input asp-for="Registration.FullName" placeholder="Jméno" />
+            <span asp-validation-for="Registration.FullName" class="field-error"></span>
+
+            <input asp-for="Registration.Email" placeholder="E-mail" />
+            <span asp-validation-for="Registration.Email" class="field-error"></span>
+
+            <textarea asp-for="Registration.Note" placeholder="Poznámka"></textarea>
+            <span asp-validation-for="Registration.Note" class="field-error"></span>
+
+            <label class="checkbox-row">
+                <input asp-for="Registration.TermsConsent" />
+                Souhlasím s podmínkami kurzu.
+            </label>
+            <span asp-validation-for="Registration.TermsConsent" class="field-error"></span>
+
+            <button type="submit" class="button button-primary">Závazně přihlásit</button>
+        </form>
+    }
+</section>
+
+<section class="section">
+    <h2>Další termíny</h2>
+    @if (Model.RelatedCourses.Count == 0)
+    {
+        <p class="muted">Další termíny zatím nejsou vypsané.</p>
+    }
+    else
+    {
+        <partial name="_CourseCards" model="Model.RelatedCourses" />
+    }
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

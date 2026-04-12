@@ -1,0 +1,38 @@
+﻿@page
+@model Vbodlaci.Web.Areas.Admin.Pages.Newsletter.IndexModel
+@{
+    ViewData["Title"] = "Newsletter odběratelé";
+}
+
+<section class="section">
+    <h1>Newsletter odběratelé</h1>
+    <a class="button button-secondary" asp-page="/Newsletter/Index" asp-page-handler="Export">Export CSV</a>
+
+    <div class="table-wrap">
+        <table class="admin-table">
+            <thead>
+            <tr>
+                <th>E-mail</th>
+                <th>Breathwork</th>
+                <th>Koně</th>
+                <th>Veterina</th>
+                <th>Aktivní</th>
+                <th>Vytvořeno</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var subscriber in Model.Subscribers)
+            {
+                <tr>
+                    <td>@subscriber.Email</td>
+                    <td>@subscriber.PrefBreathwork</td>
+                    <td>@subscriber.PrefKone</td>
+                    <td>@subscriber.PrefVeterina</td>
+                    <td>@subscriber.IsSubscribed</td>
+                    <td>@subscriber.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+</section>

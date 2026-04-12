@@ -1,63 +1,16 @@
-@page "/admin/courses/vytvorit"
+﻿@page
+@using Vbodlaci.Web.Domain.Courses
 @model Vbodlaci.Web.Areas.Admin.Pages.Courses.CreateModel
 @{
     ViewData["Title"] = "Nový kurz";
 }
 
-<section class="hero-card">
-    <h1>Přidat nový kurz</h1>
-    <p>Vyplň základní informace. Slug je volitelný, při prázdném poli se vygeneruje automaticky.</p>
-</section>
-
-<section class="form-card">
-    <form method="post" class="form-grid">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="field-row">
-            <label asp-for="Input.Title"></label>
-            <input asp-for="Input.Title" />
-            <span asp-validation-for="Input.Title" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.Slug"></label>
-            <input asp-for="Input.Slug" />
-            <span asp-validation-for="Input.Slug" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.ShortDescription"></label>
-            <textarea asp-for="Input.ShortDescription" rows="3"></textarea>
-            <span asp-validation-for="Input.ShortDescription" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.Description"></label>
-            <textarea asp-for="Input.Description" rows="6"></textarea>
-            <span asp-validation-for="Input.Description" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.StartDate"></label>
-            <input asp-for="Input.StartDate" />
-            <span asp-validation-for="Input.StartDate" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.Capacity"></label>
-            <input asp-for="Input.Capacity" />
-            <span asp-validation-for="Input.Capacity" class="text-danger"></span>
-        </div>
-
-        <div class="checkbox-field">
-            <input asp-for="Input.IsPublished" />
-            <label asp-for="Input.IsPublished"></label>
-        </div>
-
-        <div class="cta-row">
-            <button type="submit" class="button button-primary">Uložit kurz</button>
-            <a class="button button-secondary" asp-page="/Courses/Index" asp-area="Admin">Zpět</a>
-        </div>
+<section class="section">
+    <h1>Nový kurz</h1>
+    <a class="button button-secondary" asp-page="/Courses/Index">← Zpět na přehled</a>
+    <form method="post" asp-area="Admin" asp-page="/Courses/Create" class="form-grid">
+        <partial name="_CourseFormFields" model="Model.Input" />
+        <button type="submit" class="button button-primary">Vytvořit kurz</button>
     </form>
 </section>
 

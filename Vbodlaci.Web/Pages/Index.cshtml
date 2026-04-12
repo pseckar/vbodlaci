@@ -1,38 +1,110 @@
-@page "/"
-@model IndexModel
+﻿@page "/"
+@model Vbodlaci.Web.Pages.IndexModel
 @{
-    ViewData["Title"] = "Úvod";
+    ViewData["Title"] = "V bodláčí";
+    var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
 }
 
-<section class="hero-card">
-    <h1>Prostor pro seberozvoj, který má hloubku i směr</h1>
+<section class="section hero">
+    <h1>V bodláčí</h1>
     <p>
-        Web slouží jako přehled technik a kurzů, které pomáhají posílit vnitřní stabilitu,
-        pozornost i dlouhodobé návyky. Cílem je nabídnout praktické metody použitelné v běžném životě.
+        Místo, kde můžeš zpomalit, nadechnout se a vrátit se blíž k sobě.
+        Najdeš tu kurzy, setkání a služby propojující práci s dechem, kontakt s koňmi a citlivou veterinární péči.
     </p>
-    <div class="pill-list">
-        <span class="pill">Mindfulness</span>
-        <span class="pill">Práce s dechem</span>
-        <span class="pill">Journaling</span>
-        <span class="pill">Skupinové kurzy</span>
-    </div>
-    <div class="cta-row">
-        <a class="button button-primary" asp-page="/Kurzy">Prohlédnout kurzy</a>
-        <a class="button button-secondary" asp-page="/Techniky">Zjistit více o technikách</a>
+</section>
+
+<section class="section">
+    <h2>Služby v bodláčí</h2>
+    <div class="switcher">
+        <a asp-page="/Sluzby/Breathwork">
+            <div class="title">Breathwork v bodláčí</div>
+            <div class="desc">Práce s dechem pro zklidnění, regulaci a lepší kontakt se sebou.</div>
+        </a>
+        <a asp-page="/Sluzby/Kone">
+            <div class="title">Koně v bodláčí</div>
+            <div class="desc">Facilitovaná setkání s koňmi pro sebepoznání a vztahovou transformaci.</div>
+        </a>
+        <a asp-page="/Sluzby/Veterina">
+            <div class="title">Veterina v bodláčí</div>
+            <div class="desc">Veterinární péče s lidským přístupem, konzultacemi a domácími návštěvami.</div>
+        </a>
     </div>
 </section>
 
-<section class="section-grid">
-    <article class="content-card">
-        <h2>Praktický přístup</h2>
-        <p>Každá technika je popsaná jasně, bez složité teorie, s důrazem na konkrétní využití.</p>
-    </article>
-    <article class="content-card">
-        <h2>Kurzy s kapacitou</h2>
-        <p>Dynamická nabídka kurzů umožňuje jednoduše spravovat termíny, publikaci i omezení míst.</p>
-    </article>
-    <article class="content-card">
-        <h2>Připraveno pro růst</h2>
-        <p>Aplikace je od začátku navržená tak, aby šla později rozšířit o přihlášky a newsletter.</p>
-    </article>
+<section class="section">
+    <h2>Jedna osoba. Tři podoby práce.</h2>
+    <p>
+        Jsem Veronika Bodláková. Propojuji zkušenost veterinární lékařky s prací v oblasti sebepoznání,
+        mindfulness a vztahu člověka se zvířetem i se sebou samým.
+    </p>
 </section>
+
+<section class="section">
+    <h2>Nejbližší kurzy</h2>
+    <div class="filter-row">
+        <a class="filter-pill @(Model.SelectedType == "all" ? "active" : null)" asp-page="/Index">Vše</a>
+        <a class="filter-pill @(Model.SelectedType == "breathwork" ? "active" : null)" asp-page="/Index" asp-route-typ="breathwork">Breathwork</a>
+        <a class="filter-pill @(Model.SelectedType == "kone" ? "active" : null)" asp-page="/Index" asp-route-typ="kone">Koně</a>
+    </div>
+
+    @if (Model.Courses.Count == 0)
+    {
+        <p class="muted">Aktuálně nejsou vypsané žádné kurzy.</p>
+    }
+    else
+    {
+        <partial name="_CourseCards" model="Model.Courses" />
+    }
+</section>
+
+<section class="section">
+    <h2>Ohlasy</h2>
+    <div class="grid-3">
+        <article class="section">
+            <p>"Jemné a přitom silné vedení. Odcházela jsem klidnější a víc ukotvená."</p>
+            <div class="muted">Lenka</div>
+        </article>
+        <article class="section">
+            <p>"Setkání s koňmi mi ukázalo věci, které jsem dlouho neviděl."</p>
+            <div class="muted">Ondřej</div>
+        </article>
+        <article class="section">
+            <p>"Důstojné rozloučení s naším pejskem doma pro nás znamenalo opravdu hodně."</p>
+            <div class="muted">Martina</div>
+        </article>
+    </div>
+</section>
+
+<section class="section" id="kontakt">
+    <h2>Kontakt</h2>
+    <p>Pro dotaz nebo individuální domluvu mi napiš.</p>
+    <form method="post" asp-page="/Akce/Kontakt" class="form-grid">
+        <input type="hidden" name="ReturnUrl" value="@returnUrl" />
+        <input type="hidden" name="SourcePage" value="home" />
+        <label class="hidden-honeypot" for="home-contact-honeypot">Nechte prázdné</label>
+        <input class="hidden-honeypot" id="home-contact-honeypot" type="text" name="Honeypot" autocomplete="off" />
+
+        <input type="text" name="FullName" placeholder="Jméno" required maxlength="120" />
+        <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
+        <textarea name="Message" placeholder="Zpráva" required maxlength="2500"></textarea>
+        <button class="button button-primary" type="submit">Odeslat zprávu</button>
+    </form>
+</section>
+
+<section class="section" id="newsletter">
+    <h2>Newsletter</h2>
+    <p>Přihlas se a pošlu ti nové termíny kurzů.</p>
+    <form method="post" asp-page="/Akce/Newsletter" class="form-grid">
+        <input type="hidden" name="ReturnUrl" value="@returnUrl" />
+        <label class="hidden-honeypot" for="home-news-honeypot">Nechte prázdné</label>
+        <input class="hidden-honeypot" id="home-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
+
+        <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
+        <label class="checkbox-row"><input type="checkbox" name="PrefBreathwork" checked /> Breathwork</label>
+        <label class="checkbox-row"><input type="checkbox" name="PrefKone" checked /> Koně</label>
+        <label class="checkbox-row"><input type="checkbox" name="PrefVeterina" /> Veterina</label>
+        <button class="button button-primary" type="submit">Přihlásit k odběru</button>
+    </form>
+</section>
+
+

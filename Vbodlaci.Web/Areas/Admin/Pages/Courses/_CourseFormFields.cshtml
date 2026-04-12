@@ -1,0 +1,57 @@
+﻿@using Vbodlaci.Web.Domain.Courses
+@model Vbodlaci.Web.Application.Courses.CourseEditModel
+
+<div class="form-grid">
+    <label>Typ kurzu</label>
+    <select asp-for="Type">
+        <option value="@CourseType.Breathwork">Breathwork</option>
+        <option value="@CourseType.Kone">Koně</option>
+    </select>
+
+    <label>Název</label>
+    <input asp-for="Title" />
+    <span asp-validation-for="Title" class="field-error"></span>
+
+    <label>Stav</label>
+    <select asp-for="Status">
+        <option value="@CourseStatus.Draft">Draft</option>
+        <option value="@CourseStatus.Published">Published</option>
+        <option value="@CourseStatus.Canceled">Canceled</option>
+    </select>
+
+    <label>Začátek</label>
+    <input asp-for="StartDateTime" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+    <span asp-validation-for="StartDateTime" class="field-error"></span>
+
+    <label>Konec</label>
+    <input asp-for="EndDateTime" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+
+    <label>Město / oblast</label>
+    <input asp-for="CityOrArea" />
+    <span asp-validation-for="CityOrArea" class="field-error"></span>
+
+    <label>Upřesnění místa</label>
+    <input asp-for="VenueText" />
+
+    <label>Cena</label>
+    <input asp-for="PriceText" />
+    <span asp-validation-for="PriceText" class="field-error"></span>
+
+    <label>Kapacita (informativně)</label>
+    <input asp-for="CapacityInfo" type="number" min="1" />
+
+    <label>Registrace do</label>
+    <input asp-for="RegistrationDeadline" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+
+    <label>Krátký popis</label>
+    <textarea asp-for="ShortDescription"></textarea>
+    <span asp-validation-for="ShortDescription" class="field-error"></span>
+
+    <label>Detailní popis</label>
+    <textarea asp-for="FullDescription"></textarea>
+    <span asp-validation-for="FullDescription" class="field-error"></span>
+
+    <label>Co tě čeká</label>
+    <textarea asp-for="WhatToExpect"></textarea>
+    <span asp-validation-for="WhatToExpect" class="field-error"></span>
+</div>

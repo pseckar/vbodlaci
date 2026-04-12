@@ -1,0 +1,20 @@
+﻿@page "/zasady-zpracovani-osobnich-udaju"
+@model Vbodlaci.Web.Pages.Legal.OsobniUdajeModel
+@{
+    ViewData["Title"] = "Zásady zpracování osobních údajů";
+}
+
+<section class="section">
+    <h1>Zásady zpracování osobních údajů</h1>
+    <p>Správce osobních údajů:</p>
+    <p><strong>@Model.BusinessName</strong><br />@Model.Address<br />IČO: @Model.CompanyId</p>
+    <p>Kontakt: @Model.ContactEmail, @Model.ContactPhone</p>
+    <p>
+        Osobní údaje zpracováváme pouze v rozsahu nutném pro poskytování služeb, odpovědi na dotazy,
+        evidenci přihlášek na kurzy a zasílání newsletteru.
+    </p>
+    @if (Model.ContainsPlaceholder)
+    {
+        <p class="field-error">Poznámka: Tento text obsahuje dočasné placeholder údaje pro neprodukční prostředí.</p>
+    }
+</section>

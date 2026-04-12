@@ -1,75 +1,81 @@
-# V bodlacich - MVP (ASP.NET Razor Pages + PostgreSQL)
+﻿# V bodláčí Web (MVP)
 
-This is phase 1 of the project: a locally runnable .NET 10 web app with:
-- public Czech pages (`/`, `/techniky`, `/kurzy`),
-- course administration (`/admin/courses`) using ASP.NET Identity + `Admin` role,
-- PostgreSQL via Docker Compose,
-- email service scaffolding (`Noop`/`SMTP`) for future phases,
-- GitHub Actions CI workflow (build + test).
+Spec-driven ASP.NET Razor Pages application for the `V bodláčí` brand.
 
-## Tech Stack
-- .NET 10 (Razor Pages)
-- Entity Framework Core + Npgsql
-- ASP.NET Core Identity
-- PostgreSQL (Docker Compose)
-- xUnit integration tests
+## Stack
 
-## Local Quick Start
-1. Start PostgreSQL:
-   ```powershell
-   docker compose up -d
-   ```
-   PostgreSQL is available on `localhost:5432`.
-2. Restore dependencies:
-   ```powershell
-   dotnet restore .\Vbodlaci.sln
-   ```
-3. Apply database migrations:
-   ```powershell
-   dotnet ef database update --project .\Vbodlaci.Web\Vbodlaci.Web.csproj --startup-project .\Vbodlaci.Web\Vbodlaci.Web.csproj
-   ```
-4. Run the app:
-   ```powershell
-   dotnet run --project .\Vbodlaci.Web\Vbodlaci.Web.csproj
-   ```
-5. Open `https://localhost:5001` or `http://localhost:5000`.
+- .NET 10, ASP.NET Core Razor Pages
+- Entity Framework Core + PostgreSQL
+- ASP.NET Identity (local admin auth)
+- GitHub Actions CI
 
-## Admin Login (Development)
-Default development seed in `appsettings.Development.json`:
-- email: `admin@vbodlaci.local`
-- password: `Admin1234`
+## Project Structure
 
-Recommended: override these values using User Secrets:
+- `SPECIFICATION.md` - frozen MVP product contract
+- `Vbodlaci.Web` - web application
+- `Vbodlaci.Web.Tests` - unit/integration tests
+- `tests/browser-smoke` - headless browser smoke checks
+
+## Local Run
+
+1. Start DB:
+
 ```powershell
-dotnet user-secrets set "Admin:Email" "your-admin@example.com" --project .\Vbodlaci.Web\Vbodlaci.Web.csproj
-dotnet user-secrets set "Admin:Password" "StrongPassword123" --project .\Vbodlaci.Web\Vbodlaci.Web.csproj
+docker compose up -d
 ```
 
-## SMTP (Scaffolded for Future Phases)
-Default implementation is `NoopEmailService` (does not send emails).
+2. Configure development admin (optional override):
 
-To enable SMTP, set:
-- `Email:Smtp:Enabled = true`
-- `Email:Smtp:Host`, `Port`, `UserName`, `Password`, `EnableSsl`, `From`
-
-## Tests
 ```powershell
-dotnet test .\Vbodlaci.sln
+dotnet user-secrets set "Admin:Email" "admin@vbodlaci.local" --project .\Vbodlaci.Web\Vbodlaci.Web.csproj
+dotnet user-secrets set "Admin:Password" "Admin12345" --project .\Vbodlaci.Web\Vbodlaci.Web.csproj
 ```
 
-Includes:
-- home page smoke test,
-- unauthorized redirect test for admin area,
-- course create/read flow test (repository + admin list model).
+3. Run app:
 
-## CI (GitHub Actions)
-Workflow: `.github/workflows/ci.yml`
-- `dotnet restore`
-- `dotnet build`
-- `dotnet test`
-
-## EF CLI Note
-If you see a `dotnet-ef` version warning, update the tool:
 ```powershell
-dotnet tool update --global dotnet-ef
+dotnet run --project .\Vbodlaci.Web\Vbodlaci.Web.csproj
 ```
+
+4. Open:
+
+- `http://localhost:5270`
+- admin login: `/Identity/Account/Login`
+
+## Build and Test
+
+```powershell
+dotnet build .\Vbodlaci.sln -c Debug
+dotnet test .\Vbodlaci.sln -c Debug
+```
+
+## Local DB Compatibility Reset
+
+If your local PostgreSQL still contains old prototype schema, the app now auto-detects incompatible `Courses` columns in **Development** and recreates the database.
+
+- The reset terminates active connections for the target DB before `DROP DATABASE`, so the common "cannot drop open database" issue is handled automatically.
+- This auto-reset is **Development only**. It is not active in production.
+
+## Browser Smoke Test
+
+```powershell
+pwsh .\scripts\run-browser-smoke.ps1
+```
+
+## SMTP Configuration
+
+Configure `Email:Smtp` in appsettings/environment:
+
+- `Enabled`
+- `Host`, `Port`, `UserName`, `Password`
+- `EnableSsl`
+- `From`
+
+When SMTP is disabled, app uses noop delivery but still logs attempts.
+
+## Legal Data Placeholder Rule
+
+`LegalIdentity` values are placeholders in non-production.
+
+Production startup blocks if `LegalIdentity` contains `TODO` placeholder values.
+

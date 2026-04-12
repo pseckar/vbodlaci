@@ -1,67 +1,39 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Vbodlaci.Web.Application.Courses;
-using Vbodlaci.Web.Application.Security;
 using Vbodlaci.Web.Domain.Courses;
 
 namespace Vbodlaci.Web.Areas.Admin.Pages.Courses;
 
-[Authorize(Roles = AppRoles.Admin)]
-public class CreateModel(ICourseRepository courseRepository) : PageModel
+public sealed class CreateModel(ICourseService courseService) : PageModel
 {
     [BindProperty]
-    public CourseInputModel Input { get; set; } = new();
+    public CourseEditModel Input { get; set; } = new();
 
     public void OnGet()
     {
-        Input = new CourseInputModel
-        {
-            StartDate = DateTime.Today.AddDays(14),
-            Capacity = 12,
-            IsPublished = false
-        };
+        Input.Type = CourseType.Breathwork;
+        Input.Status = CourseStatus.Draft;
+        Input.StartDateTime = DateTimeOffset.Now.AddDays(14);
+        Input.PriceText = "0 Kč";
     }
 
-    public async Task<IActionResult> OnPostAsync()
+    public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        var slugSource = string.IsNullOrWhiteSpace(Input.Slug) ? Input.Title : Input.Slug;
-        var slug = SlugGenerator.Create(slugSource ?? string.Empty);
-        if (string.IsNullOrWhiteSpace(slug))
+        var (result, id) = await courseService.CreateAsync(Input, cancellationToken);
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = result.Succeeded ? "success" : "error";
+
+        if (result.Succeeded && id.HasValue)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "Slug nebylo možné vytvořit.");
-            return Page();
+            return RedirectToPage("/Courses/Edit", new { id = id.Value });
         }
 
-        if (await courseRepository.SlugExistsAsync(slug, cancellationToken: HttpContext.RequestAborted))
-        {
-            ModelState.AddModelError(nameof(Input.Slug), "Slug už existuje, zvol jiný.");
-            return Page();
-        }
-
-        var now = DateTimeOffset.UtcNow;
-        var course = new Course
-        {
-            Id = Guid.NewGuid(),
-            Title = Input.Title.Trim(),
-            Slug = slug,
-            ShortDescription = Input.ShortDescription.Trim(),
-            Description = Input.Description.Trim(),
-            StartDate = DateOnly.FromDateTime(Input.StartDate),
-            Capacity = Input.Capacity,
-            IsPublished = Input.IsPublished,
-            CreatedAt = now,
-            UpdatedAt = now
-        };
-
-        await courseRepository.AddAsync(course, HttpContext.RequestAborted);
-        TempData["StatusMessage"] = "Kurz byl vytvořen.";
-
-        return RedirectToPage("/Courses/Index", new { area = "Admin" });
+        return Page();
     }
 }

@@ -1,40 +1,40 @@
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Vbodlaci.Web.Application.Courses;
 
 public static class SlugGenerator
 {
-    public static string Create(string value)
+    private static readonly Regex DuplicateDashRegex = new("-{2,}", RegexOptions.Compiled);
+    private static readonly Regex InvalidCharRegex = new("[^a-z0-9-]", RegexOptions.Compiled);
+
+    public static string Generate(string source)
     {
-        if (string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(source))
         {
-            return string.Empty;
+            return "kurz";//TODO: why this? shouldnt rather throw exception?
         }
 
-        var normalized = value.Normalize(NormalizationForm.FormD);
-        var builder = new StringBuilder(normalized.Length);
+        var normalized = source.Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder();
 
-        foreach (var character in normalized)
+        foreach (var ch in normalized)
         {
-            var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(character);
-            if (unicodeCategory == UnicodeCategory.NonSpacingMark)
+            var category = CharUnicodeInfo.GetUnicodeCategory(ch);
+            if (category == UnicodeCategory.NonSpacingMark)
             {
                 continue;
             }
 
-            if (char.IsLetterOrDigit(character))
-            {
-                builder.Append(char.ToLowerInvariant(character));
-                continue;
-            }
-
-            if (builder.Length > 0 && builder[^1] != '-')
-            {
-                builder.Append('-');
-            }
+            var candidate = char.ToLowerInvariant(ch);
+            builder.Append(char.IsLetterOrDigit(candidate) ? candidate : '-');
         }
 
-        return builder.ToString().Trim('-');
+        var slug = builder.ToString().Normalize(NormalizationForm.FormC);
+        slug = InvalidCharRegex.Replace(slug, string.Empty);
+        slug = DuplicateDashRegex.Replace(slug, "-").Trim('-');
+
+        return string.IsNullOrWhiteSpace(slug) ? "kurz" : slug;
     }
 }

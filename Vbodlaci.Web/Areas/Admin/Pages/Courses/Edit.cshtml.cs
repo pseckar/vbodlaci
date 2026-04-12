@@ -1,78 +1,76 @@
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Vbodlaci.Web.Application.Courses;
-using Vbodlaci.Web.Application.Security;
+using Vbodlaci.Web.Domain.Courses;
 
 namespace Vbodlaci.Web.Areas.Admin.Pages.Courses;
 
-[Authorize(Roles = AppRoles.Admin)]
-public class EditModel(ICourseRepository courseRepository) : PageModel
+public sealed class EditModel(ICourseService courseService) : PageModel
 {
     [BindProperty]
-    public CourseInputModel Input { get; set; } = new();
+    public CourseEditModel Input { get; set; } = new();
 
-    public async Task<IActionResult> OnGetAsync(Guid id)
+    public Guid CourseId { get; private set; }
+
+    public string FacebookPostText { get; private set; } = string.Empty;
+
+    public async Task<IActionResult> OnGetAsync(Guid id, CancellationToken cancellationToken)
     {
-        var course = await courseRepository.GetByIdAsync(id, HttpContext.RequestAborted);
-        if (course is null)
+        var detail = await courseService.GetCourseByIdAsync(id, cancellationToken);
+        if (detail is null)
         {
             return NotFound();
         }
 
-        Input = new CourseInputModel
+        CourseId = detail.Id;
+        FacebookPostText = detail.FacebookPostText;
+        Input = new CourseEditModel
         {
-            Title = course.Title,
-            Slug = course.Slug,
-            ShortDescription = course.ShortDescription,
-            Description = course.Description,
-            StartDate = course.StartDate.ToDateTime(TimeOnly.MinValue),
-            Capacity = course.Capacity,
-            IsPublished = course.IsPublished
+            Id = detail.Id,
+            Type = detail.Type,
+            Status = detail.Status,
+            Title = detail.Title,
+            StartDateTime = detail.StartDateTime.ToLocalTime(),
+            EndDateTime = detail.EndDateTime?.ToLocalTime(),
+            CityOrArea = detail.CityOrArea,
+            VenueText = detail.VenueText,
+            PriceText = detail.PriceText,
+            CapacityInfo = detail.CapacityInfo,
+            RegistrationDeadline = detail.RegistrationDeadline?.ToLocalTime(),
+            ShortDescription = detail.ShortDescription,
+            FullDescription = detail.FullDescription,
+            WhatToExpect = detail.WhatToExpect
         };
 
         return Page();
     }
 
-    public async Task<IActionResult> OnPostAsync(Guid id)
+    public async Task<IActionResult> OnPostAsync(Guid id, CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
+            CourseId = id;
             return Page();
         }
 
-        var course = await courseRepository.GetByIdAsync(id, HttpContext.RequestAborted);
-        if (course is null)
-        {
-            return NotFound();
-        }
+        var result = await courseService.UpdateAsync(id, Input, cancellationToken);
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = result.Succeeded ? "success" : "error";
 
-        var slugSource = string.IsNullOrWhiteSpace(Input.Slug) ? Input.Title : Input.Slug;
-        var slug = SlugGenerator.Create(slugSource ?? string.Empty);
-        if (string.IsNullOrWhiteSpace(slug))
+        if (!result.Succeeded)
         {
-            ModelState.AddModelError(nameof(Input.Slug), "Slug nebylo možné vytvořit.");
+            CourseId = id;
             return Page();
         }
 
-        if (await courseRepository.SlugExistsAsync(slug, id, HttpContext.RequestAborted))
-        {
-            ModelState.AddModelError(nameof(Input.Slug), "Slug už existuje, zvol jiný.");
-            return Page();
-        }
+        return RedirectToPage(new { id });
+    }
 
-        course.Title = Input.Title.Trim();
-        course.Slug = slug;
-        course.ShortDescription = Input.ShortDescription.Trim();
-        course.Description = Input.Description.Trim();
-        course.StartDate = DateOnly.FromDateTime(Input.StartDate);
-        course.Capacity = Input.Capacity;
-        course.IsPublished = Input.IsPublished;
-        course.UpdatedAt = DateTimeOffset.UtcNow;
-
-        await courseRepository.UpdateAsync(course, HttpContext.RequestAborted);
-        TempData["StatusMessage"] = "Kurz byl upraven.";
-
-        return RedirectToPage("/Courses/Index", new { area = "Admin" });
+    public async Task<IActionResult> OnPostStatusAsync(Guid id, CourseStatus status, CancellationToken cancellationToken)
+    {
+        var result = await courseService.ChangeStatusAsync(id, status, cancellationToken);
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = result.Succeeded ? "success" : "error";
+        return RedirectToPage(new { id });
     }
 }

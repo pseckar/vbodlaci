@@ -1,30 +1,29 @@
-# V bodláčí Web Project Specification
+# V bodlÃ¡ÄÃ­ Web Project Specification
 
-Status: Draft (for review)  
-Version: 0.1  
-Last updated: 2026-04-10  
+Version: 1.0  
+Last updated: 2026-04-11  
 Document language: English (with required Czech labels/content where relevant)  
 Website language: Czech only (`cs-CZ`)
 
 ## 1. Purpose Of This Document
 
-This document is the primary source of truth for building, testing, and maintaining the **V bodláčí** website.
+This document is the primary source of truth for building, testing, and maintaining the **V bodlÃ¡ÄÃ­** website.
 
 It is written for:
 - developers joining the project,
 - AI agents/models implementing and extending the system,
 - project owner/stakeholders reviewing scope and decisions.
 
-If implementation details are unclear, this specification takes priority over ad-hoc assumptions. Unknowns are explicitly listed in the **Open Questions** section.
+If implementation details are unclear, this specification takes priority over ad-hoc assumptions. Final MVP decisions are listed in section **21. Resolved Decisions For MVP**.
 
 ## 2. Product Context
 
-The website presents services provided by **Veronika Bodláková** under the personal brand **V bodláčí**.
+The website presents services provided by **Veronika BodlÃ¡kovÃ¡** under the personal brand **V bodlÃ¡ÄÃ­**.
 
 Core service pillars shown on the website:
-1. **Breathwork v bodláčí** (práce s dechem)
-2. **Koně v bodláčí** (sebepoznání/transformace facilitovaná koňmi)
-3. **Veterina v bodláčí** (veterinární ošetření s osobním a lidským přístupem, včetně domácích návštěv)
+1. **Breathwork v bodlÃ¡ÄÃ­** (prÃ¡ce s dechem)
+2. **KonÄ› v bodlÃ¡ÄÃ­** (sebepoznÃ¡nÃ­/transformace facilitovanÃ¡ koÅˆmi)
+3. **Veterina v bodlÃ¡ÄÃ­** (veterinÃ¡rnÃ­ oÅ¡etÅ™enÃ­ s osobnÃ­m a lidskÃ½m pÅ™Ã­stupem, vÄetnÄ› domÃ¡cÃ­ch nÃ¡vÅ¡tÄ›v)
 
 ### Additional context about Veronika and the brand:
 - Veronika is a veterinary doctor and owns a veterinary clinic in Hlinsko, Czech Republic.
@@ -37,7 +36,7 @@ Core service pillars shown on the website:
 Primary goals:
 - Clearly present the three service pillars under one coherent brand.
 - Help visitors understand what each service is, for whom it is, and how it works.
-- Convert interest into action via course registrations (for Breathwork + Koně), direct inquiries (contact form), and newsletter subscriptions.
+- Convert interest into action via course registrations (for Breathwork + KonÄ›), direct inquiries (contact form), and newsletter subscriptions.
 - Give Veronika a simple admin interface to manage course offerings.
 
 Secondary goals:
@@ -118,20 +117,18 @@ Purpose: introduce brand, services, trust signals, and conversion entry points.
 
 Main sections:
 1. Hero:
-- Brand: **V bodláčí**
+- Brand: **V bodlÃ¡ÄÃ­**
 - Intro text (Czech).
-2. Service switcher cards (top “rozcestník”):
-- **Breathwork v bodláčí**
-- **Koně v bodláčí**
-- **Veterina v bodláčí**
-- each card links to its service detail page.
-- consider floating (frozen) minimized switcher when scrolling down - not yet decided, experimental 
-3. About/identity block:
+2. Service switcher cards (top â€œrozcestnÃ­kâ€):
+- **Breathwork v bodlÃ¡ÄÃ­**
+- **KonÄ› v bodlÃ¡ÄÃ­**
+- **Veterina v bodlÃ¡ÄÃ­**
+- each card links to its service detail page.`n3. About/identity block:
 - introduces Veronika and integration of all three areas.
 4. Upcoming courses block (dynamic):
-- combined list of published upcoming courses from Breathwork + Koně,
+- combined list of published upcoming courses from Breathwork + KonÄ›,
 - sorted by nearest date ascending,
-- includes filter control by type (`Vše`, `Breathwork`, `Koně`),
+- includes filter control by type (`VÅ¡e`, `Breathwork`, `KonÄ›`),
 - visually optimized for horizontal card browsing when needed.
 5. Testimonials (`Ohlasy`) block (initially static content).
 6. Contact form block (`Kontakt`).
@@ -141,31 +138,29 @@ Main sections:
 - contact details,
 - legal links.
 9. Floating/back-to-top control:
-- button text in Czech, e.g. **„Jít nahoru“**,
+- button text in Czech, e.g. **â€žJÃ­t nahoruâ€œ**,
 - appears after meaningful scroll depth.
 
 ### 7.2 Service Detail Pages
 
 Three pages:
 - Breathwork detail (`/breathwork-v-bodlaci` or equivalent final slug)
-- Koně detail (`/kone-v-bodlaci` or equivalent final slug)
-- Veterina detail (`/veterina-v-bodlaci` or equivalent final slug)
-- consider subdomains for individual services (e.g., `breathwork.vbodlaci.cz`) - analyze pros/cons
-
+- KonÄ› detail (`/kone-v-bodlaci` or equivalent final slug)
+- Veterina detail (`/veterina-v-bodlaci` or equivalent final slug)`n
 Common structure pattern:
-1. Header with service name and back link (`← Zpět na hlavní stránku`).
+1. Header with service name and back link (`â† ZpÄ›t na hlavnÃ­ strÃ¡nku`).
 2. Service introduction/value proposition.
-3. “For whom it is” / “What it brings” content.
-4. “How a session/course works” step-by-step section.
-5. FAQ block (`Časté otázky`).
+3. â€œFor whom it isâ€ / â€œWhat it bringsâ€ content.
+4. â€œHow a session/course worksâ€ step-by-step section.
+5. FAQ block (`ÄŒastÃ© otÃ¡zky`).
 6. Contact CTA/form for service-specific inquiry.
 7. Newsletter block (can be global or service-scoped).
 8. Footer.
 
 Dynamic behavior by service:
-- **Breathwork v bodláčí**: show upcoming breathwork courses (dynamic).
-- **Koně v bodláčí**: show upcoming horse-facilitated courses (dynamic).
-- **Veterina v bodláčí**: no course catalog in MVP; inquiry-driven content and CTA, with emphasis on consultations, home visits, and compassionate at-home farewell/euthanasia support.
+- **Breathwork v bodlÃ¡ÄÃ­**: show upcoming breathwork courses (dynamic).
+- **KonÄ› v bodlÃ¡ÄÃ­**: show upcoming horse-facilitated courses (dynamic).
+- **Veterina v bodlÃ¡ÄÃ­**: no course catalog in MVP; inquiry-driven content and CTA, with emphasis on consultations, home visits, and compassionate at-home farewell/euthanasia support.
 
 ### 7.3 Course Detail Page (`/kurzy/{slug}`)
 
@@ -180,15 +175,15 @@ Sections:
 - location,
 - price,
 - optional capacity.
-4. “What to expect” (content/process).
-5. Registration form (`Přihlášení na kurz`) - should really draw attention to it, visually.
-6. Related/upcoming courses block (“Další termíny ...”).
+4. â€œWhat to expectâ€ (content/process).
+5. Registration form (`PÅ™ihlÃ¡Å¡enÃ­ na kurz`) - should really draw attention to it, visually.
+6. Related/upcoming courses block (â€œDalÅ¡Ã­ termÃ­ny ...â€).
 7. Footer.
 
 Registration form minimum fields:
-- `Jméno` (required),
+- `JmÃ©no` (required),
 - `E-mail` (required),
-- `Poznámka` (optional),
+- `PoznÃ¡mka` (optional),
 - consent checkbox text (final legal wording TBD, required).
 - validate inputs and show user-friendly error messages in Czech.
 
@@ -204,7 +199,7 @@ Admin-only pages (protected by authentication):
 - course list page,
 - create/edit course page,
 - newsletter subscriber overview/export (minimum read/export support),
-- optional message inbox view for contact forms (decision pending).
+- read-only message inbox view for contact forms.
 
 Admin course actions:
 - create course,
@@ -220,7 +215,7 @@ Admin course actions:
 
 - Every course is an individual item (no master course with multiple dates).
 - No template system in MVP.
-- Possible future enhancement: “duplicate existing course” action.
+- Possible future enhancement: â€œduplicate existing courseâ€ action.
 - Course types in MVP are `breathwork` and `kone` (horse-facilitated transformation).
 - Published courses appear on public pages.
 - Courses in draft are not shown publicly.
@@ -235,13 +230,13 @@ Required:
 - `slug`
 - `start_datetime` (Europe/Prague timezone)
 - `city_or_area`
-- `price_czk` (or explicit “on request” policy if agreed)
+- `price_czk` (or explicit â€œon requestâ€ policy if agreed)
 - `is_published`
 - `created_at`
 - `updated_at`
 - `published_at` (nullable, set when `is_published` changes to true)
 
-Recommended optional (decision needed):
+Optional fields included in MVP:
 - `end_datetime`
 - `venue_name`
 - `address_text`
@@ -260,13 +255,13 @@ Recommended optional (decision needed):
 
 Interest segmentation:
 - Mockup suggests service checkboxes.
-- Final segmentation behavior is an open decision (see Open Questions).
+- Segmentation is enabled in MVP by service preferences (`Breathwork`, `Koně`, `Veterina`).
 
 ### 8.4 Contact form rules
 
 - Public contact form sends email to Veronika.
 - Contact message should be persisted in DB (recommended for traceability).
-- Anti-spam protection required (honeypot + rate limiting; CAPTCHA optional decision).
+- Anti-spam protection required (honeypot + rate limiting).
 
 ## 9. Email Flows
 
@@ -274,7 +269,7 @@ MVP email events:
 1. Contact form submission:
 - To Veronika: message details.
 2. Course registration submission:
-- To Veronika: registrant details (`Jméno`, `E-mail`, `Poznámka`, course info).
+- To Veronika: registrant details (`JmÃ©no`, `E-mail`, `PoznÃ¡mka`, course info).
 - To registrant: confirmation email in Czech.
 3. Newsletter campaign on newly published course:
 - To subscribers: new course summary + CTA link.
@@ -310,7 +305,7 @@ Layout direction:
 Interaction direction:
 - simple transitions,
 - clear CTA hierarchy,
-- visible “back to top” support.
+- visible â€œback to topâ€ support.
 
 Language/tone on website copy:
 - Czech language only,
@@ -344,7 +339,7 @@ Expected production topology (MVP):
 - single VM/VPS,
 - Nginx in front of Kestrel,
 - PostgreSQL on same server initially,
-- TLS via Let’s Encrypt (or equivalent).
+- TLS via Letâ€™s Encrypt (or equivalent).
 
 Traffic expectation:
 - tens to low hundreds of daily visitors.
@@ -362,8 +357,8 @@ Required controls:
 - basic abuse controls (rate limiting, anti-spam).
 
 GDPR/privacy baseline:
-- privacy policy page (`Zásady zpracování osobních údajů`),
-- cookie policy page (`Zásady cookies`),
+- privacy policy page (`ZÃ¡sady zpracovÃ¡nÃ­ osobnÃ­ch ÃºdajÅ¯`),
+- cookie policy page (`ZÃ¡sady cookies`),
 - explicit consent language where legally required (newsletter, course terms),
 - data minimization: only collect required fields,
 - ability to delete/export personal data upon request (manual process acceptable initially),
@@ -421,7 +416,6 @@ Recommended MVP coverage:
 - integration tests for form submission endpoints,
 - smoke tests for public page rendering and admin auth,
 - manual QA checklist for critical journeys (browse service pages, submit contact form, subscribe newsletter, register to a course, admin creates/edits/hides course).
-- for manual e2e testing, consider using LLM agent that will check the behavior against this specification 
 
 ## 18. Observability And Operations
 
@@ -448,122 +442,105 @@ Facebook-related options (explicitly open):
 - direct FB API synchronization (powerful but complex),
 - middle-ground helper: generate admin-ready FB post text for copy/paste.
 
-No Facebook integration should be implemented before investigation and decision.
+MVP includes helper-generated Facebook post text in admin; direct API synchronization remains a future extension.
 
 ## 20. Canonical Czech Labels (Current Draft)
 
 Brand and service naming to preserve:
-- `V bodláčí`
-- `Breathwork v bodláčí`
-- `Koně v bodláčí`
-- `Veterina v bodláčí`
+- `V bodlÃ¡ÄÃ­`
+- `Breathwork v bodlÃ¡ÄÃ­`
+- `KonÄ› v bodlÃ¡ÄÃ­`
+- `Veterina v bodlÃ¡ÄÃ­`
 
 Important UI terms (examples for consistency):
-- `Zjistit více`
+- `Zjistit vÃ­ce`
 - `Detail kurzu`
-- `Nejbližší kurzy`
-- `Časté otázky`
+- `NejbliÅ¾Å¡Ã­ kurzy`
+- `ÄŒastÃ© otÃ¡zky`
 - `Kontakt`
 - `Newsletter`
-- `Přihlášení na kurz`
-- `Závazně přihlásit`
-- `Jít nahoru`
+- `PÅ™ihlÃ¡Å¡enÃ­ na kurz`
+- `ZÃ¡vaznÄ› pÅ™ihlÃ¡sit`
+- `JÃ­t nahoru`
 
 Final copy deck may refine wording, but naming consistency must be preserved.
 
-## 21. Open Questions And Decisions Needed Before Implementation
+## 21. Resolved Decisions For MVP
 
-Priority legend:
-- `BLOCKER` = should be resolved before implementation planning starts.
-- `HIGH` = can start with assumptions, but should be resolved early.
-- `MEDIUM` = can be decided during implementation.
+The following decisions are finalized and must be implemented as defined:
 
-1. `BLOCKER` Final public domain and URL strategy:
-- Will this run on `vbodlaci.cz` or another domain/subdomain?
+1. Domain and routing:
+- single main domain with path-based routing,
+- no service subdomains in MVP.
 
-2. `BLOCKER` Legal business identity for policies/invoices:
-- full legal entity name, address, ID (`IČO`), contact email/phone for legal pages.
+2. Admin authentication:
+- local ASP.NET Identity only (no external OAuth in MVP),
+- one primary admin account model, extensible later.
 
-3. `BLOCKER` Admin authentication method:
-- local username/password only, or external auth (e.g., Google/Microsoft)?
+3. URL slugs:
+- ASCII slugs for services and course detail pages.
 
-4. `HIGH` Final route slugs:
-- confirm exact Czech/ASCII slug convention for service and course URLs.
+4. Course behavior:
+- course statuses include draft/published/canceled,
+- canceled courses are hidden from public listings,
+- canceled courses remain accessible by direct URL with status notice,
+- capacity is informational only in MVP (no automatic registration blocking),
+- price is free-text in MVP.
 
-5. `HIGH` Course capacity and overbooking behavior:
-- is capacity mandatory?
-- what happens if capacity is reached (hide registration / waitlist / manual override)?
+5. Newsletter:
+- single opt-in,
+- service-preference segmentation (`Breathwork`, `Koně`, `Veterina`),
+- unsubscribe link in every newsletter email,
+- deduplication per course publish event.
 
-6. `HIGH` Cancellation/reschedule policy:
-- how canceled courses are displayed and communicated.
+6. Form protection:
+- honeypot + server-side rate limiting,
+- no CAPTCHA in MVP.
 
-7. `HIGH` Newsletter consent model:
-- single opt-in vs double opt-in.
-- required legal text wording in Czech.
+7. Email integration:
+- provider-agnostic SMTP configuration in app settings/environment.
 
-8. `HIGH` Newsletter segmentation:
-- should subscribers choose interests (`Breathwork`, `Koně`, `Veterina`) or only global newsletter?
+8. Public UX scope:
+- horizontal course browsing only (no "all courses" page in MVP),
+- no frozen/floating service switcher in MVP,
+- testimonials remain static in MVP,
+- copy tone is Czech `tykání`.
 
-9. `HIGH` Contact and registration anti-spam choice:
-- honeypot + rate limiting only, or also CAPTCHA?
+9. Facebook phase 1:
+- no API synchronization,
+- include admin helper that generates copy-ready Facebook post text.
 
-10. `HIGH` Email provider choice:
-- SMTP provider/vendor decision and sender domain setup ownership.
+10. Analytics and social:
+- no analytics integration in MVP,
+- social links are placeholders until final URLs are provided.
 
-11. `MEDIUM` Social links:
-- final Facebook and Instagram URLs.
+11. Legal data:
+- legal/business identity is partially pending,
+- explicit placeholder values are allowed only for non-production environments.
 
-12. `MEDIUM` Analytics:
-- use analytics at all?
-- if yes, which provider and cookie implications?
+## 22. Frozen Assumptions
 
-13. `MEDIUM` Testimonials management:
-- static hardcoded content vs admin-editable testimonials in future.
+The following assumptions are locked for MVP implementation:
+- website remains single-language Czech,
+- dynamic content is limited to courses and form-related records/communications,
+- veterinary service page is inquiry-based (not a course catalog),
+- mockup structure informed layout direction, but `mockup/` is not implementation source code.
 
-14. `MEDIUM` Course field strictness:
-- should `price` always be numeric CZK, or allow free text (e.g., “dle domluvy”)?
+## 23. Change Control (Spec-First Rule)
 
-15. `MEDIUM` Course duplication UX:
-- should admin get “duplicate course” action in MVP or later milestone?
+This document is now frozen for MVP implementation.
 
-16. `MEDIUM` Facebook workflow:
-- which of the 3 integration options is preferred for phase 1?
-
-17. `MEDIUM` Course browsing UX scope:
-- is horizontal-scroll listing sufficient for MVP, or should there also be a dedicated “all courses” page from day one?
-
-18. `MEDIUM` Design system choices:
-- typography pair, photo style direction, icon style, CTA visual emphasis.
-
-19. `MEDIUM` Copy tone:
-- consistent voice preference (`tykání` vs `vykání`) across all pages and emails.
-
-20. `MEDIUM` Frozen switcher:
-- consider floating (frozen) minimized switcher of services on home page when scrolling down - not yet decided, experimental
-
-21. `MEDIUM` Subdomains for services:
--  consider subdomains for individual services (e.g., `breathwork.vbodlaci.cz`) - analyze pros/cons
-
-## 22. Assumptions Used In This Draft
-
-- Website remains single-language Czech for MVP.
-- Dynamic content in MVP is limited mainly to courses (+ form/newsletter data handling).
-- Veterinary service is inquiry-based, not a course catalog.
-- Admin panel has one main user (Veronika), but data model should not block future multi-admin support.
-- Mockup structure is used as UX skeleton, while generated sample copy is placeholder and will be replaced.
-
-## 23. Implementation Planning Readiness
-
-This specification is ready to be used as the basis for a technical implementation plan after:
-- resolving all `BLOCKER` items,
-- confirming early decisions for `HIGH` items,
-- approving final MVP scope boundaries.
+Rules:
+- implementation must follow this specification,
+- the specification must not be changed during implementation work,
+- if a new requirement or conflict appears, implementation pauses and a new spec update + planning cycle is required before coding continues.
 
 ## 24. AI Agent Working Conventions
 
 When implementing against this document:
 - treat this file as the product source of truth unless the user explicitly overrides it,
-- do not implement `Open Questions` items as fixed behavior without recording an assumption,
 - keep public-facing copy and labels in Czech,
 - keep MVP scope tight (avoid introducing non-goal features),
-- if a change conflicts with this spec, update the spec first or flag the conflict before coding.
+- if code and spec diverge, code must be adjusted to match spec,
+- do not redefine product behavior in code outside this frozen specification.
+

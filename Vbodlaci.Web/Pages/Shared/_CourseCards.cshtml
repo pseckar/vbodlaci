@@ -1,0 +1,19 @@
+﻿@using Vbodlaci.Web.Application.Courses
+@model IReadOnlyList<CourseListItem>
+
+<div class="course-scroll" role="list">
+    @foreach (var course in Model)
+    {
+        <article class="course-card" role="listitem">
+            <div class="course-meta">
+                <span class="course-type">@(course.Type == Vbodlaci.Web.Domain.Courses.CourseType.Breathwork ? "Breathwork" : "Koně")</span>
+                <span>@course.StartDateTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</span>
+            </div>
+            <h3>@course.Title</h3>
+            <p>@course.ShortDescription</p>
+            <div class="course-place">@course.CityOrArea</div>
+            <div class="course-price">@course.PriceText</div>
+            <a class="button button-primary" asp-page="/Kurzy/Detail" asp-route-slug="@course.Slug">Detail kurzu</a>
+        </article>
+    }
+</div>

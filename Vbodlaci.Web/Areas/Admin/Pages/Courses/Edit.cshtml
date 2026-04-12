@@ -1,66 +1,55 @@
-@page "/admin/courses/upravit/{id:guid}"
+﻿@page "{id:guid}"
+@using Vbodlaci.Web.Domain.Courses
 @model Vbodlaci.Web.Areas.Admin.Pages.Courses.EditModel
 @{
-    ViewData["Title"] = "Upravit kurz";
+    ViewData["Title"] = "Úprava kurzu";
 }
 
-<section class="hero-card">
-    <h1>Upravit kurz</h1>
-    <p>Aktualizuj informace o kurzu. Změny se projeví okamžitě po uložení.</p>
-</section>
+<section class="section">
+    <h1>Úprava kurzu</h1>
+    <a class="button button-secondary" asp-page="/Courses/Index">← Zpět na přehled</a>
 
-<section class="form-card">
-    <form method="post" class="form-grid">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <div class="field-row">
-            <label asp-for="Input.Title"></label>
-            <input asp-for="Input.Title" />
-            <span asp-validation-for="Input.Title" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.Slug"></label>
-            <input asp-for="Input.Slug" />
-            <span asp-validation-for="Input.Slug" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.ShortDescription"></label>
-            <textarea asp-for="Input.ShortDescription" rows="3"></textarea>
-            <span asp-validation-for="Input.ShortDescription" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.Description"></label>
-            <textarea asp-for="Input.Description" rows="6"></textarea>
-            <span asp-validation-for="Input.Description" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.StartDate"></label>
-            <input asp-for="Input.StartDate" />
-            <span asp-validation-for="Input.StartDate" class="text-danger"></span>
-        </div>
-
-        <div class="field-row">
-            <label asp-for="Input.Capacity"></label>
-            <input asp-for="Input.Capacity" />
-            <span asp-validation-for="Input.Capacity" class="text-danger"></span>
-        </div>
-
-        <div class="checkbox-field">
-            <input asp-for="Input.IsPublished" />
-            <label asp-for="Input.IsPublished"></label>
-        </div>
-
-        <div class="cta-row">
-            <button type="submit" class="button button-primary">Uložit změny</button>
-            <a class="button button-secondary" asp-page="/Courses/Index" asp-area="Admin">Zpět</a>
-        </div>
+    <form method="post" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid" onsubmit="return confirmPublish(this);">
+        <partial name="_CourseFormFields" model="Model.Input" />
+        <button type="submit" class="button button-primary">Uložit kurz</button>
     </form>
+
+    <div class="section">
+        <h2>Rychlá změna stavu</h2>
+        <div class="inline-actions">
+            <form method="post" asp-page-handler="Status" onsubmit="return confirm('Při publikaci se mohou odeslat newsletter e-maily. Pokračovat?');">
+                <input type="hidden" name="id" value="@Model.CourseId" />
+                <input type="hidden" name="status" value="Published" />
+                <button class="button button-primary" type="submit">Publikovat</button>
+            </form>
+            <form method="post" asp-page-handler="Status">
+                <input type="hidden" name="id" value="@Model.CourseId" />
+                <input type="hidden" name="status" value="Draft" />
+                <button class="button button-secondary" type="submit">Přesunout do draftu</button>
+            </form>
+            <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz zrušit?');">
+                <input type="hidden" name="id" value="@Model.CourseId" />
+                <input type="hidden" name="status" value="Canceled" />
+                <button class="button button-secondary" type="submit">Označit jako zrušený</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Pomocný text pro Facebook</h2>
+        <textarea readonly>@Model.FacebookPostText</textarea>
+        <p class="muted">Text můžeš zkopírovat do Facebook příspěvku po publikaci nebo úpravě kurzu.</p>
+    </div>
 </section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        function confirmPublish(form) {
+            const statusField = form.querySelector('[name="Input.Status"]');
+            if (!statusField) return true;
+            if (statusField.value !== 'Published') return true;
+            return confirm('Při uložení publikovaného kurzu může dojít k rozeslání newsletteru. Pokračovat?');
+        }
+    </script>
 }

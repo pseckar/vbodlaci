@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Vbodlaci.Web.Application.Security;
 
@@ -14,11 +13,6 @@ public static class DevelopmentAdminSeeder
         var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("DevelopmentAdminSeeder");
 
         var dbContext = services.GetRequiredService<ApplicationDbContext>();
-        if (dbContext.Database.IsRelational())
-        {
-            await dbContext.Database.MigrateAsync();
-        }
-
         var options = services.GetRequiredService<IOptions<AdminSeedOptions>>().Value;
         if (string.IsNullOrWhiteSpace(options.Email) || string.IsNullOrWhiteSpace(options.Password))
         {
