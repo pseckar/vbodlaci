@@ -14,10 +14,9 @@ public sealed class CourseRegistrationInput
     public string Email { get; set; } = string.Empty;
 
     [StringLength(1000)]
-    public string Note { get; set; } = string.Empty;
+    public string? Note { get; set; }
 
-    [Range(typeof(bool), "true", "true", ErrorMessage = "Je potřeba souhlasit s podmínkami kurzu.")]
     public bool TermsConsent { get; set; }
 
-    public string Honeypot { get; set; } = string.Empty;
+    public string? Honeypot { get; set; }
 }

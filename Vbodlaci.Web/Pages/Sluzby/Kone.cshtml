@@ -1,12 +1,18 @@
 ﻿@page "/kone-v-bodlaci"
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @model Vbodlaci.Web.Pages.Sluzby.HorsesModel
 @{
     ViewData["Title"] = "Koně v bodláčí";
     var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
+    var courseCardsViewData = new ViewDataDictionary(ViewData)
+    {
+        ["CourseSource"] = "kone"
+    };
 }
 
+<a class="button button-secondary page-back-link" asp-page="/Index">← Zpět na hlavní stránku</a>
+
 <section class="section hero">
-    <a class="button button-secondary" asp-page="/Index">← Zpět na hlavní stránku</a>
     <h1>Koně v bodláčí</h1>
     <p>Setkání s koňmi vytváří prostor pro vnímání hranic, autenticity a hlubší změnu.</p>
 </section>
@@ -33,7 +39,7 @@
     }
     else
     {
-        <partial name="_CourseCards" model="Model.Courses" />
+        <partial name="_CourseCards" model="Model.Courses" view-data="courseCardsViewData" />
     }
 </section>
 
@@ -66,6 +72,3 @@
         <button class="button button-primary" type="submit">Přihlásit k odběru</button>
     </form>
 </section>
-
-
-

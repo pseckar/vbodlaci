@@ -39,12 +39,12 @@
     </p>
 </section>
 
-<section class="section">
+<section class="section" id="kurzy">
     <h2>Nejbližší kurzy</h2>
-    <div class="filter-row">
-        <a class="filter-pill @(Model.SelectedType == "all" ? "active" : null)" asp-page="/Index">Vše</a>
-        <a class="filter-pill @(Model.SelectedType == "breathwork" ? "active" : null)" asp-page="/Index" asp-route-typ="breathwork">Breathwork</a>
-        <a class="filter-pill @(Model.SelectedType == "kone" ? "active" : null)" asp-page="/Index" asp-route-typ="kone">Koně</a>
+    <div class="filter-row" data-course-filter-root data-selected-type="@Model.SelectedType">
+        <button type="button" class="filter-pill @(Model.SelectedType == "all" ? "active" : null)" data-course-filter="all">Vše</button>
+        <button type="button" class="filter-pill @(Model.SelectedType == "breathwork" ? "active" : null)" data-course-filter="breathwork">Breathwork</button>
+        <button type="button" class="filter-pill @(Model.SelectedType == "kone" ? "active" : null)" data-course-filter="kone">Koně</button>
     </div>
 
     @if (Model.Courses.Count == 0)
@@ -54,6 +54,7 @@
     else
     {
         <partial name="_CourseCards" model="Model.Courses" />
+        <p class="muted" data-course-filter-empty hidden>Pro zvolený filtr teď nejsou vypsané žádné kurzy.</p>
     }
 </section>
 

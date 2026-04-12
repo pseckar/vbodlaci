@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Vbodlaci.Web.Application.Configuration;
 using Vbodlaci.Web.Application.Courses;
-using Vbodlaci.Web.Domain.Courses;
 
 namespace Vbodlaci.Web.Pages;
 
@@ -22,12 +21,10 @@ public sealed class IndexModel(ICourseService courseService, IOptions<SiteOption
 
         if (normalized == "breathwork")
         {
-            filter.Type = CourseType.Breathwork;
             SelectedType = "breathwork";
         }
         else if (normalized == "kone")
         {
-            filter.Type = CourseType.Horses;
             SelectedType = "kone";
         }
         else

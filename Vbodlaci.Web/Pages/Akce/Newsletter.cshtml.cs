@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Vbodlaci.Web.Application.Newsletter;
@@ -26,14 +27,14 @@ public sealed class NewsletterModel(
     public bool PrefVeterinary { get; set; }
 
     [BindProperty]
-    public string ReturnUrl { get; set; } = "/";
+    public string? ReturnUrl { get; set; }
 
     [BindProperty]
-    public string Honeypot { get; set; } = string.Empty;
+    public string? Honeypot { get; set; }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
-        var safeReturn = Url.IsLocalUrl(ReturnUrl) ? ReturnUrl : Url.Page("/Index")!;
+        var safeReturn = Url.IsLocalUrl(ReturnUrl) ? ReturnUrl! : Url.Page("/Index")!;
 
         if (!string.IsNullOrWhiteSpace(Honeypot))
         {
@@ -50,7 +51,8 @@ public sealed class NewsletterModel(
             return LocalRedirect(safeReturn);
         }
 
-        if (!ModelState.IsValid)
+        var normalizedEmail = (Email ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(normalizedEmail) || !MailAddress.TryCreate(normalizedEmail, out _))
         {
             TempData["FlashMessage"] = "Prosím zkontroluj zadaný e-mail.";
             TempData["FlashType"] = "error";
@@ -59,11 +61,11 @@ public sealed class NewsletterModel(
 
         var result = await newsletterService.SubscribeAsync(new NewsletterSubscribeInput
         {
-            Email = Email,
+            Email = normalizedEmail,
             PrefBreathwork = PrefBreathwork,
             PrefHorses = PrefHorses,
             PrefVeterinary = PrefVeterinary,
-            Honeypot = Honeypot
+            Honeypot = Honeypot ?? string.Empty
         }, ip, cancellationToken);
 
         TempData["FlashMessage"] = result.Message;
@@ -71,4 +73,3 @@ public sealed class NewsletterModel(
         return LocalRedirect(safeReturn);
     }
 }
-

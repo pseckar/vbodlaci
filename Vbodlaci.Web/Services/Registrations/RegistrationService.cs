@@ -38,7 +38,7 @@ public sealed class RegistrationService(
             CourseId = course.Id,
             FullName = input.FullName.Trim(),
             Email = input.Email.Trim(),
-            Note = input.Note.Trim(),
+            Note = input.Note?.Trim() ?? string.Empty,
             TermsConsent = input.TermsConsent,
             ClientIp = clientIp,
             CreatedAt = now

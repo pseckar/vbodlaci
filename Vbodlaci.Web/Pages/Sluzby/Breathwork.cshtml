@@ -1,12 +1,18 @@
 ﻿@page "/breathwork-v-bodlaci"
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @model Vbodlaci.Web.Pages.Sluzby.BreathworkModel
 @{
     ViewData["Title"] = "Breathwork v bodláčí";
     var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
+    var courseCardsViewData = new ViewDataDictionary(ViewData)
+    {
+        ["CourseSource"] = "breathwork"
+    };
 }
 
+<a class="button button-secondary page-back-link" asp-page="/Index">← Zpět na hlavní stránku</a>
+
 <section class="section hero">
-    <a class="button button-secondary" asp-page="/Index">← Zpět na hlavní stránku</a>
     <h1>Breathwork v bodláčí</h1>
     <p>Dech není výkon. Je to cesta, jak být víc v těle, ve vztahu k sobě a ve větším klidu.</p>
 </section>
@@ -33,7 +39,7 @@
     }
     else
     {
-        <partial name="_CourseCards" model="Model.Courses" />
+        <partial name="_CourseCards" model="Model.Courses" view-data="courseCardsViewData" />
     }
 </section>
 
@@ -66,6 +72,3 @@
         <button class="button button-primary" type="submit">Přihlásit k odběru</button>
     </form>
 </section>
-
-
-

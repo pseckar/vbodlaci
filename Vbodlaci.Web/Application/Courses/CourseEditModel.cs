@@ -24,7 +24,7 @@ public sealed class CourseEditModel
     public string CityOrArea { get; set; } = string.Empty;
 
     [StringLength(180)]
-    public string VenueText { get; set; } = string.Empty;
+    public string? VenueText { get; set; }
 
     [Required(ErrorMessage = "Cena je povinná.")]
     [StringLength(120)]

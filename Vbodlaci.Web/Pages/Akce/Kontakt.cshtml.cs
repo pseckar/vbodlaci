@@ -27,17 +27,17 @@ public sealed class ContactModel(
     public string Message { get; set; } = string.Empty;
 
     [BindProperty]
-    public string SourcePage { get; set; } = string.Empty;
+    public string? SourcePage { get; set; }
 
     [BindProperty]
-    public string ReturnUrl { get; set; } = "/";
+    public string? ReturnUrl { get; set; }
 
     [BindProperty]
-    public string Honeypot { get; set; } = string.Empty;
+    public string? Honeypot { get; set; }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
-        var safeReturn = Url.IsLocalUrl(ReturnUrl) ? ReturnUrl : Url.Page("/Index")!;
+        var safeReturn = Url.IsLocalUrl(ReturnUrl) ? ReturnUrl! : Url.Page("/Index")!;
 
         if (!string.IsNullOrWhiteSpace(Honeypot))
         {
@@ -66,8 +66,8 @@ public sealed class ContactModel(
             FullName = FullName,
             Email = Email,
             Message = Message,
-            SourcePage = SourcePage,
-            Honeypot = Honeypot
+            SourcePage = SourcePage ?? string.Empty,
+            Honeypot = Honeypot ?? string.Empty
         }, ip, cancellationToken);
 
         TempData["FlashMessage"] = result.Message;

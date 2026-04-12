@@ -1,15 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Vbodlaci.Web.Application.Common;
+using Vbodlaci.Web.Application.Configuration;
 using Vbodlaci.Web.Application.Courses;
 using Vbodlaci.Web.Application.Newsletter;
 using Vbodlaci.Web.Data;
 using Vbodlaci.Web.Domain.Courses;
+using Vbodlaci.Web.Services.Email;
 
 namespace Vbodlaci.Web.Services.Courses;
 
 public sealed class CourseService(
     ApplicationDbContext dbContext,
-    INewsletterService newsletterService) : ICourseService
+    INewsletterService newsletterService,
+    IEmailDispatcher emailDispatcher,
+    IOptions<SiteOptions> siteOptions) : ICourseService
 {
     public async Task<IReadOnlyList<CourseListItem>> GetPublicCoursesAsync(CourseQueryFilter filter, CancellationToken cancellationToken = default)
     {
@@ -73,6 +78,11 @@ public sealed class CourseService(
 
     public async Task<(ServiceResult Result, Guid? Id)> CreateAsync(CourseEditModel model, CancellationToken cancellationToken = default)
     {
+        if (model.Status is not (CourseStatus.Draft or CourseStatus.Published))
+        {
+            return (ServiceResult.Failure("Nový kurz lze uložit pouze jako draft nebo publikovat."), null);
+        }
+
         var now = DateTimeOffset.UtcNow;
         var course = new Course
         {
@@ -83,7 +93,7 @@ public sealed class CourseService(
             StartDateTime = model.StartDateTime.ToUniversalTime(),
             EndDateTime = ToUniversalTime(model.EndDateTime),
             CityOrArea = model.CityOrArea.Trim(),
-            VenueText = model.VenueText.Trim(),
+            VenueText = model.VenueText?.Trim() ?? string.Empty,
             PriceText = model.PriceText.Trim(),
             CapacityInfo = model.CapacityInfo,
             RegistrationDeadline = ToUniversalTime(model.RegistrationDeadline),
@@ -116,15 +126,22 @@ public sealed class CourseService(
             return ServiceResult.Failure("Kurz nebyl nalezen.");
         }
 
-        var wasPublished = course.Status == CourseStatus.Published;
+        if (course.Status == CourseStatus.Canceled)
+        {
+            return ServiceResult.Failure("Zrušený kurz je dostupný pouze pro čtení.");
+        }
+
+        if (model.Status != course.Status)
+        {
+            return ServiceResult.Failure("Stav kurzu nelze měnit přes uložení formuláře.");
+        }
 
         course.Type = model.Type;
-        course.Status = model.Status;
         course.Title = model.Title.Trim();
         course.StartDateTime = model.StartDateTime.ToUniversalTime();
         course.EndDateTime = ToUniversalTime(model.EndDateTime);
         course.CityOrArea = model.CityOrArea.Trim();
-        course.VenueText = model.VenueText.Trim();
+        course.VenueText = model.VenueText?.Trim() ?? string.Empty;
         course.PriceText = model.PriceText.Trim();
         course.CapacityInfo = model.CapacityInfo;
         course.RegistrationDeadline = ToUniversalTime(model.RegistrationDeadline);
@@ -134,17 +151,7 @@ public sealed class CourseService(
         course.UpdatedAt = DateTimeOffset.UtcNow;
         course.Slug = await BuildUniqueSlugAsync(course.Title, course.Id, cancellationToken);
 
-        if (!wasPublished && course.Status == CourseStatus.Published)
-        {
-            course.PublishedAt ??= DateTimeOffset.UtcNow;
-        }
-
         await dbContext.SaveChangesAsync(cancellationToken);
-
-        if (!wasPublished && course.Status == CourseStatus.Published)
-        {
-            await newsletterService.NotifyCoursePublishedAsync(course, cancellationToken);
-        }
 
         return ServiceResult.Success("Kurz byl uložen.");
     }
@@ -157,12 +164,16 @@ public sealed class CourseService(
             return ServiceResult.Failure("Kurz nebyl nalezen.");
         }
 
+        if (course.Status != CourseStatus.Draft)
+        {
+            return ServiceResult.Failure("Smazat lze pouze kurz ve stavu draft.");
+        }
+
         course.IsDeleted = true;
-        course.Status = CourseStatus.Draft;
         course.UpdatedAt = DateTimeOffset.UtcNow;
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return ServiceResult.Success("Kurz byl odstraněn.");
+        return ServiceResult.Success("Kurz byl smazán.");
     }
 
     public async Task<ServiceResult> ChangeStatusAsync(Guid id, CourseStatus status, CancellationToken cancellationToken = default)
@@ -173,22 +184,117 @@ public sealed class CourseService(
             return ServiceResult.Failure("Kurz nebyl nalezen.");
         }
 
-        var wasPublished = course.Status == CourseStatus.Published;
-        course.Status = status;
-        course.UpdatedAt = DateTimeOffset.UtcNow;
-        if (!wasPublished && status == CourseStatus.Published)
+        if (course.Status == CourseStatus.Canceled)
         {
-            course.PublishedAt ??= DateTimeOffset.UtcNow;
+            return ServiceResult.Failure("Zrušený kurz je dostupný pouze pro čtení.");
         }
+
+        switch (status)
+        {
+            case CourseStatus.Published:
+                return await PublishAsync(course, cancellationToken);
+            case CourseStatus.Canceled:
+                return await CancelAsync(course, cancellationToken);
+            default:
+                return ServiceResult.Failure("Požadovaná změna stavu není v MVP podporovaná.");
+        }
+    }
+
+    private async Task<ServiceResult> PublishAsync(Course course, CancellationToken cancellationToken)
+    {
+        if (course.Status != CourseStatus.Draft)
+        {
+            return ServiceResult.Failure("Publikovat lze pouze kurz ve stavu draft.");
+        }
+
+        course.Status = CourseStatus.Published;
+        course.PublishedAt ??= DateTimeOffset.UtcNow;
+        course.UpdatedAt = DateTimeOffset.UtcNow;
 
         await dbContext.SaveChangesAsync(cancellationToken);
+        await newsletterService.NotifyCoursePublishedAsync(course, cancellationToken);
 
-        if (!wasPublished && status == CourseStatus.Published)
+        return ServiceResult.Success("Kurz byl publikován.");
+    }
+
+    private async Task<ServiceResult> CancelAsync(Course course, CancellationToken cancellationToken)
+    {
+        if (course.Status != CourseStatus.Published)
         {
-            await newsletterService.NotifyCoursePublishedAsync(course, cancellationToken);
+            return ServiceResult.Failure("Zrušit lze pouze publikovaný kurz.");
         }
 
-        return ServiceResult.Success("Stav kurzu byl změněn.");
+        course.Status = CourseStatus.Canceled;
+        course.UpdatedAt = DateTimeOffset.UtcNow;
+        await dbContext.SaveChangesAsync(cancellationToken);
+
+        var sentCount = await NotifyParticipantsAboutCancellationAsync(course, cancellationToken);
+        return sentCount > 0
+            ? ServiceResult.Success($"Kurz byl zrušen. Odesláno {sentCount} e-mailů účastníkům.")
+            : ServiceResult.Success("Kurz byl zrušen. Kurz zatím neměl žádné účastníky.");
+    }
+
+    private async Task<int> NotifyParticipantsAboutCancellationAsync(Course course, CancellationToken cancellationToken)
+    {
+        var participants = await dbContext.CourseRegistrations
+            .AsNoTracking()
+            .Where(item => item.CourseId == course.Id)
+            .Select(item => new
+            {
+                item.Email,
+                item.FullName
+            })
+            .ToListAsync(cancellationToken);
+
+        var uniqueParticipants = participants
+            .Select(item => new
+            {
+                Email = item.Email.Trim(),
+                FullName = item.FullName.Trim()
+            })
+            .Where(item => !string.IsNullOrWhiteSpace(item.Email))
+            .DistinctBy(item => item.Email, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        if (uniqueParticipants.Count == 0)
+        {
+            return 0;
+        }
+
+        var sent = 0;
+        var localCourseStart = course.StartDateTime.ToLocalTime();
+        var courseUrl = $"{siteOptions.Value.SiteUrl.TrimEnd('/')}/kurzy/{course.Slug}";
+        var subject = $"Zrušení kurzu: {course.Title}";
+
+        foreach (var participant in uniqueParticipants)
+        {
+            var greeting = string.IsNullOrWhiteSpace(participant.FullName)
+                ? "Ahoj,"
+                : $"Ahoj {participant.FullName},";
+
+            var body =
+                $"{greeting}\n\n" +
+                "omlouváme se, ale kurz byl zrušen.\n\n" +
+                $"Kurz: {course.Title}\n" +
+                $"Původní termín: {localCourseStart:dd.MM.yyyy HH:mm}\n" +
+                $"Místo: {course.CityOrArea}\n" +
+                $"Detail kurzu: {courseUrl}\n\n" +
+                "Veronika";
+
+            var success = await emailDispatcher.SendAsync(
+                "CourseCanceledParticipant",
+                participant.Email,
+                subject,
+                body,
+                cancellationToken: cancellationToken);
+
+            if (success)
+            {
+                sent++;
+            }
+        }
+
+        return sent;
     }
 
     private async Task<string> BuildUniqueSlugAsync(string title, Guid? excludedCourseId, CancellationToken cancellationToken)

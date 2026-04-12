@@ -73,6 +73,11 @@ a {
     letter-spacing: 0.02em;
 }
 
+.brand-admin {
+    font-size: 1.35rem;
+    letter-spacing: 0.01em;
+}
+
 .topbar-actions {
     display: flex;
     align-items: center;
@@ -176,8 +181,12 @@ h3 {
     padding: 1rem;
 }
 
-.course-card p {
-    min-height: 4rem;
+.course-card h3 {
+    margin: 0.45rem 0 0.35rem;
+}
+
+.course-card .button {
+    margin-top: 0.65rem;
 }
 
 .course-meta {
@@ -229,6 +238,8 @@ h3 {
 }
 
 .filter-pill {
+    font: inherit;
+    cursor: pointer;
     border: 1px solid var(--line);
     border-radius: 999px;
     padding: 0.35rem 0.8rem;
@@ -303,8 +314,19 @@ h3 {
     gap: 0.5rem;
 }
 
+.footer-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+}
+
 .footer-brand {
     font-weight: 700;
+}
+
+.footer-admin-link {
+    margin-left: auto;
 }
 
 .footer-links {
@@ -312,6 +334,13 @@ h3 {
     flex-wrap: wrap;
     gap: 0.8rem;
     font-size: 0.9rem;
+}
+
+.page-back-link {
+    align-self: start;
+    width: fit-content;
+    margin-top: 0.2rem;
+    margin-bottom: -0.3rem;
 }
 
 .back-to-top {
@@ -391,5 +420,10 @@ h3 {
 
     .brand {
         font-size: 1.6rem;
+    }
+
+    .footer-main {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

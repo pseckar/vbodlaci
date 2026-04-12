@@ -18,7 +18,19 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
         Input.PriceText = "0 Kč";
     }
 
-    public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
+    public Task<IActionResult> OnPostPublishAsync(CancellationToken cancellationToken)
+    {
+        Input.Status = CourseStatus.Published;
+        return CreateCourseAsync(cancellationToken);
+    }
+
+    public Task<IActionResult> OnPostDraftAsync(CancellationToken cancellationToken)
+    {
+        Input.Status = CourseStatus.Draft;
+        return CreateCourseAsync(cancellationToken);
+    }
+
+    private async Task<IActionResult> CreateCourseAsync(CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
         {
@@ -31,7 +43,7 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
 
         if (result.Succeeded && id.HasValue)
         {
-            return RedirectToPage("/Courses/Edit", new { id = id.Value });
+            return RedirectToPage("/Courses/Index");
         }
 
         return Page();

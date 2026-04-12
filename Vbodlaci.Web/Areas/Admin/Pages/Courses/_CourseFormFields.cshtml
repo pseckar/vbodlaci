@@ -12,13 +12,6 @@
     <input asp-for="Title" />
     <span asp-validation-for="Title" class="field-error"></span>
 
-    <label>Stav</label>
-    <select asp-for="Status">
-        <option value="@CourseStatus.Draft">Draft</option>
-        <option value="@CourseStatus.Published">Published</option>
-        <option value="@CourseStatus.Canceled">Canceled</option>
-    </select>
-
     <label>Začátek</label>
     <input asp-for="StartDateTime" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
     <span asp-validation-for="StartDateTime" class="field-error"></span>
@@ -55,4 +48,3 @@
     <textarea asp-for="WhatToExpect"></textarea>
     <span asp-validation-for="WhatToExpect" class="field-error"></span>
 </div>
-

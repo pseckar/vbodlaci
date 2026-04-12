@@ -1,10 +1,13 @@
-﻿@using Microsoft.Extensions.Options
+﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Options
 @using Vbodlaci.Web.Application.Configuration
 @inject IOptions<SiteOptions> SiteOptionsAccessor
+@inject SignInManager<IdentityUser> SignInManager
 @{
     var site = SiteOptionsAccessor.Value;
     var flashMessage = TempData["FlashMessage"] as string;
     var flashType = TempData["FlashType"] as string ?? "info";
+    var isSignedIn = SignInManager.IsSignedIn(User);
 }
 <!DOCTYPE html>
 <html lang="cs">
@@ -19,12 +22,15 @@
 <div class="bg-shape bg-shape-one"></div>
 <div class="bg-shape bg-shape-two"></div>
 <div class="shell">
-    <header class="topbar">
-        <a class="brand" asp-page="/Index">V bodláčí</a>
-        <div class="topbar-actions">
-            <partial name="_LoginPartial" />
-        </div>
-    </header>
+    @if (isSignedIn)
+    {
+        <header class="topbar">
+            <span class="brand brand-admin">Administrátorská zóna</span>
+            <div class="topbar-actions">
+                <partial name="_LoginPartial" />
+            </div>
+        </header>
+    }
 
     @if (!string.IsNullOrWhiteSpace(flashMessage))
     {
@@ -36,7 +42,13 @@
     </main>
 
     <footer class="footer">
-        <div class="footer-brand">V bodláčí</div>
+        <div class="footer-main">
+            <div class="footer-brand">V bodláčí</div>
+            @if (!isSignedIn)
+            {
+                <a class="admin-link footer-admin-link" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Admin">Admin přihlášení</a>
+            }
+        </div>
         <div class="footer-links">
             <a href="@site.FacebookUrl" target="_blank" rel="noopener">Facebook</a>
             <a href="@site.InstagramUrl" target="_blank" rel="noopener">Instagram</a>

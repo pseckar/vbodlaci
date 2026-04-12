@@ -5,6 +5,8 @@
     ViewData["Title"] = "Správa kurzů";
 }
 
+<a class="button button-secondary page-back-link" asp-page="/Index">← Zpět do administrace</a>
+
 <section class="section">
     <h1>Kurzy</h1>
     <a class="button button-primary" asp-page="/Courses/Create">+ Nový kurz</a>
@@ -27,31 +29,37 @@
                 <tr>
                     <td><a asp-page="/Courses/Edit" asp-route-id="@course.Id">@course.Title</a></td>
                     <td>@(course.Type == CourseType.Breathwork ? "Breathwork" : "Koně")</td>
-                    <td>@course.Status</td>
+                    <td>@(course.Status switch { CourseStatus.Draft => "Draft", CourseStatus.Published => "Publikovaný", CourseStatus.Canceled => "Zrušen", _ => course.Status.ToString() })</td>
                     <td>@course.StartDateTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                     <td>@course.CityOrArea</td>
                     <td>
                         <div class="inline-actions">
-                            <a class="button button-secondary" asp-page="/Courses/Edit" asp-route-id="@course.Id">Upravit</a>
-                            <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz publikovat? Při první publikaci se odešle newsletter.');">
-                                <input type="hidden" name="id" value="@course.Id" />
-                                <input type="hidden" name="status" value="Published" />
-                                <button type="submit" class="button button-primary">Publikovat</button>
-                            </form>
-                            <form method="post" asp-page-handler="Status">
-                                <input type="hidden" name="id" value="@course.Id" />
-                                <input type="hidden" name="status" value="Draft" />
-                                <button type="submit" class="button button-secondary">Do konceptu</button>
-                            </form>
-                            <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz označit jako zrušený?');">
-                                <input type="hidden" name="id" value="@course.Id" />
-                                <input type="hidden" name="status" value="Canceled" />
-                                <button type="submit" class="button button-secondary">Zrušit</button>
-                            </form>
-                            <form method="post" asp-page-handler="Delete" onsubmit="return confirm('Opravdu chceš kurz odstranit?');">
-                                <input type="hidden" name="id" value="@course.Id" />
-                                <button type="submit" class="button button-secondary">Smazat</button>
-                            </form>
+                            @if (course.Status == CourseStatus.Draft)
+                            {
+                                <a class="button button-secondary" asp-page="/Courses/Edit" asp-route-id="@course.Id">Upravit</a>
+                                <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz publikovat? Při první publikaci se odešle newsletter.');">
+                                    <input type="hidden" name="id" value="@course.Id" />
+                                    <input type="hidden" name="status" value="Published" />
+                                    <button type="submit" class="button button-primary">Publikovat</button>
+                                </form>
+                                <form method="post" asp-page-handler="Delete" onsubmit="return confirm('Opravdu chceš kurz smazat? Kurz v draftu bude odstraněn z administrace.');">
+                                    <input type="hidden" name="id" value="@course.Id" />
+                                    <button type="submit" class="button button-secondary">Smazat</button>
+                                </form>
+                            }
+                            else if (course.Status == CourseStatus.Published)
+                            {
+                                <a class="button button-secondary" asp-page="/Courses/Edit" asp-route-id="@course.Id">Upravit</a>
+                                <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz zrušit? Účastníkům bude odeslán e-mail o zrušení.');">
+                                    <input type="hidden" name="id" value="@course.Id" />
+                                    <input type="hidden" name="status" value="Canceled" />
+                                    <button type="submit" class="button button-secondary">Zrušit</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="muted">Bez dostupných akcí</span>
+                            }
                         </div>
                     </td>
                 </tr>
