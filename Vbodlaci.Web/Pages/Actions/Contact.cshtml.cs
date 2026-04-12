@@ -1,16 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Net.Mail;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Vbodlaci.Web.Application.Newsletter;
+using Vbodlaci.Web.Application.Contacts;
 using Vbodlaci.Web.Application.Security;
 
-namespace Vbodlaci.Web.Pages.Akce;
+namespace Vbodlaci.Web.Pages.Actions;
 
-public sealed class NewsletterModel(
-    INewsletterService newsletterService,
+public sealed class ContactModel(
+    IContactService contactService,
     IRateLimitService rateLimitService) : PageModel
 {
+    [BindProperty]
+    [Required(ErrorMessage = "Vyplň jméno.")]
+    [StringLength(120)]
+    public string FullName { get; set; } = string.Empty;
+
     [BindProperty]
     [Required(ErrorMessage = "Vyplň e-mail.")]
     [EmailAddress(ErrorMessage = "Vyplň platný e-mail.")]
@@ -18,13 +22,12 @@ public sealed class NewsletterModel(
     public string Email { get; set; } = string.Empty;
 
     [BindProperty]
-    public bool PrefBreathwork { get; set; }
+    [Required(ErrorMessage = "Vyplň zprávu.")]
+    [StringLength(2500)]
+    public string Message { get; set; } = string.Empty;
 
     [BindProperty]
-    public bool PrefHorses { get; set; }
-
-    [BindProperty]
-    public bool PrefVeterinary { get; set; }
+    public string? SourcePage { get; set; }
 
     [BindProperty]
     public string? ReturnUrl { get; set; }
@@ -38,33 +41,32 @@ public sealed class NewsletterModel(
 
         if (!string.IsNullOrWhiteSpace(Honeypot))
         {
-            TempData["FlashMessage"] = "Přihlášení se nepodařilo odeslat.";
+            TempData["FlashMessage"] = "Zprávu se nepodařilo odeslat.";
             TempData["FlashType"] = "error";
             return LocalRedirect(safeReturn);
         }
 
         var ip = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown";
-        if (!rateLimitService.IsAllowed($"newsletter:{ip}", 8, TimeSpan.FromMinutes(10)))
+        if (!rateLimitService.IsAllowed($"contact:{ip}", 5, TimeSpan.FromMinutes(10)))
         {
             TempData["FlashMessage"] = "Posíláš příliš mnoho požadavků. Zkus to prosím za chvíli.";
             TempData["FlashType"] = "error";
             return LocalRedirect(safeReturn);
         }
 
-        var normalizedEmail = (Email ?? string.Empty).Trim();
-        if (string.IsNullOrWhiteSpace(normalizedEmail) || !MailAddress.TryCreate(normalizedEmail, out _))
+        if (!ModelState.IsValid)
         {
-            TempData["FlashMessage"] = "Prosím zkontroluj zadaný e-mail.";
+            TempData["FlashMessage"] = "Prosím zkontroluj vyplněná data ve formuláři.";
             TempData["FlashType"] = "error";
             return LocalRedirect(safeReturn);
         }
 
-        var result = await newsletterService.SubscribeAsync(new NewsletterSubscribeInput
+        var result = await contactService.SubmitAsync(new ContactMessageInput
         {
-            Email = normalizedEmail,
-            PrefBreathwork = PrefBreathwork,
-            PrefHorses = PrefHorses,
-            PrefVeterinary = PrefVeterinary,
+            FullName = FullName,
+            Email = Email,
+            Message = Message,
+            SourcePage = SourcePage ?? string.Empty,
             Honeypot = Honeypot ?? string.Empty
         }, ip, cancellationToken);
 
@@ -73,3 +75,4 @@ public sealed class NewsletterModel(
         return LocalRedirect(safeReturn);
     }
 }
+

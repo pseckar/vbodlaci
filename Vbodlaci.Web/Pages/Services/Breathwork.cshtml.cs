@@ -2,9 +2,9 @@
 using Vbodlaci.Web.Application.Courses;
 using Vbodlaci.Web.Domain.Courses;
 
-namespace Vbodlaci.Web.Pages.Sluzby;
+namespace Vbodlaci.Web.Pages.Services;
 
-public sealed class HorsesModel(ICourseService courseService) : PageModel
+public sealed class BreathworkModel(ICourseService courseService) : PageModel
 {
     public IReadOnlyList<CourseListItem> Courses { get; private set; } = [];
 
@@ -12,9 +12,8 @@ public sealed class HorsesModel(ICourseService courseService) : PageModel
     {
         Courses = await courseService.GetPublicCoursesAsync(new CourseQueryFilter
         {
-            Type = CourseType.Horses,
+            Type = CourseType.Breathwork,
             Take = 12
         }, cancellationToken);
     }
 }
-

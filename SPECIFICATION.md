@@ -1,4 +1,4 @@
-﻿# V bodlÃƒÂ¡Ã„ÂÃƒÂ­ Web Project Specification
+# V bodláčí Web Project Specification
 
 Version: 1.3  
 Last updated: 2026-04-13  
@@ -7,7 +7,7 @@ Website language: Czech only (`cs-CZ`)
 
 ## 1. Purpose Of This Document
 
-This document is the primary source of truth for building, testing, and maintaining the **V bodlÃƒÂ¡Ã„ÂÃƒÂ­** website.
+This document is the primary source of truth for building, testing, and maintaining the **V bodláčí** website.
 
 It is written for:
 - developers joining the project,
@@ -18,12 +18,12 @@ If implementation details are unclear, this specification takes priority over ad
 
 ## 2. Product Context
 
-The website presents services provided by **Veronika BodlÃƒÂ¡kovÃƒÂ¡** under the personal brand **V bodlÃƒÂ¡Ã„ÂÃƒÂ­**.
+The website presents services provided by **Veronika Bodláková** under the personal brand **V bodláčí**.
 
 Core service pillars shown on the website:
-1. **Breathwork v bodlÃƒÂ¡Ã„ÂÃƒÂ­** (prÃƒÂ¡ce s dechem)
-2. **KonÃ„â€º v bodlÃƒÂ¡Ã„ÂÃƒÂ­** (sebepoznÃƒÂ¡nÃƒÂ­/transformace facilitovanÃƒÂ¡ koÃ…Ë†mi)
-3. **Veterina v bodlÃƒÂ¡Ã„ÂÃƒÂ­** (veterinÃƒÂ¡rnÃƒÂ­ oÃ…Â¡etÃ…â„¢enÃƒÂ­ s osobnÃƒÂ­m a lidskÃƒÂ½m pÃ…â„¢ÃƒÂ­stupem, vÃ„ÂetnÃ„â€º domÃƒÂ¡cÃƒÂ­ch nÃƒÂ¡vÃ…Â¡tÃ„â€ºv)
+1. **Breathwork v bodláčí** (práce s dechem)
+2. **Koně v bodláčí** (sebepoznání/transformace facilitovaná koňmi)
+3. **Veterina v bodláčí** (veterinární ošetření s osobním a lidským přístupem, včetně domácích návštěv)
 
 ### Additional context about Veronika and the brand:
 - Veronika is a veterinary doctor and owns a veterinary clinic in Hlinsko, Czech Republic.
@@ -36,7 +36,7 @@ Core service pillars shown on the website:
 Primary goals:
 - Clearly present the three service pillars under one coherent brand.
 - Help visitors understand what each service is, for whom it is, and how it works.
-- Convert interest into action via course registrations (for Breathwork + KonÃ„â€º), direct inquiries (contact form), and newsletter subscriptions.
+- Convert interest into action via course registrations (for Breathwork + Koně), direct inquiries (contact form), and newsletter subscriptions.
 - Give Veronika a simple admin interface to manage course offerings.
 
 Secondary goals:
@@ -96,9 +96,9 @@ No classic multi-level navigation menu is required in MVP; navigation is primari
 Navigation shell behavior:
 - public (not signed-in) pages do not show a top bar,
 - admin login entrypoint is placed in the footer on the right side,
-- signed-in sessions show a top bar labeled `AdministrÃ¡torskÃ¡ zÃ³na` with logout and a context-aware navigation button:
+- signed-in sessions show a top bar labeled `Administrátorská zóna` with logout and a context-aware navigation button:
   - `Administrace` when outside Admin pages,
-  - `ZpÄ›t na web` when inside Admin pages.
+  - `Zpět na web` when inside Admin pages.
 
 ### 6.1 Static Vs Dynamic Content Map
 
@@ -124,18 +124,19 @@ Purpose: introduce brand, services, trust signals, and conversion entry points.
 
 Main sections:
 1. Hero:
-- Brand: **V bodlÃƒÂ¡Ã„ÂÃƒÂ­**
+- Brand: **V bodláčí**
 - Intro text (Czech).
-2. Service switcher cards (top Ã¢â‚¬Å“rozcestnÃƒÂ­kÃ¢â‚¬Â):
-- **Breathwork v bodlÃƒÂ¡Ã„ÂÃƒÂ­**
-- **KonÃ„â€º v bodlÃƒÂ¡Ã„ÂÃƒÂ­**
-- **Veterina v bodlÃƒÂ¡Ã„ÂÃƒÂ­**
-- each card links to its service detail page.`n3. About/identity block:
+2. Service switcher cards (top “rozcestník”):
+- **Breathwork v bodláčí**
+- **Koně v bodláčí**
+- **Veterina v bodláčí**
+- each card links to its service detail page.
+3. About/identity block:
 - introduces Veronika and integration of all three areas.
 4. Upcoming courses block (dynamic):
-- combined list of published upcoming courses from Breathwork + KonÃ„â€º,
+- combined list of published upcoming courses from Breathwork + Koně,
 - sorted by nearest date ascending,
-- includes filter control by type (`VÃ…Â¡e`, `Breathwork`, `KonÃ„â€º`),
+- includes filter control by type (`Vše`, `Breathwork`, `Koně`),
 - filtering is handled client-side (without server round-trip),
 - visually optimized for horizontal card browsing when needed.
 5. Testimonials (`Ohlasy`) block (initially static content).
@@ -147,29 +148,30 @@ Main sections:
 - legal links,
 - admin login button aligned to the right side for signed-out users.
 9. Floating/back-to-top control:
-- button text in Czech, e.g. **Ã¢â‚¬Å¾JÃƒÂ­t nahoruÃ¢â‚¬Å“**,
+- button text in Czech, e.g. **„Jít nahoru“**,
 - appears after meaningful scroll depth.
 
 ### 7.2 Service Detail Pages
 
 Three pages:
 - Breathwork detail (`/breathwork-v-bodlaci` or equivalent final slug)
-- KonÃ„â€º detail (`/kone-v-bodlaci` or equivalent final slug)
-- Veterina detail (`/veterina-v-bodlaci` or equivalent final slug)`n
+- Koně detail (`/kone-v-bodlaci` or equivalent final slug)
+- Veterina detail (`/veterina-v-bodlaci` or equivalent final slug)
+
 Common structure pattern:
 1. Back link to homepage placed above the first content panel, then service header panel with service name.
 2. Service introduction/value proposition.
-3. Ã¢â‚¬Å“For whom it isÃ¢â‚¬Â / Ã¢â‚¬Å“What it bringsÃ¢â‚¬Â content.
-4. Ã¢â‚¬Å“How a session/course worksÃ¢â‚¬Â step-by-step section.
-5. FAQ block (`Ã„Å’astÃƒÂ© otÃƒÂ¡zky`).
+3. “For whom it is” / “What it brings” content.
+4. “How a session/course works” step-by-step section.
+5. FAQ block (`Časté otázky`).
 6. Contact CTA/form for service-specific inquiry.
 7. Newsletter block (can be global or service-scoped).
 8. Footer.
 
 Dynamic behavior by service:
-- **Breathwork v bodlÃƒÂ¡Ã„ÂÃƒÂ­**: show upcoming breathwork courses (dynamic). Course detail links from this page include source context for return navigation.
-- **KonÃ„â€º v bodlÃƒÂ¡Ã„ÂÃƒÂ­**: show upcoming horse-facilitated courses (dynamic). Course detail links from this page include source context for return navigation.
-- **Veterina v bodlÃƒÂ¡Ã„ÂÃƒÂ­**: no course catalog in MVP; inquiry-driven content and CTA, with emphasis on consultations, home visits, and compassionate at-home farewell/euthanasia support.
+- **Breathwork v bodláčí**: show upcoming breathwork courses (dynamic). Course detail links from this page include source context for return navigation.
+- **Koně v bodláčí**: show upcoming horse-facilitated courses (dynamic). Course detail links from this page include source context for return navigation.
+- **Veterina v bodláčí**: no course catalog in MVP; inquiry-driven content and CTA, with emphasis on consultations, home visits, and compassionate at-home farewell/euthanasia support.
 
 ### 7.3 Course Detail Page (`/kurzy/{slug}`)
 
@@ -177,9 +179,9 @@ Purpose: convert a motivated visitor into a course registration.
 
 Return navigation behavior:
 - back link is rendered above the first content panel,
-- default back link points to homepage (`ZpÄ›t na hlavnÃ­ strÃ¡nku`),
-- when user arrives from Breathwork service page, back link points to that page with label `ZpÄ›t na Breathwork`,
-- when user arrives from KonÃ„â€º service page, back link points to that page with label `ZpÄ›t na KonÄ›`.
+- default back link points to homepage (`Zpět na hlavní stránku`),
+- when user arrives from Breathwork service page, back link points to that page with label `Zpět na Breathwork`,
+- when user arrives from Koně service page, back link points to that page with label `Zpět na Koně`.
 
 Sections:
 1. Course hero/title.
@@ -190,15 +192,15 @@ Sections:
 - location,
 - price,
 - optional capacity.
-4. Ã¢â‚¬Å“What to expectÃ¢â‚¬Â (content/process).
-5. Registration form (`PÃ…â„¢ihlÃƒÂ¡Ã…Â¡enÃƒÂ­ na kurz`) - should really draw attention to it, visually.
-6. Related/upcoming courses block (Ã¢â‚¬Å“DalÃ…Â¡ÃƒÂ­ termÃƒÂ­ny ...Ã¢â‚¬Â).
+4. “What to expect” (content/process).
+5. Registration form (`Přihlášení na kurz`) - should really draw attention to it, visually.
+6. Related/upcoming courses block (“Další termíny ...”).
 7. Footer.
 
 Registration form minimum fields:
-- `JmÃƒÂ©no` (required),
+- `Jméno` (required),
 - `E-mail` (required),
-- `PoznÃƒÂ¡mka` (optional),
+- `Poznámka` (optional),
 - consent checkbox text (final legal wording TBD, required).
 - validate inputs and show user-friendly error messages in Czech.
 
@@ -222,8 +224,9 @@ Admin course actions:
 - create course,
 - update course,
 - delete draft course (soft delete),
-- cancel published course
+- cancel published course,
 - preview public card/detail rendering,
+- create/edit courses.
 
 ## 8. Content Model And Business Rules
 
@@ -231,7 +234,7 @@ Admin course actions:
 
 - Every course is an individual item (no master course with multiple dates).
 - No template system in MVP.
-- Possible future enhancement: Ã¢â‚¬Å“duplicate existing courseÃ¢â‚¬Â action.
+- Possible future enhancement: “duplicate existing course” action.
 - Course types in MVP are `breathwork` and `kone` (horse-facilitated transformation).
 - Published courses appear on public pages.
 - Courses in draft are not shown publicly.
@@ -247,7 +250,7 @@ Required:
 - `slug`
 - `start_datetime` (Europe/Prague timezone)
 - `city_or_area`
-- `price_czk` (or explicit Ã¢â‚¬Å“on requestÃ¢â‚¬Â policy if agreed)
+- `price_czk` (or explicit “on request” policy if agreed)
 - `is_published`
 - `created_at`
 - `updated_at`
@@ -273,7 +276,7 @@ Optional fields included in MVP:
 
 Interest segmentation:
 - Mockup suggests service checkboxes.
-- Segmentation is enabled in MVP by service preferences (`Breathwork`, `KonÄ›`, `Veterina`).
+- Segmentation is enabled in MVP by service preferences (`Breathwork`, `Koně`, `Veterina`).
 
 ### 8.4 Contact form rules
 
@@ -287,7 +290,7 @@ MVP email events:
 1. Contact form submission:
 - To Veronika: message details.
 2. Course registration submission:
-- To Veronika: registrant details (`JmÃƒÂ©no`, `E-mail`, `PoznÃƒÂ¡mka`, course info).
+- To Veronika: registrant details (`Jméno`, `E-mail`, `Poznámka`, course info).
 - To registrant: confirmation email in Czech.
 3. Newsletter campaign on newly published course:
 - To subscribers: new course summary + CTA link.
@@ -325,7 +328,7 @@ Layout direction:
 Interaction direction:
 - simple transitions,
 - clear CTA hierarchy,
-- visible Ã¢â‚¬Å“back to topÃ¢â‚¬Â support.
+- visible “back to top” support.
 
 Language/tone on website copy:
 - Czech language only,
@@ -359,7 +362,7 @@ Expected production topology (MVP):
 - single VM/VPS,
 - Nginx in front of Kestrel,
 - PostgreSQL on same server initially,
-- TLS via LetÃ¢â‚¬â„¢s Encrypt (or equivalent).
+- TLS via Let’s Encrypt (or equivalent).
 
 Traffic expectation:
 - tens to low hundreds of daily visitors.
@@ -377,8 +380,8 @@ Required controls:
 - basic abuse controls (rate limiting, anti-spam).
 
 GDPR/privacy baseline:
-- privacy policy page (`ZÃƒÂ¡sady zpracovÃƒÂ¡nÃƒÂ­ osobnÃƒÂ­ch ÃƒÂºdajÃ…Â¯`),
-- cookie policy page (`ZÃƒÂ¡sady cookies`),
+- privacy policy page (`Zásady zpracování osobních údajů`),
+- cookie policy page (`Zásady cookies`),
 - explicit consent language where legally required (newsletter, course terms),
 - data minimization: only collect required fields,
 - ability to delete/export personal data upon request (manual process acceptable initially),
@@ -468,21 +471,21 @@ MVP includes helper-generated Facebook post text in admin; direct API synchroniz
 ## 20. Canonical Czech Labels (Current Draft)
 
 Brand and service naming to preserve:
-- `V bodlÃƒÂ¡Ã„ÂÃƒÂ­`
-- `Breathwork v bodlÃƒÂ¡Ã„ÂÃƒÂ­`
-- `KonÃ„â€º v bodlÃƒÂ¡Ã„ÂÃƒÂ­`
-- `Veterina v bodlÃƒÂ¡Ã„ÂÃƒÂ­`
+- `V bodláčí`
+- `Breathwork v bodláčí`
+- `Koně v bodláčí`
+- `Veterina v bodláčí`
 
 Important UI terms (examples for consistency):
-- `Zjistit vÃƒÂ­ce`
+- `Zjistit více`
 - `Detail kurzu`
-- `NejbliÃ…Â¾Ã…Â¡ÃƒÂ­ kurzy`
-- `Ã„Å’astÃƒÂ© otÃƒÂ¡zky`
+- `Nejbližší kurzy`
+- `Časté otázky`
 - `Kontakt`
 - `Newsletter`
-- `PÃ…â„¢ihlÃƒÂ¡Ã…Â¡enÃƒÂ­ na kurz`
-- `ZÃƒÂ¡vaznÃ„â€º pÃ…â„¢ihlÃƒÂ¡sit`
-- `JÃƒÂ­t nahoru`
+- `Přihlášení na kurz`
+- `Závazně přihlásit`
+- `Jít nahoru`
 
 Final copy deck may refine wording, but naming consistency must be preserved.
 
@@ -512,7 +515,7 @@ The following decisions are finalized and must be implemented as defined:
 
 5. Newsletter:
 - single opt-in,
-- service-preference segmentation (`Breathwork`, `KonÄ›`, `Veterina`),
+- service-preference segmentation (`Breathwork`, `Koně`, `Veterina`),
 - unsubscribe link in every newsletter email,
 - deduplication per course publish event.
 

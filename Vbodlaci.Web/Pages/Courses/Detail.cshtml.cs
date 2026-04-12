@@ -5,7 +5,7 @@ using Vbodlaci.Web.Application.Registrations;
 using Vbodlaci.Web.Application.Security;
 using Vbodlaci.Web.Domain.Courses;
 
-namespace Vbodlaci.Web.Pages.Kurzy;
+namespace Vbodlaci.Web.Pages.Courses;
 
 public sealed class DetailModel(
     ICourseService courseService,
@@ -117,11 +117,11 @@ public sealed class DetailModel(
         switch (SourceContext)
         {
             case "breathwork":
-                BackLinkPage = "/Sluzby/Breathwork";
+                BackLinkPage = "/Services/Breathwork";
                 BackLinkText = "← Zpět na Breathwork";
                 break;
             case "kone":
-                BackLinkPage = "/Sluzby/Kone";
+                BackLinkPage = "/Services/Horses";
                 BackLinkText = "← Zpět na Koně";
                 break;
             default:

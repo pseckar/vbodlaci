@@ -1,6 +1,6 @@
 ﻿@page "/kurzy/{slug}"
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
-@model Vbodlaci.Web.Pages.Kurzy.DetailModel
+@model Vbodlaci.Web.Pages.Courses.DetailModel
 @{
     ViewData["Title"] = Model.Course?.Title ?? "Detail kurzu";
     var relatedViewData = new ViewDataDictionary(ViewData)
@@ -81,7 +81,7 @@
     }
     else
     {
-        <form method="post" asp-page="/Kurzy/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid">
+        <form method="post" asp-page="/Courses/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid">
             <input type="hidden" name="from" value="@Model.SourceContext" />
 
             <label class="hidden-honeypot" asp-for="Registration.Honeypot">Nechte prázdné</label>
