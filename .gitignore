@@ -482,4 +482,4 @@ $RECYCLE.BIN/
 *.swp
 
 # Keys on filesystem
-.dpkeys/*
+**/.dpkeys/*

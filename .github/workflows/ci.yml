@@ -60,7 +60,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p artifacts/browser-smoke
-          ASPNETCORE_ENVIRONMENT=Testing Logging__EventLog__LogLevel__Default=None dotnet run --no-launch-profile --project ./Vbodlaci.Web/Vbodlaci.Web.csproj --configuration Release --no-build --urls http://127.0.0.1:5270 > artifacts/browser-smoke/app.log 2>&1 &
+          ASPNETCORE_ENVIRONMENT=Development Logging__EventLog__LogLevel__Default=None dotnet run --no-launch-profile --project ./Vbodlaci.Web/Vbodlaci.Web.csproj --configuration Release --no-build --urls http://127.0.0.1:5270 > artifacts/browser-smoke/app.log 2>&1 &
           APP_PID=$!
           READY=0
           for i in {1..40}; do

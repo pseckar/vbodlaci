@@ -4,7 +4,7 @@ using Vbodlaci.Web.Application.Configuration;
 
 namespace Vbodlaci.Web.Pages.Legal;
 
-public sealed class OsobniUdajeModel(IOptions<LegalIdentityOptions> legalOptions) : PageModel
+public sealed class PersonalDataModel(IOptions<LegalIdentityOptions> legalOptions) : PageModel
 {
     public string BusinessName => legalOptions.Value.BusinessName;
 
@@ -23,3 +23,4 @@ public sealed class OsobniUdajeModel(IOptions<LegalIdentityOptions> legalOptions
         || ContactEmail.Contains("TODO", StringComparison.OrdinalIgnoreCase)
         || ContactPhone.Contains("TODO", StringComparison.OrdinalIgnoreCase);
 }
+

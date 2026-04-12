@@ -8,9 +8,9 @@ public sealed class NewsletterSubscriber
 
     public bool PrefBreathwork { get; set; }
 
-    public bool PrefKone { get; set; }
+    public bool PrefHorses { get; set; }
 
-    public bool PrefVeterina { get; set; }
+    public bool PrefVeterinary { get; set; }
 
     public bool IsSubscribed { get; set; } = true;
 
@@ -20,3 +20,4 @@ public sealed class NewsletterSubscriber
 
     public DateTimeOffset UpdatedAt { get; set; }
 }
+

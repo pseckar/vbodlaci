@@ -13,7 +13,7 @@ public static class SlugGenerator
     {
         if (string.IsNullOrWhiteSpace(source))
         {
-            return "kurz";//TODO: why this? shouldnt rather throw exception?
+            return "kurz";
         }
 
         var normalized = source.Normalize(NormalizationForm.FormD);

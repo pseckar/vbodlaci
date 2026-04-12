@@ -27,7 +27,7 @@ public sealed class IndexModel(ICourseService courseService, IOptions<SiteOption
         }
         else if (normalized == "kone")
         {
-            filter.Type = CourseType.Kone;
+            filter.Type = CourseType.Horses;
             SelectedType = "kone";
         }
         else
@@ -38,3 +38,4 @@ public sealed class IndexModel(ICourseService courseService, IOptions<SiteOption
         Courses = await courseService.GetPublicCoursesAsync(filter, cancellationToken);
     }
 }
+

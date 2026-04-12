@@ -3,5 +3,6 @@
 public enum CourseType
 {
     Breathwork = 1,
-    Kone = 2
+    Horses = 2
 }
+

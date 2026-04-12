@@ -2,4 +2,5 @@
 
 namespace Vbodlaci.Web.Pages.Sluzby;
 
-public sealed class VeterinaModel : PageModel;
+public sealed class VeterinaryModel : PageModel;
+

@@ -1,7 +1,7 @@
 # V bodlÃ¡ÄÃ­ Web Project Specification
 
-Version: 1.0  
-Last updated: 2026-04-11  
+Version: 1.1  
+Last updated: 2026-04-12  
 Document language: English (with required Czech labels/content where relevant)  
 Website language: Czech only (`cs-CZ`)
 
@@ -331,8 +331,8 @@ Recommended architecture shape:
 ## 12. Hosting And Environments
 
 Expected environments:
-- `dev` (local + possibly Azure free tier for experiments),
-- `staging` (same host as production, separate database, service and config, and only when needed for testing (shutdown on deploy to production)),
+- `development` (local development and automated test execution),
+- `staging` (same host as production, separate database, service and config, and only when needed for pre-production validation),
 - `production` (cost-efficient VPS/cloud provider such as Hetzner).
 
 Expected production topology (MVP):
@@ -415,6 +415,7 @@ Recommended MVP coverage:
 - unit tests for core business rules (course visibility/sorting, email trigger decisions),
 - integration tests for form submission endpoints,
 - smoke tests for public page rendering and admin auth,
+- integration and smoke tests run under `Development` profile with test-specific service overrides (no dedicated `Testing` environment),
 - manual QA checklist for critical journeys (browse service pages, submit contact form, subscribe newsletter, register to a course, admin creates/edits/hides course).
 
 ## 18. Observability And Operations
@@ -499,6 +500,7 @@ The following decisions are finalized and must be implemented as defined:
 
 7. Email integration:
 - provider-agnostic SMTP configuration in app settings/environment.
+- in `production`, startup must fail fast when SMTP is not validly configured (Noop delivery is not allowed).
 
 8. Public UX scope:
 - horizontal course browsing only (no "all courses" page in MVP),
@@ -517,6 +519,10 @@ The following decisions are finalized and must be implemented as defined:
 11. Legal data:
 - legal/business identity is partially pending,
 - explicit placeholder values are allowed only for non-production environments.
+
+12. Engineering naming:
+- internal implementation names (classes, methods, properties, variables, database schema names) must be English,
+- Czech is allowed only for user-facing copy/labels/content.
 
 ## 22. Frozen Assumptions
 
@@ -543,4 +549,3 @@ When implementing against this document:
 - keep MVP scope tight (avoid introducing non-goal features),
 - if code and spec diverge, code must be adjusted to match spec,
 - do not redefine product behavior in code outside this frozen specification.
-

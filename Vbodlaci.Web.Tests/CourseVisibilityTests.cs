@@ -22,7 +22,7 @@ public class CourseVisibilityTests
         var canceled = new Course
         {
             Id = Guid.NewGuid(),
-            Type = CourseType.Kone,
+            Type = CourseType.Horses,
             Status = CourseStatus.Canceled,
             Title = "Zrušený kurz",
             Slug = "zruseny-kurz",
@@ -67,3 +67,4 @@ public class CourseVisibilityTests
             => Task.FromResult(string.Empty);
     }
 }
+

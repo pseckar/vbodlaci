@@ -14,7 +14,8 @@ public sealed class InMemoryRateLimitService(IMemoryCache cache) : IRateLimitSer
     {
         var counter = cache.GetOrCreate(key, entry =>
         {
-            entry.AbsoluteExpirationRelativeToNow = window; //TODO: how does this work? When and where is the window checked for expiration?
+            entry.AbsoluteExpirationRelativeToNow = window;
+            // IMemoryCache evicts this key automatically after the configured window expires.
             return new Counter();
         });
 

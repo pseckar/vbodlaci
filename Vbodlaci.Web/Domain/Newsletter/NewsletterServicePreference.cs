@@ -3,6 +3,7 @@
 public enum NewsletterServicePreference
 {
     Breathwork = 1,
-    Kone = 2,
-    Veterina = 3
+    Horses = 2,
+    Veterinary = 3
 }
+

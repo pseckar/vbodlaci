@@ -1,5 +1,5 @@
 ﻿@page "/veterina-v-bodlaci"
-@model Vbodlaci.Web.Pages.Sluzby.VeterinaModel
+@model Vbodlaci.Web.Pages.Sluzby.VeterinaryModel
 @{
     ViewData["Title"] = "Veterina v bodláčí";
     var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
@@ -40,10 +40,11 @@
         <input class="hidden-honeypot" id="vet-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
         <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
         <label class="checkbox-row"><input type="checkbox" name="PrefBreathwork" /> Breathwork</label>
-        <label class="checkbox-row"><input type="checkbox" name="PrefKone" /> Koně</label>
-        <label class="checkbox-row"><input type="checkbox" name="PrefVeterina" checked /> Veterina</label>
+        <label class="checkbox-row"><input type="checkbox" name="PrefHorses" /> Koně</label>
+        <label class="checkbox-row"><input type="checkbox" name="PrefVeterinary" checked /> Veterina</label>
         <button class="button button-primary" type="submit">Přihlásit k odběru</button>
     </form>
 </section>
+
 
 

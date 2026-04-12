@@ -11,9 +11,11 @@ public sealed class NewsletterSubscribeInput
 
     public bool PrefBreathwork { get; set; }
 
-    public bool PrefKone { get; set; }//TODO: as mentioned, English only, no Czech (with exception in strings for user-facing texts). Change for also other names, not just this
+    public bool PrefHorses { get; set; }
 
-    public bool PrefVeterina { get; set; }
+    public bool PrefVeterinary { get; set; }
 
     public string Honeypot { get; set; } = string.Empty;
 }
+
+

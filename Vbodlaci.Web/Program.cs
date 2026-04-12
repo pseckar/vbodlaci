@@ -17,18 +17,18 @@ using Vbodlaci.Web.Services.Registrations;
 using Vbodlaci.Web.Services.Security;
 
 var builder = WebApplication.CreateBuilder(args);
-if (builder.Environment.IsDevelopment() || builder.Environment.IsEnvironment("Testing")) //TODO: why this environment? can be replaced with standard Staging? or removed altogether?
+if (builder.Environment.IsDevelopment())
 {
-    builder.WebHost.UseStaticWebAssets();   //TODO: what does this mean, whats its purpose? How differently will it behave in production? 
+    builder.WebHost.UseStaticWebAssets();
 }
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
                        ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(connectionString));
-builder.Services.AddDatabaseDeveloperPageExceptionFilter(); //TODO: should be only for development env?
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, ".dpkeys")));//TODO: what is this good for?
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, ".dpkeys")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
@@ -40,8 +40,8 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
         options.Password.RequireNonAlphanumeric = false;
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders() //TODO: tokens are stored in cookies or where?
-    .AddDefaultUI(); //TODO: this should be reworked in future - simple custom UI instead
+    .AddDefaultTokenProviders()
+    .AddDefaultUI();
 
 builder.Services.Configure<AdminSeedOptions>(builder.Configuration.GetSection(AdminSeedOptions.SectionName));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.SectionName));
@@ -55,9 +55,12 @@ builder.Services.AddScoped<SmtpEmailService>();
 builder.Services.AddScoped<IEmailService>(serviceProvider =>
 {
     var smtpOptions = serviceProvider.GetRequiredService<IOptions<SmtpOptions>>().Value;
+
     return smtpOptions.Enabled
         ? serviceProvider.GetRequiredService<SmtpEmailService>()
-        : serviceProvider.GetRequiredService<NoopEmailService>();//TODO: should be only for development env? rework this, we should not allow using Noop in production
+        : builder.Environment.IsDevelopment()
+            ? serviceProvider.GetRequiredService<NoopEmailService>()
+            : throw new InvalidOperationException("NoopEmailService is allowed only in Development.");
 });
 
 builder.Services.AddScoped<IEmailDispatcher, EmailDispatcher>();
@@ -80,29 +83,28 @@ builder.Services.AddRazorPages(options =>
 
 var app = builder.Build();
 
-await EnsureDatabaseAsync(app.Services);
+await ApplyMigrationsAsync(app.Services);
 
-var isDevLike = app.Environment.IsDevelopment() || app.Environment.IsEnvironment("Testing");
-if (isDevLike)
+if (app.Environment.IsProduction())
 {
-    app.UseMigrationsEndPoint();//TODO: what is this? DB migration? how will it behave in production?
-    if (app.Environment.IsDevelopment())
-    {
-        await app.SeedDevelopmentAdminAsync();  //TODO: how will the admin be created in production?
-    }
+    ValidateProductionReadiness(app.Services);
 }
-else if (app.Environment.IsProduction())
+
+if (app.Environment.IsDevelopment())
 {
-    ValidateLegalIdentity(app.Services);
-    app.UseExceptionHandler("/Error");
-    app.UseHsts();
+    app.UseMigrationsEndPoint();
+    await app.SeedDevelopmentAdminAsync();
 }
 else
 {
     app.UseExceptionHandler("/Error");
+    if (app.Environment.IsProduction())
+    {
+        app.UseHsts();
+    }
 }
 
-if (!app.Environment.IsEnvironment("Testing"))
+if (app.Environment.IsStaging() || app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
 }
@@ -116,19 +118,32 @@ app.MapRazorPages().WithStaticAssets();
 
 app.Run();
 
-static async Task EnsureDatabaseAsync(
+static async Task ApplyMigrationsAsync(
     IServiceProvider services)
 {
     await using var scope = services.CreateAsyncScope();
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
+    if (dbContext.Database.IsRelational())
+    {
+        await dbContext.Database.MigrateAsync();
+    }
+    else
+    {
+        await dbContext.Database.EnsureCreatedAsync();
+    }
 }
 
-//TODO: Remove this when placeholder values are replaced with real legal identity information.
-static void ValidateLegalIdentity(IServiceProvider services)
+static void ValidateProductionReadiness(IServiceProvider services)
 {
     using var scope = services.CreateScope();
+    var smtpOptions = scope.ServiceProvider.GetRequiredService<IOptions<SmtpOptions>>().Value;
     var legalIdentity = scope.ServiceProvider.GetRequiredService<IOptions<LegalIdentityOptions>>().Value;
+
+    if (!smtpOptions.Enabled || string.IsNullOrWhiteSpace(smtpOptions.Host) || string.IsNullOrWhiteSpace(smtpOptions.From))
+    {
+        throw new InvalidOperationException(
+            "Production startup is blocked because SMTP is not fully configured.");
+    }
 
     static bool IsPlaceholder(string value) => value.Contains("TODO", StringComparison.OrdinalIgnoreCase);
 
@@ -142,4 +157,3 @@ static void ValidateLegalIdentity(IServiceProvider services)
             "Production startup is blocked because LegalIdentity contains placeholder TODO values.");
     }
 }
-

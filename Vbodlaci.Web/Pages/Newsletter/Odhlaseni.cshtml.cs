@@ -3,7 +3,7 @@ using Vbodlaci.Web.Application.Newsletter;
 
 namespace Vbodlaci.Web.Pages.Newsletter;
 
-public sealed class OdhlaseniModel(INewsletterService newsletterService) : PageModel
+public sealed class UnsubscribeModel(INewsletterService newsletterService) : PageModel
 {
     public string Message { get; private set; } = string.Empty;
 
@@ -13,3 +13,4 @@ public sealed class OdhlaseniModel(INewsletterService newsletterService) : PageM
         Message = result.Message;
     }
 }
+

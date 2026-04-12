@@ -20,11 +20,11 @@ public sealed class NewsletterService(
         var now = DateTimeOffset.UtcNow;
         var normalizedEmail = input.Email.Trim().ToLowerInvariant();
 
-        if (!input.PrefBreathwork && !input.PrefKone && !input.PrefVeterina)
+        if (!input.PrefBreathwork && !input.PrefHorses && !input.PrefVeterinary)
         {
             input.PrefBreathwork = true;
-            input.PrefKone = true;
-            input.PrefVeterina = true;
+            input.PrefHorses = true;
+            input.PrefVeterinary = true;
         }
 
         var subscriber = await dbContext.NewsletterSubscribers.FirstOrDefaultAsync(item => item.Email == normalizedEmail, cancellationToken);
@@ -34,8 +34,8 @@ public sealed class NewsletterService(
             {
                 Email = normalizedEmail,
                 PrefBreathwork = input.PrefBreathwork,
-                PrefKone = input.PrefKone,
-                PrefVeterina = input.PrefVeterina,
+                PrefHorses = input.PrefHorses,
+                PrefVeterinary = input.PrefVeterinary,
                 IsSubscribed = true,
                 CreatedAt = now,
                 UpdatedAt = now
@@ -45,8 +45,8 @@ public sealed class NewsletterService(
         else
         {
             subscriber.PrefBreathwork = input.PrefBreathwork;
-            subscriber.PrefKone = input.PrefKone;
-            subscriber.PrefVeterina = input.PrefVeterina;
+            subscriber.PrefHorses = input.PrefHorses;
+            subscriber.PrefVeterinary = input.PrefVeterinary;
             subscriber.IsSubscribed = true;
             subscriber.UpdatedAt = now;
         }
@@ -131,8 +131,8 @@ public sealed class NewsletterService(
                 Id = item.Id,
                 Email = item.Email,
                 PrefBreathwork = item.PrefBreathwork,
-                PrefKone = item.PrefKone,
-                PrefVeterina = item.PrefVeterina,
+                PrefHorses = item.PrefHorses,
+                PrefVeterinary = item.PrefVeterinary,
                 IsSubscribed = item.IsSubscribed,
                 CreatedAt = item.CreatedAt
             })
@@ -144,7 +144,7 @@ public sealed class NewsletterService(
         var subscribers = await GetSubscribersAsync(cancellationToken);
         var lines = new List<string> { "Email;Breathwork;Kone;Veterina;Subscribed;CreatedAt" };
         lines.AddRange(subscribers.Select(item =>
-            $"{item.Email};{item.PrefBreathwork};{item.PrefKone};{item.PrefVeterina};{item.IsSubscribed};{item.CreatedAt:O}"));
+            $"{item.Email};{item.PrefBreathwork};{item.PrefHorses};{item.PrefVeterinary};{item.IsSubscribed};{item.CreatedAt:O}"));
 
         return string.Join(Environment.NewLine, lines);
     }
@@ -154,8 +154,9 @@ public sealed class NewsletterService(
         return type switch
         {
             CourseType.Breathwork => subscriber.PrefBreathwork,
-            CourseType.Kone => subscriber.PrefKone,
+            CourseType.Horses => subscriber.PrefHorses,
             _ => false
         };
     }
 }
+

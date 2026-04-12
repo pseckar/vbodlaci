@@ -20,7 +20,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
         var databaseName = $"vbodlaci-tests-{Guid.NewGuid():N}";
 
-        builder.UseEnvironment("Testing");
+        builder.UseEnvironment("Development");
         builder.ConfigureLogging(logging => logging.ClearProviders());
 
         builder.ConfigureServices(services =>

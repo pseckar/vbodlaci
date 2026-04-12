@@ -34,7 +34,7 @@ Write-Host "Starting web app for smoke test..."
 $appJob = Start-Job -ArgumentList $root, $project, $appLog, $smokeConnectionString -ScriptBlock {
     param($workspaceRoot, $projectPath, $logPath, $connectionString)
     Set-Location $workspaceRoot
-    $env:ASPNETCORE_ENVIRONMENT = "Testing"
+    $env:ASPNETCORE_ENVIRONMENT = "Development"
     $env:Logging__EventLog__LogLevel__Default = "None"
     $env:ConnectionStrings__DefaultConnection = $connectionString
     & dotnet run --no-launch-profile --project $projectPath --no-build --urls http://127.0.0.1:5270 *> $logPath

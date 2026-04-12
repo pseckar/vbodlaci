@@ -4,7 +4,7 @@ using Vbodlaci.Web.Domain.Courses;
 
 namespace Vbodlaci.Web.Pages.Sluzby;
 
-public sealed class KoneModel(ICourseService courseService) : PageModel
+public sealed class HorsesModel(ICourseService courseService) : PageModel
 {
     public IReadOnlyList<CourseListItem> Courses { get; private set; } = [];
 
@@ -12,8 +12,9 @@ public sealed class KoneModel(ICourseService courseService) : PageModel
     {
         Courses = await courseService.GetPublicCoursesAsync(new CourseQueryFilter
         {
-            Type = CourseType.Kone,
+            Type = CourseType.Horses,
             Take = 12
         }, cancellationToken);
     }
 }
+

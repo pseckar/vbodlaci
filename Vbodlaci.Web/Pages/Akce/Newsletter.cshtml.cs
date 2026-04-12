@@ -20,10 +20,10 @@ public sealed class NewsletterModel(
     public bool PrefBreathwork { get; set; }
 
     [BindProperty]
-    public bool PrefKone { get; set; }
+    public bool PrefHorses { get; set; }
 
     [BindProperty]
-    public bool PrefVeterina { get; set; }
+    public bool PrefVeterinary { get; set; }
 
     [BindProperty]
     public string ReturnUrl { get; set; } = "/";
@@ -61,8 +61,8 @@ public sealed class NewsletterModel(
         {
             Email = Email,
             PrefBreathwork = PrefBreathwork,
-            PrefKone = PrefKone,
-            PrefVeterina = PrefVeterina,
+            PrefHorses = PrefHorses,
+            PrefVeterinary = PrefVeterinary,
             Honeypot = Honeypot
         }, ip, cancellationToken);
 
@@ -71,3 +71,4 @@ public sealed class NewsletterModel(
         return LocalRedirect(safeReturn);
     }
 }
+

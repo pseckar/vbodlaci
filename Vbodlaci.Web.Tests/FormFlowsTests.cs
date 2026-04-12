@@ -1,4 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Vbodlaci.Web.Application.Contacts;
 using Vbodlaci.Web.Application.Newsletter;
 using Vbodlaci.Web.Application.Registrations;
@@ -23,7 +23,7 @@ public class FormFlowsTests
         {
             FullName = "Test User",
             Email = "test@example.com",
-            Message = "Ahoj, prosím o info.",
+            Message = "Ahoj, prosÃ­m o info.",
             SourcePage = "home",
             Honeypot = string.Empty
         }, "127.0.0.1");
@@ -45,8 +45,8 @@ public class FormFlowsTests
         {
             Email = "newsletter@example.com",
             PrefBreathwork = true,
-            PrefKone = false,
-            PrefVeterina = true,
+            PrefHorses = false,
+            PrefVeterinary = true,
             Honeypot = string.Empty
         }, "127.0.0.1");
 
@@ -68,16 +68,16 @@ public class FormFlowsTests
             Id = Guid.NewGuid(),
             Type = CourseType.Breathwork,
             Status = CourseStatus.Published,
-            Title = "Testovací kurz",
+            Title = "TestovacÃ­ kurz",
             Slug = "testovaci-kurz",
             StartDateTime = now.AddDays(7),
             EndDateTime = now.AddDays(7).AddHours(3),
             CityOrArea = "Hlinsko",
             VenueText = "Les",
-            PriceText = "1 900 Kč",
-            ShortDescription = "Krátký popis",
-            FullDescription = "Detailní popis",
-            WhatToExpect = "Co tě čeká",
+            PriceText = "1 900 KÄ",
+            ShortDescription = "KrÃ¡tkÃ½ popis",
+            FullDescription = "DetailnÃ­ popis",
+            WhatToExpect = "Co tÄ› ÄekÃ¡",
             CreatedAt = now,
             UpdatedAt = now,
             PublishedAt = now
@@ -88,9 +88,9 @@ public class FormFlowsTests
 
         var result = await service.RegisterAsync(course.Id, new CourseRegistrationInput
         {
-            FullName = "Uživatel",
+            FullName = "UÅ¾ivatel",
             Email = "uzivatel@example.com",
-            Note = "Poznámka",
+            Note = "PoznÃ¡mka",
             TermsConsent = true,
             Honeypot = string.Empty
         }, "127.0.0.1");
@@ -99,4 +99,5 @@ public class FormFlowsTests
         Assert.Single(db.CourseRegistrations.Where(item => item.CourseId == course.Id));
     }
 }
+
 

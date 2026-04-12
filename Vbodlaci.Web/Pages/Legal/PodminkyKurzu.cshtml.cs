@@ -2,6 +2,7 @@
 
 namespace Vbodlaci.Web.Pages.Legal;
 
-public sealed class PodminkyKurzuModel : PageModel
+public sealed class CourseTermsModel : PageModel
 {
 }
+

@@ -8,11 +8,12 @@ public sealed class NewsletterSubscriberItem
 
     public bool PrefBreathwork { get; init; }
 
-    public bool PrefKone { get; init; }
+    public bool PrefHorses { get; init; }
 
-    public bool PrefVeterina { get; init; }
+    public bool PrefVeterinary { get; init; }
 
     public bool IsSubscribed { get; init; }
 
     public DateTimeOffset CreatedAt { get; init; }
 }
+

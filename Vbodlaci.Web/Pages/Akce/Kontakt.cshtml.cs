@@ -6,7 +6,7 @@ using Vbodlaci.Web.Application.Security;
 
 namespace Vbodlaci.Web.Pages.Akce;
 
-public sealed class KontaktModel( //TODO: Rename Kontakt to Contact (only English names for any names of classes, methods, properties, variables etc. Czech allowed only in strings)
+public sealed class ContactModel(
     IContactService contactService,
     IRateLimitService rateLimitService) : PageModel
 {
@@ -75,3 +75,4 @@ public sealed class KontaktModel( //TODO: Rename Kontakt to Contact (only Englis
         return LocalRedirect(safeReturn);
     }
 }
+
