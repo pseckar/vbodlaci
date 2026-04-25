@@ -230,7 +230,16 @@ jobs:
 
           sudo -n systemctl restart "${SERVICE_NAME}"
 
-          if ! curl -fsS --retry 20 --retry-delay 1 --max-time 2 http://127.0.0.1:5000/healthz > /dev/null; then
+          READY=0
+          for i in {1..120}; do
+            if curl -fsS --max-time 2 http://127.0.0.1:5000/healthz > /dev/null; then
+              READY=1
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "${READY}" -ne 1 ]; then
             echo "Health check failed. Attempting rollback."
             if [ -n "${PREVIOUS_RELEASE}" ] && [ -d "${PREVIOUS_RELEASE}" ]; then
               ln -sfn "${PREVIOUS_RELEASE}" "${APP_DIR}/current"

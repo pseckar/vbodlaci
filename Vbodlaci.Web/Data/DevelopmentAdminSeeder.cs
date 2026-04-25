@@ -6,13 +6,12 @@ namespace Vbodlaci.Web.Data;
 
 public static class DevelopmentAdminSeeder
 {
-    public static async Task SeedDevelopmentAdminAsync(this WebApplication app)
+    public static async Task SeedConfiguredAdminAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
-        var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("DevelopmentAdminSeeder");
+        var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("AdminSeeder");
 
-        var dbContext = services.GetRequiredService<ApplicationDbContext>();
         var options = services.GetRequiredService<IOptions<AdminSeedOptions>>().Value;
         if (string.IsNullOrWhiteSpace(options.Email) || string.IsNullOrWhiteSpace(options.Password))
         {
@@ -47,7 +46,7 @@ public static class DevelopmentAdminSeeder
             if (!createResult.Succeeded)
             {
                 var errors = string.Join("; ", createResult.Errors.Select(error => error.Description));
-                throw new InvalidOperationException($"Could not create development admin user: {errors}");
+                throw new InvalidOperationException($"Could not create configured admin user: {errors}");
             }
         }
 

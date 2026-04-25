@@ -92,6 +92,7 @@ builder.Services.AddRazorPages(options =>
 var app = builder.Build();
 
 await ApplyMigrationsAsync(app.Services);
+await app.SeedConfiguredAdminAsync();
 
 if (app.Environment.IsProduction())
 {
@@ -101,7 +102,6 @@ if (app.Environment.IsProduction())
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
-    await app.SeedDevelopmentAdminAsync();
 }
 else
 {
