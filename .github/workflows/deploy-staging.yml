@@ -1,0 +1,245 @@
+name: deploy-staging
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: deploy-staging
+  cancel-in-progress: false
+
+jobs:
+  wait-for-ci:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CI workflow on current commit
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const workflowId = "ci.yml";
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const sha = context.sha;
+            const timeoutMinutes = 30;
+            const delayMs = 15_000;
+            const started = Date.now();
+
+            while (true) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner,
+                repo,
+                workflow_id: workflowId,
+                event: "push",
+                per_page: 20
+              });
+
+              const match = runs.data.workflow_runs.find((run) => run.head_sha === sha);
+              if (match) {
+                core.info(`Found CI run ${match.id} status=${match.status} conclusion=${match.conclusion}`);
+                if (match.status === "completed") {
+                  if (match.conclusion !== "success") {
+                    core.setFailed(`CI workflow ${match.id} concluded with '${match.conclusion}'.`);
+                    return;
+                  }
+
+                  core.info("CI completed successfully.");
+                  return;
+                }
+              } else {
+                core.info(`No CI run found yet for ${sha}.`);
+              }
+
+              const elapsedMinutes = (Date.now() - started) / 60000;
+              if (elapsedMinutes > timeoutMinutes) {
+                core.setFailed(`Timed out after ${timeoutMinutes} minutes waiting for CI on ${sha}.`);
+                return;
+              }
+
+              await new Promise((resolve) => setTimeout(resolve, delayMs));
+            }
+
+  build:
+    runs-on: ubuntu-latest
+    needs:
+      - wait-for-ci
+    if: github.event_name == 'workflow_dispatch' || needs.wait-for-ci.result == 'success'
+    outputs:
+      release_sha: ${{ steps.meta.outputs.release_sha }}
+      artifact_name: ${{ steps.meta.outputs.artifact_name }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore ./Vbodlaci.sln
+
+      - name: Publish
+        run: dotnet publish ./Vbodlaci.Web/Vbodlaci.Web.csproj --configuration Release --no-restore --output ./artifacts/publish
+
+      - name: Prepare release metadata
+        id: meta
+        shell: bash
+        run: |
+          RELEASE_SHA="${GITHUB_SHA::12}"
+          ARTIFACT_NAME="vbodlaci-web-${RELEASE_SHA}.tar.gz"
+          echo "release_sha=${RELEASE_SHA}" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=${ARTIFACT_NAME}" >> "$GITHUB_OUTPUT"
+
+      - name: Pack release artifact
+        shell: bash
+        run: |
+          tar -czf "${{ steps.meta.outputs.artifact_name }}" -C ./artifacts/publish .
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-release
+          path: ${{ steps.meta.outputs.artifact_name }}
+          if-no-files-found: error
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    environment:
+      name: staging
+    steps:
+      - name: Download release artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: staging-release
+          path: .
+
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+
+      - name: Add host key
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -p "${{ secrets.STAGING_SSH_PORT }}" "${{ secrets.STAGING_SSH_HOST }}" >> ~/.ssh/known_hosts
+
+      - name: Upload artifact to staging host
+        shell: bash
+        run: |
+          scp -P "${{ secrets.STAGING_SSH_PORT }}" \
+            "${{ needs.build.outputs.artifact_name }}" \
+            "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}:/tmp/${{ needs.build.outputs.artifact_name }}"
+
+      - name: Upload staging environment configuration
+        shell: bash
+        env:
+          CONNECTION_STRING: ${{ secrets.ConnectionStrings__DefaultConnection }}
+          ADMIN_EMAIL: ${{ secrets.Admin__Email }}
+          ADMIN_PASSWORD: ${{ secrets.Admin__Password }}
+          SITE_URL: ${{ secrets.Site__SiteUrl }}
+          CONTACT_INBOX_EMAIL: ${{ secrets.Site__ContactInboxEmail }}
+          REGISTRATION_INBOX_EMAIL: ${{ secrets.Site__RegistrationInboxEmail }}
+          FACEBOOK_URL: ${{ secrets.Site__FacebookUrl }}
+          INSTAGRAM_URL: ${{ secrets.Site__InstagramUrl }}
+          LEGAL_BUSINESS_NAME: ${{ secrets.LegalIdentity__BusinessName }}
+          LEGAL_ADDRESS: ${{ secrets.LegalIdentity__Address }}
+          LEGAL_COMPANY_ID: ${{ secrets.LegalIdentity__CompanyId }}
+          LEGAL_CONTACT_EMAIL: ${{ secrets.LegalIdentity__ContactEmail }}
+          LEGAL_CONTACT_PHONE: ${{ secrets.LegalIdentity__ContactPhone }}
+          SMTP_ENABLED: ${{ secrets.Email__Smtp__Enabled }}
+          SMTP_HOST: ${{ secrets.Email__Smtp__Host }}
+          SMTP_PORT: ${{ secrets.Email__Smtp__Port }}
+          SMTP_USERNAME: ${{ secrets.Email__Smtp__UserName }}
+          SMTP_PASSWORD: ${{ secrets.Email__Smtp__Password }}
+          SMTP_ENABLE_SSL: ${{ secrets.Email__Smtp__EnableSsl }}
+          SMTP_FROM: ${{ secrets.Email__Smtp__From }}
+        run: |
+          cat > ./staging.env <<EOF
+          ASPNETCORE_ENVIRONMENT=Staging
+          ASPNETCORE_URLS=http://127.0.0.1:5000
+          ConnectionStrings__DefaultConnection=${CONNECTION_STRING}
+          Admin__Email=${ADMIN_EMAIL}
+          Admin__Password=${ADMIN_PASSWORD}
+          Site__SiteUrl=${SITE_URL}
+          Site__ContactInboxEmail=${CONTACT_INBOX_EMAIL}
+          Site__RegistrationInboxEmail=${REGISTRATION_INBOX_EMAIL}
+          Site__FacebookUrl=${FACEBOOK_URL}
+          Site__InstagramUrl=${INSTAGRAM_URL}
+          LegalIdentity__BusinessName=${LEGAL_BUSINESS_NAME}
+          LegalIdentity__Address=${LEGAL_ADDRESS}
+          LegalIdentity__CompanyId=${LEGAL_COMPANY_ID}
+          LegalIdentity__ContactEmail=${LEGAL_CONTACT_EMAIL}
+          LegalIdentity__ContactPhone=${LEGAL_CONTACT_PHONE}
+          Email__Smtp__Enabled=${SMTP_ENABLED:-false}
+          Email__Smtp__Host=${SMTP_HOST}
+          Email__Smtp__Port=${SMTP_PORT:-587}
+          Email__Smtp__UserName=${SMTP_USERNAME}
+          Email__Smtp__Password=${SMTP_PASSWORD}
+          Email__Smtp__EnableSsl=${SMTP_ENABLE_SSL:-true}
+          Email__Smtp__From=${SMTP_FROM:-noreply@35-231-76-42.nip.io}
+          EOF
+
+          scp -P "${{ secrets.STAGING_SSH_PORT }}" \
+            ./staging.env \
+            "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}:/tmp/vbodlaci-staging.env"
+
+          ssh -p "${{ secrets.STAGING_SSH_PORT }}" \
+            "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}" \
+            "sudo -n mkdir -p /etc/vbodlaci && \
+             sudo -n mv /tmp/vbodlaci-staging.env /etc/vbodlaci/staging.env && \
+             sudo -n chown root:vbodlaci /etc/vbodlaci/staging.env && \
+             sudo -n chmod 0640 /etc/vbodlaci/staging.env && \
+             sudo -n chmod 0750 /etc/vbodlaci"
+
+      - name: Deploy and verify with rollback
+        shell: bash
+        run: |
+          ssh -p "${{ secrets.STAGING_SSH_PORT }}" \
+            "${{ secrets.STAGING_SSH_USER }}@${{ secrets.STAGING_SSH_HOST }}" \
+            "RELEASE_SHA='${{ needs.build.outputs.release_sha }}' ARTIFACT_NAME='${{ needs.build.outputs.artifact_name }}' bash -s" <<'EOF'
+          set -euo pipefail
+
+          APP_DIR="/opt/vbodlaci"
+          RELEASES_DIR="${APP_DIR}/releases"
+          SERVICE_NAME="vbodlaci-staging.service"
+          NEW_RELEASE="${RELEASES_DIR}/${RELEASE_SHA}"
+          ARTIFACT_PATH="/tmp/${ARTIFACT_NAME}"
+          PREVIOUS_RELEASE=""
+
+          if [ -L "${APP_DIR}/current" ]; then
+            PREVIOUS_RELEASE="$(readlink -f "${APP_DIR}/current" || true)"
+          fi
+
+          rm -rf "${NEW_RELEASE}"
+          mkdir -p "${NEW_RELEASE}"
+          tar -xzf "${ARTIFACT_PATH}" -C "${NEW_RELEASE}"
+          ln -sfn "${NEW_RELEASE}" "${APP_DIR}/current"
+
+          sudo -n systemctl restart "${SERVICE_NAME}"
+
+          if ! curl -fsS --retry 20 --retry-delay 1 --max-time 2 http://127.0.0.1:5000/healthz > /dev/null; then
+            echo "Health check failed. Attempting rollback."
+            if [ -n "${PREVIOUS_RELEASE}" ] && [ -d "${PREVIOUS_RELEASE}" ]; then
+              ln -sfn "${PREVIOUS_RELEASE}" "${APP_DIR}/current"
+              sudo -n systemctl restart "${SERVICE_NAME}"
+            fi
+            exit 1
+          fi
+
+          rm -f "${ARTIFACT_PATH}"
+
+          mapfile -t OLD_RELEASES < <(ls -1dt "${RELEASES_DIR}"/* 2>/dev/null | tail -n +3 || true)
+          if [ "${#OLD_RELEASES[@]}" -gt 0 ]; then
+            rm -rf "${OLD_RELEASES[@]}"
+          fi
+          EOF

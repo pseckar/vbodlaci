@@ -62,6 +62,11 @@ If your local PostgreSQL still contains old prototype schema, the app now auto-d
 pwsh .\scripts\run-browser-smoke.ps1
 ```
 
+## Staging Deploy (GCP VM)
+
+- CI/CD runbook: `docs/staging-cicd.md`
+- One-time VM bootstrap helper: `scripts/staging/bootstrap-vm.ps1`
+
 ## SMTP Configuration
 
 Configure `Email:Smtp` in appsettings/environment:
@@ -78,4 +83,3 @@ When SMTP is disabled, app uses noop delivery but still logs attempts.
 `LegalIdentity` values are placeholders in non-production.
 
 Production startup blocks if `LegalIdentity` contains `TODO` placeholder values.
-

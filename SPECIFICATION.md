@@ -355,11 +355,12 @@ Recommended architecture shape:
 
 Expected environments:
 - `development` (local development and automated test execution),
-- `staging` (same host as production, separate database, service and config, and only when needed for pre-production validation),
+- `staging` (cloud host dev limited infrastructure, e.g. Google Cloud Free tier),
 - `production` (cost-efficient VPS/cloud provider such as Hetzner).
 
 Expected production topology (MVP):
 - single VM/VPS,
+- app runs in systemd. 
 - Nginx in front of Kestrel,
 - PostgreSQL on same server initially,
 - TLS via Let’s Encrypt (or equivalent).

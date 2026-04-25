@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+using System.Net;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -47,6 +49,12 @@ builder.Services.Configure<AdminSeedOptions>(builder.Configuration.GetSection(Ad
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.SectionName));
 builder.Services.Configure<SiteOptions>(builder.Configuration.GetSection(SiteOptions.SectionName));
 builder.Services.Configure<LegalIdentityOptions>(builder.Configuration.GetSection(LegalIdentityOptions.SectionName));
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownProxies.Add(IPAddress.Loopback);
+    options.KnownProxies.Add(IPAddress.IPv6Loopback);
+});
 
 builder.Services.AddMemoryCache();
 
@@ -104,6 +112,8 @@ else
     }
 }
 
+app.UseForwardedHeaders();
+
 if (app.Environment.IsStaging() || app.Environment.IsProduction())
 {
     app.UseHttpsRedirection();
@@ -115,6 +125,7 @@ app.UseAuthorization();
 
 app.MapStaticAssets();
 app.MapRazorPages().WithStaticAssets();
+app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));
 
 app.Run();
 
