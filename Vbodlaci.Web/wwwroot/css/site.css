@@ -553,6 +553,12 @@ img {
     display: block;
 }
 
+.split-2 {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 4vw, 3rem);
+}
+
 /* ---------- service cards ---------- */
 
 .service-grid {
@@ -1394,7 +1400,8 @@ img {
 
 @media (max-width: 860px) {
     .about-grid,
-    .contact-grid {
+    .contact-grid,
+    .split-2 {
         grid-template-columns: 1fr;
     }
 

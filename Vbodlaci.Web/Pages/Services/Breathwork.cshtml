@@ -4,46 +4,65 @@
 @{
     ViewData["Title"] = "Breathwork v bodláčí";
     var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
-    const string heroImage = "/images/title-image.jpeg";
     var courseCardsViewData = new ViewDataDictionary(ViewData)
     {
         ["CourseSource"] = "breathwork"
     };
 }
 
-<a class="button button-secondary page-back-link" asp-page="/Index">← Zpět na hlavní stránku</a>
-
-<section class="image-hero image-hero-small">
-    <img src="@heroImage" alt="" />
-    <div class="image-hero-overlay">
-        <div class="container">
+<header class="hero hero-small" style="--photo-src:url('@SiteImages.HeroBreathwork')">
+    <a class="btn btn-ghost-light page-back-link" asp-page="/Index">← Zpět na hlavní stránku</a>
+    <div class="hero-inner">
+        <div class="wrap">
             <h1>Breathwork v bodláčí</h1>
-            <p>Dech jako cesta ke klidu, tělu a většímu kontaktu se sebou.</p>
+            <p class="hero-tagline">Dech jako cesta ke klidu, tělu a většímu kontaktu se sebou.</p>
+        </div>
+    </div>
+    <partial name="_Curve" model='new SectionCurve("var(--cream)", Hero: true)' />
+</header>
+
+<section class="section section-cream">
+    <div class="wrap">
+        <div class="section-head reveal" style="margin-bottom:0">
+            <span class="kicker">pro koho</span>
+            <h2>Pro koho je breathwork</h2>
+            <p class="lede">Pro každého, kdo chce zpomalit, snížit napětí a vytvořit si větší kapacitu pro běžný život.</p>
         </div>
     </div>
 </section>
 
-<section class="section section-light">
-    <div class="container py-5">
-        <h2>Pro koho je breathwork</h2>
-        <p>Pro každého, kdo chce zpomalit, snížit napětí a vytvořit si větší kapacitu pro běžný život.</p>
-    </div>
-</section>
-
-<section class="section section-green">
-    <div class="container py-5">
-        <h2>Jak setkání probíhá</h2>
+<section class="section section-leaf">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">krok za krokem</span>
+            <h2>Jak setkání probíhá</h2>
+        </div>
         <div class="step-grid">
-            <article class="panel-card"><h3>1. Naladění</h3><p>Zklidnění a vytvoření bezpečného prostoru.</p></article>
-            <article class="panel-card"><h3>2. Dechová praxe</h3><p>Vedená práce s dechem s respektem k tvému tempu.</p></article>
-            <article class="panel-card"><h3>3. Integrace</h3><p>Doznění, ukotvení a prostor pro otázky.</p></article>
+            <article class="step-card reveal">
+                <span class="step-num" aria-hidden="true">1</span>
+                <h3>Naladění</h3>
+                <p>Zklidnění a vytvoření bezpečného prostoru.</p>
+            </article>
+            <article class="step-card reveal reveal-d1">
+                <span class="step-num" aria-hidden="true">2</span>
+                <h3>Dechová praxe</h3>
+                <p>Vedená práce s dechem s respektem k tvému tempu.</p>
+            </article>
+            <article class="step-card reveal reveal-d2">
+                <span class="step-num" aria-hidden="true">3</span>
+                <h3>Integrace</h3>
+                <p>Doznění, ukotvení a prostor pro otázky.</p>
+            </article>
         </div>
     </div>
 </section>
 
-<section class="section section-pale">
-    <div class="container py-5">
-        <h2>Breathwork termíny</h2>
+<section class="section section-white">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">přidej se</span>
+            <h2>Breathwork termíny</h2>
+        </div>
         @if (Model.Courses.Count == 0)
         {
             <p class="muted">Aktuálně nejsou vypsané žádné breathwork termíny.</p>
@@ -55,9 +74,12 @@
     </div>
 </section>
 
-<section class="section section-white">
-    <div class="container py-5">
-        <h2>Časté otázky</h2>
+<section class="section section-cream">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">ptáš se</span>
+            <h2>Časté otázky</h2>
+        </div>
         <div class="faq-list">
             <details class="faq-item">
                 <summary>Musím mít zkušenost?</summary>
@@ -71,35 +93,14 @@
     </div>
 </section>
 
-<section class="section section-gold" id="kontakt-breathwork">
-    <div class="container py-5">
-        <div class="split-content">
-            <div>
-                <h2>Kontakt k breathwork</h2>
-                <form method="post" asp-page="/Actions/Contact" class="form-grid">
-                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-                    <input type="hidden" name="SourcePage" value="breathwork" />
-                    <label class="hidden-honeypot" for="bw-contact-honeypot">Nechte prázdné</label>
-                    <input class="hidden-honeypot" id="bw-contact-honeypot" type="text" name="Honeypot" autocomplete="off" />
-                    <input type="text" name="FullName" placeholder="Jméno" required maxlength="120" />
-                    <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
-                    <textarea name="Message" placeholder="Dotaz" required maxlength="2500"></textarea>
-                    <button class="button button-dark" type="submit">Poslat dotaz</button>
-                </form>
-            </div>
-            <div>
-                <h2>Newsletter</h2>
-                <form method="post" asp-page="/Actions/Newsletter" class="form-grid">
-                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-                    <label class="hidden-honeypot" for="bw-news-honeypot">Nechte prázdné</label>
-                    <input class="hidden-honeypot" id="bw-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
-                    <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
-                    <label class="checkbox-row"><input type="checkbox" name="PrefBreathwork" checked /> Breathwork</label>
-                    <label class="checkbox-row"><input type="checkbox" name="PrefHorses" /> Koně</label>
-                    <label class="checkbox-row"><input type="checkbox" name="PrefVeterinary" /> Veterina</label>
-                    <button class="button button-dark" type="submit">Přihlásit k odběru</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</section>
+<partial name="_ContactNewsletter" model='new ContactNewsletterViewModel
+{
+    SourcePage = "breathwork",
+    HoneypotIdPrefix = "bw",
+    ReturnUrl = returnUrl,
+    SectionId = "kontakt-breathwork",
+    ContactHeading = "Kontakt k breathwork",
+    MessagePlaceholder = "Dotaz",
+    ContactSubmitLabel = "Poslat dotaz",
+    PrefBreathworkChecked = true
+}' />
