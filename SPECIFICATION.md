@@ -583,20 +583,29 @@ This section supersedes older MVP clauses where they conflict.
 
 ### 25.1 Visual Design
 
-- Public pages use a nature-inspired palette: gold `#FFCD3C`, green `#B0DB72`, pale `#FAFCB4`, optional orange `#FF9234`, plus readable black/white/neutral surfaces.
-- Bootstrap is the public/admin styling framework. Custom CSS variables may adapt Bootstrap and shared components to the V bodláčí palette.
+- Public pages use the "beech forest" palette with a saturation rule: full-strength brand colors appear only on small elements (buttons, chips, accents), while large surfaces use tints and naturals.
+  - Text/base: bark `#3B3A2C` (body text), muted `#5C5A48` (secondary text), line `#E3DCC6` (borders).
+  - Structure: moss `#4A5A38` and moss-dark `#3D4A2D` for headings, footer, top bar, and dark buttons (these replace black); cream `#FBF8EE` as the page ground.
+  - Section bands: leaf-tint `#EDF4DD` and honey-tint `#FCF3D4` (replacing full-strength green/gold/pale bands).
+  - Accents: gold `#FFCD3C` (border/hover `#D99F00`) for primary CTAs and small accents only, leaf `#B0DB72` for chips/accents, thistle violet `#8E76A3` for the thistle bloom in illustrations and `:focus-visible` rings, amber `#FF9234` as a reserved accent.
+- Typography is self-hosted (woff2 in `wwwroot/fonts`, latin + latin-ext subsets, `font-display: swap`, no external font CDN at runtime): Lora 600 for headings, Lora 400 italic for testimonial quotes, Caveat 600 for handwritten accents (section kickers, signature, short notes — at most one or two per section), Source Sans 3 400/600/700 for body and UI text.
+- Shared components: fully rounded pill buttons (gold primary, moss dark, light ghost over photos, outline secondary), cards with 18px radius, layered soft shadows, hover lift, and photo zoom. Course cards add an overhanging date block (large day + Czech month abbreviation) and a type chip (gold = Breathwork, leaf = Koně). Handwritten kickers introduce section headings.
+- Thistle motif: one shared inline SVG mark (hidden `defs`, reused via `<use>`, colorable via CSS variables) used as a small icon, divider accent, and low-opacity watermark.
+- Organic transitions: curved SVG seams appear only between key bands (hero into content; into and out of the moss testimonial band); all other section edges are straight.
+- Motion: reveal-on-scroll (fade + rise) driven by IntersectionObserver, active only when JS is available (`html.js` class) and disabled under `prefers-reduced-motion`; content is always visible without JS.
+- Bootstrap is not loaded on public pages. It remains only in the admin area (dialog component) and the default Identity UI. Admin uses the same tokens, buttons, cards, tables, and forms in a simplified form: no script font, no curves, no watermarks.
 - Top-level page structure is: optional back/header control, image hero with overlaid title text, full-width color-band content sections, and shared footer.
-- Full page sections should not be rounded card boxes. Repeated items such as service cards, course cards, testimonials, admin panels, and forms may remain card-like with modest rounding.
-- The shared default imagery source for the redesign is the supplied title image, copied into `wwwroot` and reused until final photography is provided.
+- Full page sections should not be rounded card boxes. Repeated items such as service cards, course cards, admin panels, and forms may remain card-like with modest rounding.
+- The shared default imagery source for the redesign is the supplied title image, copied into `wwwroot` and reused until final photography is provided. Public image slots are referenced through central image-slot constants (single place to swap in final photography).
 
 ### 25.2 Homepage
 
-- The homepage hero is a full-width image with overlaid lower-positioned title `V bodláčí` and subtitle `Veronika Bodláková`.
-- The next section shows three service cards in one block. Each card includes image, service title, `V BODLÁČÍ`, short description, and CTA `Zjistit více`.
-- The Veronika/about section uses text and image side by side on wider screens and stacked layout on mobile.
+- The homepage hero is a full-width image with lower-positioned overlay content: handwritten kicker `Veronika Bodláková` with a small thistle mark, title `V bodláčí`, a short tagline, and two CTAs — `Nejbližší kurzy` (gold, anchor `#kurzy`) and `Kontakt` (ghost, anchor `#kontakt`).
+- The next section shows three service cards in one block. Each card includes image, service title, handwritten `v bodláčí` kicker, short description, and arrow link `Zjistit více`.
+- The Veronika/about section uses text and image side by side on wider screens and stacked layout on mobile; it includes a handwritten pull-quote and signature.
 - `Nejbližší kurzy` shows all future published Breathwork and Koně courses, sorted nearest date first, wrapped into additional rows as needed. Type filters stay inline on the heading row and are client-side only.
-- Testimonials keep static content but use the same card style family as courses, without images.
-- Contact and newsletter are combined into one two-column section on wider screens and stack on mobile.
+- Testimonials keep static content and render on the dark moss band as italic serif quotes with handwritten author names (no cards, no images).
+- Contact and newsletter are combined into one two-column section on the honey-tint band on wider screens and stack on mobile; newsletter topic preferences render as pill-style checkboxes.
 
 ### 25.3 Service Pages
 
@@ -605,6 +614,7 @@ This section supersedes older MVP clauses where they conflict.
 - Veterina remains inquiry-only and does not show dynamic course terms.
 - Breathwork/Koně content keeps `Pro koho...`, `Jak setkání probíhá`, course terms, FAQ, and combined contact/newsletter. The older extra intro/image block and separate `Co může přinést`/equivalent paired block are removed.
 - FAQ items are stacked vertically and expandable/collapsible with accessible controls.
+- Service pages use the smaller image hero with a single curved transition into content; `Jak setkání probíhá` steps render as cards with numbered moss circles; FAQ items are rounded cards with a chevron state indicator (accessible `details`/`summary` behavior unchanged).
 
 ### 25.4 Course Detail
 
@@ -613,6 +623,7 @@ This section supersedes older MVP clauses where they conflict.
 - The next content block has two columns: basic course information in a lightweight table and, when enabled, `Co tě čeká`.
 - Registration remains unchanged in purpose and behavior.
 - `Další termíny` shows all other future published courses of the same type, sorted nearest date first.
+- Visual treatment: the hero shows the course status as a pill badge; basic info and `Co tě čeká` render as two cards on the leaf-tint band; the registration form is emphasized as a white card on the honey-tint band; `Další termíny` reuses the shared course card style.
 
 ### 25.5 Course Data And Admin
 
