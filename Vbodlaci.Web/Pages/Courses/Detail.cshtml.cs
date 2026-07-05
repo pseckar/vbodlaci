@@ -142,8 +142,7 @@ public sealed class DetailModel(
 
         var related = await courseService.GetPublicCoursesAsync(new CourseQueryFilter
         {
-            Type = Course.Type,
-            Take = 8
+            Type = Course.Type
         }, cancellationToken);
 
         RelatedCourses = related.Where(item => item.Id != Course.Id).ToList();

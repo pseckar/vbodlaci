@@ -12,9 +12,7 @@ public sealed class HorsesModel(ICourseService courseService) : PageModel
     {
         Courses = await courseService.GetPublicCoursesAsync(new CourseQueryFilter
         {
-            Type = CourseType.Horses,
-            Take = 12
+            Type = CourseType.Horses
         }, cancellationToken);
     }
 }
-

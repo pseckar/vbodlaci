@@ -1,9 +1,13 @@
-﻿@using Vbodlaci.Web.Domain.Courses
+@using Vbodlaci.Web.Domain.Courses
 @model Vbodlaci.Web.Application.Courses.CourseEditModel
+@{
+    var allowDefaultEditing = ViewData["AllowDefaultEditing"] as bool? == true;
+    var currentImageUrl = ViewData["CurrentImageUrl"] as string;
+}
 
 <div class="form-grid">
     <label>Typ kurzu</label>
-    <select asp-for="Type">
+    <select asp-for="Type" data-course-type-select>
         <option value="@CourseType.Breathwork">Breathwork</option>
         <option value="@CourseType.Horses">Koně</option>
     </select>
@@ -12,19 +16,22 @@
     <input asp-for="Title" />
     <span asp-validation-for="Title" class="field-error"></span>
 
-    <label>Začátek</label>
-    <input asp-for="StartDateTime" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
-    <span asp-validation-for="StartDateTime" class="field-error"></span>
-
-    <label>Konec</label>
-    <input asp-for="EndDateTime" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+    <div class="grid-2">
+        <div>
+            <label>Termín</label>
+            <input asp-for="CourseDate" type="date" asp-format="{0:yyyy-MM-dd}" />
+            <span asp-validation-for="CourseDate" class="field-error"></span>
+        </div>
+        <div>
+            <label>Čas</label>
+            <input asp-for="TimeText" placeholder="např. 18:00-21:00" />
+            <span asp-validation-for="TimeText" class="field-error"></span>
+        </div>
+    </div>
 
     <label>Město / oblast</label>
     <input asp-for="CityOrArea" />
     <span asp-validation-for="CityOrArea" class="field-error"></span>
-
-    <label>Upřesnění místa</label>
-    <input asp-for="VenueText" />
 
     <label>Cena</label>
     <input asp-for="PriceText" />
@@ -33,18 +40,43 @@
     <label>Kapacita (informativně)</label>
     <input asp-for="CapacityInfo" type="number" min="1" />
 
-    <label>Registrace do</label>
-    <input asp-for="RegistrationDeadline" type="datetime-local" asp-format="{0:yyyy-MM-ddTHH:mm}" />
+    <label>Fotka kurzu</label>
+    @if (!string.IsNullOrWhiteSpace(currentImageUrl))
+    {
+        <img class="admin-image-preview" src="@currentImageUrl" alt="Aktuální fotka kurzu" />
+    }
+    <input asp-for="Image" type="file" accept="image/jpeg,image/png,image/webp" />
+    <span asp-validation-for="Image" class="field-error"></span>
 
-    <label>Krátký popis</label>
+    <div class="field-heading">
+        <label>Krátký popis</label>
+        @if (allowDefaultEditing)
+        {
+            <button type="button" class="link-button default-text-trigger" data-default-field="@CourseTextField.ShortDescription">Upravit výchozí text</button>
+        }
+    </div>
     <textarea asp-for="ShortDescription"></textarea>
     <span asp-validation-for="ShortDescription" class="field-error"></span>
 
-    <label>Detailní popis</label>
+    <div class="field-heading">
+        <label>Detailní popis</label>
+        @if (allowDefaultEditing)
+        {
+            <button type="button" class="link-button default-text-trigger" data-default-field="@CourseTextField.FullDescription">Upravit výchozí text</button>
+        }
+    </div>
+    <label class="checkbox-row"><input asp-for="IsFullDescriptionVisible" /> Zobrazit na veřejném detailu kurzu</label>
     <textarea asp-for="FullDescription"></textarea>
     <span asp-validation-for="FullDescription" class="field-error"></span>
 
-    <label>Co tě čeká</label>
+    <div class="field-heading">
+        <label>Co tě čeká</label>
+        @if (allowDefaultEditing)
+        {
+            <button type="button" class="link-button default-text-trigger" data-default-field="@CourseTextField.WhatToExpect">Upravit výchozí text</button>
+        }
+    </div>
+    <label class="checkbox-row"><input asp-for="IsWhatToExpectVisible" /> Zobrazit na veřejném detailu kurzu</label>
     <textarea asp-for="WhatToExpect"></textarea>
     <span asp-validation-for="WhatToExpect" class="field-error"></span>
 </div>

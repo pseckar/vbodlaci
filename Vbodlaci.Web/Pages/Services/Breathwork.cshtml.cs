@@ -12,8 +12,7 @@ public sealed class BreathworkModel(ICourseService courseService) : PageModel
     {
         Courses = await courseService.GetPublicCoursesAsync(new CourseQueryFilter
         {
-            Type = CourseType.Breathwork,
-            Take = 12
+            Type = CourseType.Breathwork
         }, cancellationToken);
     }
 }

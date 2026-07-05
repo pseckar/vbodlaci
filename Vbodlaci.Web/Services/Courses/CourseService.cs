@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Vbodlaci.Web.Application.Common;
 using Vbodlaci.Web.Application.Configuration;
@@ -14,22 +14,24 @@ public sealed class CourseService(
     ApplicationDbContext dbContext,
     INewsletterService newsletterService,
     IEmailDispatcher emailDispatcher,
-    IOptions<SiteOptions> siteOptions) : ICourseService
+    IOptions<SiteOptions> siteOptions,
+    ICourseImageService courseImageService) : ICourseService
 {
     public async Task<IReadOnlyList<CourseListItem>> GetPublicCoursesAsync(CourseQueryFilter filter, CancellationToken cancellationToken = default)
     {
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var query = dbContext.Courses
             .AsNoTracking()
             .Where(course => !course.IsDeleted)
             .Where(course => course.Status == CourseStatus.Published)
-            .Where(course => course.StartDateTime >= DateTimeOffset.UtcNow);
+            .Where(course => course.CourseDate >= today);
 
         if (filter.Type.HasValue)
         {
             query = query.Where(course => course.Type == filter.Type.Value);
         }
 
-        query = query.OrderBy(course => course.StartDateTime);
+        query = query.OrderBy(course => course.CourseDate).ThenBy(course => course.Title);
 
         if (filter.Take is > 0)
         {
@@ -45,7 +47,8 @@ public sealed class CourseService(
         var courses = await dbContext.Courses
             .AsNoTracking()
             .Where(course => !course.IsDeleted)
-            .OrderBy(course => course.StartDateTime)
+            .OrderBy(course => course.CourseDate)
+            .ThenBy(course => course.Title)
             .ToListAsync(cancellationToken);
 
         return courses.Select(MapToListItem).ToList();
@@ -76,11 +79,65 @@ public sealed class CourseService(
         return course is null ? null : MapToDetail(course);
     }
 
+    public async Task<IReadOnlyList<CourseTextDefaultItem>> GetTextDefaultsAsync(CancellationToken cancellationToken = default)
+    {
+        return await dbContext.CourseTextDefaults
+            .AsNoTracking()
+            .OrderBy(item => item.Type)
+            .ThenBy(item => item.Field)
+            .Select(item => new CourseTextDefaultItem
+            {
+                Type = item.Type,
+                Field = item.Field,
+                Text = item.Text
+            })
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<ServiceResult> UpdateTextDefaultAsync(CourseType type, CourseTextField field, string text, CancellationToken cancellationToken = default)
+    {
+        var defaultText = await dbContext.CourseTextDefaults
+            .FirstOrDefaultAsync(item => item.Type == type && item.Field == field, cancellationToken);
+
+        if (defaultText is null)
+        {
+            defaultText = new CourseTextDefault
+            {
+                Type = type,
+                Field = field
+            };
+            dbContext.CourseTextDefaults.Add(defaultText);
+        }
+
+        defaultText.Text = string.IsNullOrWhiteSpace(text) ? "This is placeholder for default text" : text.Trim();
+        defaultText.UpdatedAt = DateTimeOffset.UtcNow;
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+        return ServiceResult.Success("Výchozí text byl uložen.");
+    }
+
     public async Task<(ServiceResult Result, Guid? Id)> CreateAsync(CourseEditModel model, CancellationToken cancellationToken = default)
     {
         if (model.Status is not (CourseStatus.Draft or CourseStatus.Published))
         {
             return (ServiceResult.Failure("Nový kurz lze uložit pouze jako draft nebo publikovat."), null);
+        }
+
+        var imagePath = string.Empty;
+        var thumbnailPath = string.Empty;
+        string? imageWarning = null;
+
+        if (model.Image is not null)
+        {
+            var (imageResult, image) = await courseImageService.SaveAsync(model.Image, cancellationToken);
+            if (!imageResult.Succeeded || image is null)
+            {
+                return (imageResult, null);
+            }
+
+            imagePath = image.ImagePath;
+            thumbnailPath = image.ThumbnailPath;
+            imageWarning = image.Warning;
         }
 
         var now = DateTimeOffset.UtcNow;
@@ -90,16 +147,18 @@ public sealed class CourseService(
             Type = model.Type,
             Status = model.Status,
             Title = model.Title.Trim(),
-            StartDateTime = model.StartDateTime.ToUniversalTime(),
-            EndDateTime = ToUniversalTime(model.EndDateTime),
+            CourseDate = model.CourseDate,
+            TimeText = model.TimeText.Trim(),
             CityOrArea = model.CityOrArea.Trim(),
-            VenueText = model.VenueText?.Trim() ?? string.Empty,
             PriceText = model.PriceText.Trim(),
             CapacityInfo = model.CapacityInfo,
-            RegistrationDeadline = ToUniversalTime(model.RegistrationDeadline),
             ShortDescription = model.ShortDescription.Trim(),
             FullDescription = model.FullDescription.Trim(),
+            IsFullDescriptionVisible = model.IsFullDescriptionVisible,
             WhatToExpect = model.WhatToExpect.Trim(),
+            IsWhatToExpectVisible = model.IsWhatToExpectVisible,
+            ImagePath = imagePath,
+            ThumbnailPath = thumbnailPath,
             CreatedAt = now,
             UpdatedAt = now,
             PublishedAt = model.Status == CourseStatus.Published ? now : null
@@ -115,7 +174,11 @@ public sealed class CourseService(
             await newsletterService.NotifyCoursePublishedAsync(course, cancellationToken);
         }
 
-        return (ServiceResult.Success("Kurz byl vytvořen."), course.Id);
+        var message = imageWarning is null
+            ? "Kurz byl vytvořen."
+            : $"Kurz byl vytvořen. {imageWarning}";
+
+        return (ServiceResult.Success(message), course.Id);
     }
 
     public async Task<ServiceResult> UpdateAsync(Guid id, CourseEditModel model, CancellationToken cancellationToken = default)
@@ -136,24 +199,48 @@ public sealed class CourseService(
             return ServiceResult.Failure("Stav kurzu nelze měnit přes uložení formuláře.");
         }
 
+        var oldImagePath = course.ImagePath;
+        var oldThumbnailPath = course.ThumbnailPath;
+        string? imageWarning = null;
+
+        if (model.Image is not null)
+        {
+            var (imageResult, image) = await courseImageService.SaveAsync(model.Image, cancellationToken);
+            if (!imageResult.Succeeded || image is null)
+            {
+                return imageResult;
+            }
+
+            course.ImagePath = image.ImagePath;
+            course.ThumbnailPath = image.ThumbnailPath;
+            imageWarning = image.Warning;
+        }
+
         course.Type = model.Type;
         course.Title = model.Title.Trim();
-        course.StartDateTime = model.StartDateTime.ToUniversalTime();
-        course.EndDateTime = ToUniversalTime(model.EndDateTime);
+        course.CourseDate = model.CourseDate;
+        course.TimeText = model.TimeText.Trim();
         course.CityOrArea = model.CityOrArea.Trim();
-        course.VenueText = model.VenueText?.Trim() ?? string.Empty;
         course.PriceText = model.PriceText.Trim();
         course.CapacityInfo = model.CapacityInfo;
-        course.RegistrationDeadline = ToUniversalTime(model.RegistrationDeadline);
         course.ShortDescription = model.ShortDescription.Trim();
         course.FullDescription = model.FullDescription.Trim();
+        course.IsFullDescriptionVisible = model.IsFullDescriptionVisible;
         course.WhatToExpect = model.WhatToExpect.Trim();
+        course.IsWhatToExpectVisible = model.IsWhatToExpectVisible;
         course.UpdatedAt = DateTimeOffset.UtcNow;
         course.Slug = await BuildUniqueSlugAsync(course.Title, course.Id, cancellationToken);
 
         await dbContext.SaveChangesAsync(cancellationToken);
 
-        return ServiceResult.Success("Kurz byl uložen.");
+        if (model.Image is not null)
+        {
+            courseImageService.DeleteCourseImages(oldImagePath, oldThumbnailPath);
+        }
+
+        return ServiceResult.Success(imageWarning is null
+            ? "Kurz byl uložen."
+            : $"Kurz byl uložen. {imageWarning}");
     }
 
     public async Task<ServiceResult> SoftDeleteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -172,6 +259,7 @@ public sealed class CourseService(
         course.IsDeleted = true;
         course.UpdatedAt = DateTimeOffset.UtcNow;
         await dbContext.SaveChangesAsync(cancellationToken);
+        courseImageService.DeleteCourseImages(course.ImagePath, course.ThumbnailPath);
 
         return ServiceResult.Success("Kurz byl smazán.");
     }
@@ -262,7 +350,6 @@ public sealed class CourseService(
         }
 
         var sent = 0;
-        var localCourseStart = course.StartDateTime.ToLocalTime();
         var courseUrl = $"{siteOptions.Value.SiteUrl.TrimEnd('/')}/kurzy/{course.Slug}";
         var subject = $"Zrušení kurzu: {course.Title}";
 
@@ -276,7 +363,7 @@ public sealed class CourseService(
                 $"{greeting}\n\n" +
                 "omlouváme se, ale kurz byl zrušen.\n\n" +
                 $"Kurz: {course.Title}\n" +
-                $"Původní termín: {localCourseStart:dd.MM.yyyy HH:mm}\n" +
+                $"Původní termín: {FormatDate(course.CourseDate)} {course.TimeText}\n" +
                 $"Místo: {course.CityOrArea}\n" +
                 $"Detail kurzu: {courseUrl}\n\n" +
                 "Veronika";
@@ -323,10 +410,12 @@ public sealed class CourseService(
             Status = course.Status,
             Title = course.Title,
             Slug = course.Slug,
-            StartDateTime = course.StartDateTime,
+            CourseDate = course.CourseDate,
+            TimeText = course.TimeText,
             CityOrArea = course.CityOrArea,
             PriceText = course.PriceText,
-            ShortDescription = course.ShortDescription
+            ShortDescription = course.ShortDescription,
+            ThumbnailImageUrl = ResolveImagePath(course.ThumbnailPath, CourseImageDefaults.DefaultThumbnailPath)
         };
     }
 
@@ -339,16 +428,18 @@ public sealed class CourseService(
             Status = course.Status,
             Title = course.Title,
             Slug = course.Slug,
-            StartDateTime = course.StartDateTime,
-            EndDateTime = course.EndDateTime,
+            CourseDate = course.CourseDate,
+            TimeText = course.TimeText,
             CityOrArea = course.CityOrArea,
-            VenueText = course.VenueText,
             PriceText = course.PriceText,
             CapacityInfo = course.CapacityInfo,
-            RegistrationDeadline = course.RegistrationDeadline,
             ShortDescription = course.ShortDescription,
             FullDescription = course.FullDescription,
+            IsFullDescriptionVisible = course.IsFullDescriptionVisible,
             WhatToExpect = course.WhatToExpect,
+            IsWhatToExpectVisible = course.IsWhatToExpectVisible,
+            ImageUrl = ResolveImagePath(course.ImagePath, CourseImageDefaults.DefaultImagePath),
+            ThumbnailImageUrl = ResolveImagePath(course.ThumbnailPath, CourseImageDefaults.DefaultThumbnailPath),
             PublishedAt = course.PublishedAt,
             FacebookPostText = BuildFacebookText(course)
         };
@@ -356,18 +447,21 @@ public sealed class CourseService(
 
     private static string BuildFacebookText(Course course)
     {
-        var localStart = course.StartDateTime.ToLocalTime();
-
         return $"{course.Title}\n" +
                $"Typ: {(course.Type == CourseType.Breathwork ? "Breathwork v bodláčí" : "Koně v bodláčí")}\n" +
-               $"Termín: {localStart:dd.MM.yyyy HH:mm}\n" +
+               $"Termín: {FormatDate(course.CourseDate)} {course.TimeText}\n" +
                $"Místo: {course.CityOrArea}\n" +
                $"Cena: {course.PriceText}\n\n" +
                "Přihlášení na webu V bodláčí.";
     }
 
-    private static DateTimeOffset? ToUniversalTime(DateTimeOffset? value)
+    private static string ResolveImagePath(string value, string fallback)
     {
-        return value?.ToUniversalTime();
+        return string.IsNullOrWhiteSpace(value) ? fallback : value;
+    }
+
+    private static string FormatDate(DateOnly date)
+    {
+        return date.ToString("dd.MM.yyyy", System.Globalization.CultureInfo.GetCultureInfo("cs-CZ"));
     }
 }

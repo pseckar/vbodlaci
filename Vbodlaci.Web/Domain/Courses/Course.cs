@@ -14,25 +14,29 @@ public sealed class Course
 
     public string Slug { get; set; } = string.Empty;
 
-    public DateTimeOffset StartDateTime { get; set; }
+    public DateOnly CourseDate { get; set; }
 
-    public DateTimeOffset? EndDateTime { get; set; }
+    public string TimeText { get; set; } = string.Empty;
 
     public string CityOrArea { get; set; } = string.Empty;
-
-    public string VenueText { get; set; } = string.Empty;
 
     public string PriceText { get; set; } = string.Empty;
 
     public int? CapacityInfo { get; set; }
 
-    public DateTimeOffset? RegistrationDeadline { get; set; }
-
     public string ShortDescription { get; set; } = string.Empty;
 
     public string FullDescription { get; set; } = string.Empty;
 
+    public bool IsFullDescriptionVisible { get; set; } = true;
+
     public string WhatToExpect { get; set; } = string.Empty;
+
+    public bool IsWhatToExpectVisible { get; set; } = true;
+
+    public string ImagePath { get; set; } = string.Empty;
+
+    public string ThumbnailPath { get; set; } = string.Empty;
 
     public DateTimeOffset? PublishedAt { get; set; }
 

@@ -1,7 +1,7 @@
 # V bodláčí Web Project Specification
 
-Version: 1.3  
-Last updated: 2026-04-13  
+Version: 1.4  
+Last updated: 2026-05-10  
 Document language: English (with required Czech labels/content where relevant)  
 Website language: Czech only (`cs-CZ`)
 
@@ -576,3 +576,52 @@ When implementing against this document:
 - keep MVP scope tight (avoid introducing non-goal features),
 - if code and spec diverge, code must be adjusted to match spec,
 - do not redefine product behavior in code outside this frozen specification.
+
+## 25. Approved Change Set: Visual Redesign And Course Admin V2
+
+This section supersedes older MVP clauses where they conflict.
+
+### 25.1 Visual Design
+
+- Public pages use a nature-inspired palette: gold `#FFCD3C`, green `#B0DB72`, pale `#FAFCB4`, optional orange `#FF9234`, plus readable black/white/neutral surfaces.
+- Bootstrap is the public/admin styling framework. Custom CSS variables may adapt Bootstrap and shared components to the V bodláčí palette.
+- Top-level page structure is: optional back/header control, image hero with overlaid title text, full-width color-band content sections, and shared footer.
+- Full page sections should not be rounded card boxes. Repeated items such as service cards, course cards, testimonials, admin panels, and forms may remain card-like with modest rounding.
+- The shared default imagery source for the redesign is the supplied title image, copied into `wwwroot` and reused until final photography is provided.
+
+### 25.2 Homepage
+
+- The homepage hero is a full-width image with overlaid lower-positioned title `V bodláčí` and subtitle `Veronika Bodláková`.
+- The next section shows three service cards in one block. Each card includes image, service title, `V BODLÁČÍ`, short description, and CTA `Zjistit více`.
+- The Veronika/about section uses text and image side by side on wider screens and stacked layout on mobile.
+- `Nejbližší kurzy` shows all future published Breathwork and Koně courses, sorted nearest date first, wrapped into additional rows as needed. Type filters stay inline on the heading row and are client-side only.
+- Testimonials keep static content but use the same card style family as courses, without images.
+- Contact and newsletter are combined into one two-column section on wider screens and stack on mobile.
+
+### 25.3 Service Pages
+
+- Breathwork, Koně, and Veterina pages use image heroes with overlaid title/subtitle.
+- Breathwork and Koně show their own future published courses, sorted nearest date first, without filter controls and without an artificial result limit.
+- Veterina remains inquiry-only and does not show dynamic course terms.
+- Breathwork/Koně content keeps `Pro koho...`, `Jak setkání probíhá`, course terms, FAQ, and combined contact/newsletter. The older extra intro/image block and separate `Co může přinést`/equivalent paired block are removed.
+- FAQ items are stacked vertically and expandable/collapsible with accessible controls.
+
+### 25.4 Course Detail
+
+- Course detail starts with an image hero overlaid with the course name.
+- The detailed description section is shown only when enabled for the course. It includes a CTA back to the relevant service page (`Více o breathworku` or `Více o koních`).
+- The next content block has two columns: basic course information in a lightweight table and, when enabled, `Co tě čeká`.
+- Registration remains unchanged in purpose and behavior.
+- `Další termíny` shows all other future published courses of the same type, sorted nearest date first.
+
+### 25.5 Course Data And Admin
+
+- Course scheduling stores a required `CourseDate` and required free-form `TimeText` instead of a single start/end datetime pair. Public cards show date without time; course detail shows date and time separately.
+- `EndDateTime`, `VenueText`, and `RegistrationDeadline` are no longer exposed in public or admin UI.
+- Courses may have an uploaded photo with stored original/detail image path and thumbnail path. If no photo is uploaded, the shared default image is used.
+- Uploaded course images must be validated as images, saved in an original/detail version and a thumbnail version approximately `600px` wide. Admin receives a warning if the uploaded image is smaller than `1200x800`.
+- When a draft course is deleted, its stored image files are also deleted. Default shared images are never deleted.
+- `FullDescription` and `WhatToExpect` have per-course visibility flags. Both default to visible for new courses. When a flag is disabled, the corresponding public section is hidden while the stored text remains editable/preserved in admin.
+- Course text defaults are stored in the database per course type and field (`ShortDescription`, `FullDescription`, `WhatToExpect`). Initial defaults use `This is placeholder for default text`.
+- New courses prefill from defaults. Editing an existing course never overwrites saved course text with defaults.
+- On the new-course page, each default-backed field has `Upravit výchozí text`, opening a dialog that can save or cancel edits to the per-type default text.

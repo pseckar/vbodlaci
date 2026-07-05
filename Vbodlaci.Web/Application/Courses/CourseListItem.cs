@@ -1,4 +1,4 @@
-﻿using Vbodlaci.Web.Domain.Courses;
+using Vbodlaci.Web.Domain.Courses;
 
 namespace Vbodlaci.Web.Application.Courses;
 
@@ -14,11 +14,15 @@ public sealed class CourseListItem
 
     public string Slug { get; init; } = string.Empty;
 
-    public DateTimeOffset StartDateTime { get; init; }
+    public DateOnly CourseDate { get; init; }
+
+    public string TimeText { get; init; } = string.Empty;
 
     public string CityOrArea { get; init; } = string.Empty;
 
     public string PriceText { get; init; } = string.Empty;
 
     public string ShortDescription { get; init; } = string.Empty;
+
+    public string ThumbnailImageUrl { get; init; } = string.Empty;
 }

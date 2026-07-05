@@ -1,7 +1,12 @@
-﻿@page "{id:guid}"
+@page "{id:guid}"
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @model Vbodlaci.Web.Areas.Admin.Pages.Courses.EditModel
 @{
     ViewData["Title"] = "Úprava kurzu";
+    var formViewData = new ViewDataDictionary(ViewData)
+    {
+        ["CurrentImageUrl"] = Model.CurrentImageUrl
+    };
 }
 
 <a class="button button-secondary page-back-link"
@@ -11,36 +16,38 @@
    data-confirm-message="Máš neuložené změny. Opravdu se chceš vrátit na přehled?">← Zpět na přehled</a>
 
 <section class="section">
-    <h1>Úprava kurzu</h1>
+    <div class="container py-4">
+        <h1>Úprava kurzu</h1>
 
-    <div class="status-badge status-@Model.CurrentStatus.ToString().ToLowerInvariant()">
-        Stav: @Model.StatusLabel
-    </div>
+        <div class="status-badge status-@Model.CurrentStatus.ToString().ToLowerInvariant()">
+            Stav: @Model.StatusLabel
+        </div>
 
-    @if (Model.IsReadOnly)
-    {
-        <p class="field-error">Kurz je zrušený a je dostupný pouze pro čtení.</p>
-        <p><strong>Typ:</strong> @Model.CourseTypeLabel</p>
-        <p><strong>Název:</strong> @Model.Input.Title</p>
-        <p><strong>Termín:</strong> @Model.Input.StartDateTime.ToString("dd.MM.yyyy HH:mm")</p>
-        <p><strong>Místo:</strong> @Model.Input.CityOrArea</p>
-        <p><strong>Cena:</strong> @Model.Input.PriceText</p>
-    }
-    else
-    {
-        <form method="post" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid" id="course-edit-form" data-dirty-form>
-            <partial name="_CourseFormFields" model="Model.Input" />
+        @if (Model.IsReadOnly)
+        {
+            <p class="field-error">Kurz je zrušený a je dostupný pouze pro čtení.</p>
+            <p><strong>Typ:</strong> @Model.CourseTypeLabel</p>
+            <p><strong>Název:</strong> @Model.Input.Title</p>
+            <p><strong>Termín:</strong> @Model.Input.CourseDate.ToString("dd.MM.yyyy") @Model.Input.TimeText</p>
+            <p><strong>Místo:</strong> @Model.Input.CityOrArea</p>
+            <p><strong>Cena:</strong> @Model.Input.PriceText</p>
+        }
+        else
+        {
+            <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid" id="course-edit-form" data-dirty-form>
+                <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
 
-            <div class="inline-actions">
-                <button type="submit" class="button button-primary">Uložit kurz</button>
-            </div>
-        </form>
-    }
+                <div class="inline-actions">
+                    <button type="submit" class="button button-primary">Uložit kurz</button>
+                </div>
+            </form>
+        }
 
-    <div class="section">
-        <h2>Pomocný text pro Facebook</h2>
-        <textarea readonly>@Model.FacebookPostText</textarea>
-        <p class="muted">Text můžeš zkopírovat do Facebook příspěvku po publikaci nebo úpravě kurzu.</p>
+        <div class="panel-card mt-4">
+            <h2>Pomocný text pro Facebook</h2>
+            <textarea readonly>@Model.FacebookPostText</textarea>
+            <p class="muted">Text můžeš zkopírovat do Facebook příspěvku po publikaci nebo úpravě kurzu.</p>
+        </div>
     </div>
 </section>
 

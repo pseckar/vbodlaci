@@ -1,48 +1,83 @@
-﻿@page "/veterina-v-bodlaci"
+@page "/veterina-v-bodlaci"
 @model Vbodlaci.Web.Pages.Services.VeterinaryModel
 @{
     ViewData["Title"] = "Veterina v bodláčí";
     var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
+    const string heroImage = "/images/title-image.jpeg";
 }
 
 <a class="button button-secondary page-back-link" asp-page="/Index">← Zpět na hlavní stránku</a>
 
-<section class="section hero">
-    <h1>Veterina v bodláčí</h1>
-    <p>Veterinární péče s odborností a lidskostí, včetně konzultací a návštěv v domácím prostředí.</p>
+<section class="image-hero image-hero-small">
+    <img src="@heroImage" alt="" />
+    <div class="image-hero-overlay">
+        <div class="container">
+            <h1>Veterina v bodláčí</h1>
+            <p>Veterinární péče s odborností, lidskostí a citlivým přístupem.</p>
+        </div>
+    </div>
 </section>
 
-<section class="section grid-2">
-    <article class="section"><h2>Co nabízím</h2><p>Konzultace, domácí návštěvy a citlivou podporu v náročných situacích.</p></article>
-    <article class="section"><h2>Důstojné rozloučení doma</h2><p>V případě eutanazie vytvářím klidný a respektující prostor pro zvíře i jeho blízké.</p></article>
+<section class="section section-light">
+    <div class="container py-5">
+        <div class="split-content">
+            <div>
+                <h2>Co nabízím</h2>
+                <p>Konzultace, domácí návštěvy a citlivou podporu v náročných situacích.</p>
+            </div>
+            <div>
+                <h2>Důstojné rozloučení doma</h2>
+                <p>V případě eutanazie vytvářím klidný a respektující prostor pro zvíře i jeho blízké.</p>
+            </div>
+        </div>
+    </div>
 </section>
 
-<section class="section"><h2>Časté otázky</h2><div class="grid-2"><article class="section"><h3>Jak probíhá domácí návštěva?</h3><p>Po zprávě nebo telefonátu spolu domluvíme termín i konkrétní průběh.</p></article><article class="section"><h3>Jak rychle je možné se domluvit?</h3><p>V akutních případech se snažím reagovat co nejdříve podle možností.</p></article></div></section>
-
-<section class="section" id="kontakt-veterina">
-    <h2>Kontakt k veterině</h2>
-    <form method="post" asp-page="/Actions/Contact" class="form-grid">
-        <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-        <input type="hidden" name="SourcePage" value="veterina" />
-        <label class="hidden-honeypot" for="vet-contact-honeypot">Nechte prázdné</label>
-        <input class="hidden-honeypot" id="vet-contact-honeypot" type="text" name="Honeypot" autocomplete="off" />
-        <input type="text" name="FullName" placeholder="Jméno" required maxlength="120" />
-        <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
-        <textarea name="Message" placeholder="Jak můžu pomoct?" required maxlength="2500"></textarea>
-        <button class="button button-primary" type="submit">Poslat dotaz</button>
-    </form>
+<section class="section section-white">
+    <div class="container py-5">
+        <h2>Časté otázky</h2>
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary>Jak probíhá domácí návštěva?</summary>
+                <p>Po zprávě nebo telefonátu spolu domluvíme termín i konkrétní průběh.</p>
+            </details>
+            <details class="faq-item">
+                <summary>Jak rychle je možné se domluvit?</summary>
+                <p>V akutních případech se snažím reagovat co nejdříve podle možností.</p>
+            </details>
+        </div>
+    </div>
 </section>
 
-<section class="section">
-    <h2>Newsletter</h2>
-    <form method="post" asp-page="/Actions/Newsletter" class="form-grid">
-        <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-        <label class="hidden-honeypot" for="vet-news-honeypot">Nechte prázdné</label>
-        <input class="hidden-honeypot" id="vet-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
-        <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
-        <label class="checkbox-row"><input type="checkbox" name="PrefBreathwork" /> Breathwork</label>
-        <label class="checkbox-row"><input type="checkbox" name="PrefHorses" /> Koně</label>
-        <label class="checkbox-row"><input type="checkbox" name="PrefVeterinary" checked /> Veterina</label>
-        <button class="button button-primary" type="submit">Přihlásit k odběru</button>
-    </form>
+<section class="section section-gold" id="kontakt-veterina">
+    <div class="container py-5">
+        <div class="split-content">
+            <div>
+                <h2>Kontakt k veterině</h2>
+                <form method="post" asp-page="/Actions/Contact" class="form-grid">
+                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
+                    <input type="hidden" name="SourcePage" value="veterina" />
+                    <label class="hidden-honeypot" for="vet-contact-honeypot">Nechte prázdné</label>
+                    <input class="hidden-honeypot" id="vet-contact-honeypot" type="text" name="Honeypot" autocomplete="off" />
+                    <input type="text" name="FullName" placeholder="Jméno" required maxlength="120" />
+                    <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
+                    <textarea name="Message" placeholder="Jak můžu pomoct?" required maxlength="2500"></textarea>
+                    <button class="button button-dark" type="submit">Poslat dotaz</button>
+                </form>
+            </div>
+            <div>
+                <h2>Newsletter</h2>
+                <form method="post" asp-page="/Actions/Newsletter" class="form-grid">
+                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
+                    <label class="hidden-honeypot" for="vet-news-honeypot">Nechte prázdné</label>
+                    <input class="hidden-honeypot" id="vet-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
+                    <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
+                    <label class="checkbox-row"><input type="checkbox" name="PrefBreathwork" /> Breathwork</label>
+                    <label class="checkbox-row"><input type="checkbox" name="PrefHorses" /> Koně</label>
+                    <label class="checkbox-row"><input type="checkbox" name="PrefVeterinary" checked /> Veterina</label>
+                    <button class="button button-dark" type="submit">Přihlásit k odběru</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </section>

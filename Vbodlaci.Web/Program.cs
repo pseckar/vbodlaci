@@ -73,6 +73,7 @@ builder.Services.AddScoped<IEmailService>(serviceProvider =>
 
 builder.Services.AddScoped<IEmailDispatcher, EmailDispatcher>();
 builder.Services.AddScoped<IRateLimitService, InMemoryRateLimitService>();
+builder.Services.AddScoped<ICourseImageService, CourseImageService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<INewsletterService, NewsletterService>();
@@ -123,6 +124,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseStaticFiles();
 app.MapStaticAssets();
 app.MapRazorPages().WithStaticAssets();
 app.MapGet("/healthz", () => Results.Ok(new { status = "ok" }));

@@ -48,9 +48,8 @@ public sealed class RegistrationService(
         await dbContext.SaveChangesAsync(cancellationToken);
 
         var adminSubject = $"Nová přihláška na kurz: {course.Title}";
-        var localCourseStart = course.StartDateTime.ToLocalTime();
         var adminBody = $"Kurz: {course.Title}\n" +
-                        $"Termín: {localCourseStart:dd.MM.yyyy HH:mm}\n" +
+                        $"Termín: {course.CourseDate:dd.MM.yyyy} {course.TimeText}\n" +
                         $"Jméno: {registration.FullName}\n" +
                         $"E-mail: {registration.Email}\n" +
                         $"Poznámka: {registration.Note}";
@@ -66,7 +65,7 @@ public sealed class RegistrationService(
         var userBody = $"Ahoj {registration.FullName},\n\n" +
                        "děkujeme za přihlášení na kurz V bodláčí.\n\n" +
                        $"Kurz: {course.Title}\n" +
-                       $"Termín: {localCourseStart:dd.MM.yyyy HH:mm}\n" +
+                       $"Termín: {course.CourseDate:dd.MM.yyyy} {course.TimeText}\n" +
                        $"Místo: {course.CityOrArea}\n" +
                        $"Cena: {course.PriceText}\n\n" +
                        "Brzy se ozvu s dalšími informacemi.\n\n" +

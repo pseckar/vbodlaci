@@ -1,8 +1,20 @@
-﻿@page
+@page
+@using System.Text.Json
+@using Microsoft.AspNetCore.Mvc.ViewFeatures
 @using Vbodlaci.Web.Domain.Courses
 @model Vbodlaci.Web.Areas.Admin.Pages.Courses.CreateModel
 @{
     ViewData["Title"] = "Nový kurz";
+    var formViewData = new ViewDataDictionary(ViewData)
+    {
+        ["AllowDefaultEditing"] = true
+    };
+    var defaultsJson = JsonSerializer.Serialize(Model.DefaultTexts.Select(item => new
+    {
+        type = item.Type.ToString(),
+        field = item.Field.ToString(),
+        text = item.Text
+    }));
 }
 
 <a class="button button-secondary page-back-link"
@@ -12,18 +24,44 @@
    data-confirm-message="Máš neuložené změny. Opravdu se chceš vrátit na přehled?">← Zpět na přehled</a>
 
 <section class="section">
-    <h1>Nový kurz</h1>
+    <div class="container py-4">
+        <h1>Nový kurz</h1>
 
-    <form method="post" asp-area="Admin" asp-page="/Courses/Create" class="form-grid" id="course-create-form" data-dirty-form>
-        <partial name="_CourseFormFields" model="Model.Input" />
+        <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Create" class="form-grid" id="course-create-form" data-dirty-form>
+            <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
 
-        <div class="inline-actions">
-            <button type="submit" asp-page-handler="Publish" class="button button-primary" onclick="return confirm('Kurz bude publikovaný a newsletter odběratelé mohou dostat e-mail. Pokračovat?');">Publikovat</button>
-            <button type="submit" asp-page-handler="Draft" class="button button-secondary">Uložit jako draft</button>
-        </div>
-    </form>
+            <div class="inline-actions">
+                <button type="submit" asp-page-handler="Publish" class="button button-primary" onclick="return confirm('Kurz bude publikovaný a newsletter odběratelé mohou dostat e-mail. Pokračovat?');">Publikovat</button>
+                <button type="submit" asp-page-handler="Draft" class="button button-secondary">Uložit jako draft</button>
+            </div>
+        </form>
+    </div>
 </section>
+
+<div class="modal fade" id="defaultTextModal" tabindex="-1" aria-labelledby="defaultTextModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <form method="post" asp-area="Admin" asp-page="/Courses/Create" asp-page-handler="DefaultText">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="defaultTextModalLabel">Upravit výchozí text</h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Zavřít"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" asp-for="DefaultType" id="defaultTextType" />
+                    <input type="hidden" asp-for="DefaultField" id="defaultTextField" />
+                    <label for="defaultTextValue">Výchozí text</label>
+                    <textarea asp-for="DefaultText" id="defaultTextValue" rows="8"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="button button-secondary" data-bs-dismiss="modal">Zrušit</button>
+                    <button type="submit" class="button button-primary">Uložit výchozí text</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script type="application/json" id="courseDefaultsJson">@Html.Raw(defaultsJson)</script>
 }

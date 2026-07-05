@@ -14,6 +14,8 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Course> Courses => Set<Course>();
 
+    public DbSet<CourseTextDefault> CourseTextDefaults => Set<CourseTextDefault>();
+
     public DbSet<CourseRegistration> CourseRegistrations => Set<CourseRegistration>();
 
     public DbSet<NewsletterSubscriber> NewsletterSubscribers => Set<NewsletterSubscriber>();
@@ -51,12 +53,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasMaxLength(180)
                 .IsRequired();
 
-            entity.Property(course => course.CityOrArea)
-                .HasMaxLength(160)
+            entity.Property(course => course.TimeText)
+                .HasMaxLength(80)
                 .IsRequired();
 
-            entity.Property(course => course.VenueText)
-                .HasMaxLength(180)
+            entity.Property(course => course.CityOrArea)
+                .HasMaxLength(160)
                 .IsRequired();
 
             entity.Property(course => course.PriceText)
@@ -75,6 +77,14 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .HasMaxLength(2000)
                 .IsRequired();
 
+            entity.Property(course => course.ImagePath)
+                .HasMaxLength(260)
+                .IsRequired();
+
+            entity.Property(course => course.ThumbnailPath)
+                .HasMaxLength(260)
+                .IsRequired();
+
             entity.Property(course => course.CreatedAt)
                 .IsRequired();
 
@@ -84,7 +94,39 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.HasIndex(course => course.Slug)
                 .IsUnique();
 
-            entity.HasIndex(course => new { course.Status, course.StartDateTime });
+            entity.HasIndex(course => new { course.Status, course.CourseDate });
+        });
+
+        builder.Entity<CourseTextDefault>(entity =>
+        {
+            entity.ToTable("CourseTextDefaults");
+            entity.HasKey(defaultText => defaultText.Id);
+
+            entity.Property(defaultText => defaultText.Type)
+                .HasConversion<string>()
+                .HasMaxLength(40)
+                .IsRequired();
+
+            entity.Property(defaultText => defaultText.Field)
+                .HasConversion<string>()
+                .HasMaxLength(80)
+                .IsRequired();
+
+            entity.Property(defaultText => defaultText.Text)
+                .HasMaxLength(8000)
+                .IsRequired();
+
+            entity.HasIndex(defaultText => new { defaultText.Type, defaultText.Field })
+                .IsUnique();
+
+            var seededAt = new DateTimeOffset(2026, 5, 10, 0, 0, 0, TimeSpan.Zero);
+            entity.HasData(
+                new CourseTextDefault { Id = Guid.Parse("2ef8d70f-f5c0-49a0-8dbf-fc89040d1931"), Type = CourseType.Breathwork, Field = CourseTextField.ShortDescription, Text = "This is placeholder for default text", UpdatedAt = seededAt },
+                new CourseTextDefault { Id = Guid.Parse("5665bfd0-4e84-4699-9174-68eba17f8d41"), Type = CourseType.Breathwork, Field = CourseTextField.FullDescription, Text = "This is placeholder for default text", UpdatedAt = seededAt },
+                new CourseTextDefault { Id = Guid.Parse("f5a4d334-301e-4015-9443-425649bc74c8"), Type = CourseType.Breathwork, Field = CourseTextField.WhatToExpect, Text = "This is placeholder for default text", UpdatedAt = seededAt },
+                new CourseTextDefault { Id = Guid.Parse("49bdd9a5-b692-4d46-9797-5be87405e914"), Type = CourseType.Horses, Field = CourseTextField.ShortDescription, Text = "This is placeholder for default text", UpdatedAt = seededAt },
+                new CourseTextDefault { Id = Guid.Parse("c3addbf4-e5a7-45fd-8e1d-3d079223a967"), Type = CourseType.Horses, Field = CourseTextField.FullDescription, Text = "This is placeholder for default text", UpdatedAt = seededAt },
+                new CourseTextDefault { Id = Guid.Parse("fc589548-f8b9-4e50-a7de-4d618d9857d4"), Type = CourseType.Horses, Field = CourseTextField.WhatToExpect, Text = "This is placeholder for default text", UpdatedAt = seededAt });
         });
 
         builder.Entity<CourseRegistration>(entity =>

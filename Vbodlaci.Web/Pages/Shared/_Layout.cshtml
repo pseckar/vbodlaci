@@ -15,12 +15,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - V bodláčí</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Vbodlaci.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
-<div class="bg-shape bg-shape-one"></div>
-<div class="bg-shape bg-shape-two"></div>
 <div class="shell">
     @if (isSignedIn)
     {
@@ -61,6 +60,7 @@
 
 <button id="backToTop" type="button" class="back-to-top" aria-label="Jít nahoru">Jít nahoru</button>
 
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>

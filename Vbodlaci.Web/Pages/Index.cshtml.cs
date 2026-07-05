@@ -17,7 +17,7 @@ public sealed class IndexModel(ICourseService courseService, IOptions<SiteOption
     public async Task OnGetAsync([FromQuery(Name = "typ")] string? typ, CancellationToken cancellationToken)
     {
         var normalized = (typ ?? "all").Trim().ToLowerInvariant();
-        var filter = new CourseQueryFilter { Take = 12 };
+        var filter = new CourseQueryFilter();
 
         if (normalized == "breathwork")
         {

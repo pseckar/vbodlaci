@@ -30,7 +30,7 @@
                     <td><a asp-page="/Courses/Edit" asp-route-id="@course.Id">@course.Title</a></td>
                     <td>@(course.Type == CourseType.Breathwork ? "Breathwork" : "Koně")</td>
                     <td>@(course.Status switch { CourseStatus.Draft => "Draft", CourseStatus.Published => "Publikovaný", CourseStatus.Canceled => "Zrušen", _ => course.Status.ToString() })</td>
-                    <td>@course.StartDateTime.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>@course.CourseDate.ToString("dd.MM.yyyy") @course.TimeText</td>
                     <td>@course.CityOrArea</td>
                     <td>
                         <div class="inline-actions">

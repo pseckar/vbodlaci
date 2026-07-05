@@ -16,6 +16,8 @@ public sealed class EditModel(ICourseService courseService) : PageModel
 
     public string FacebookPostText { get; private set; } = string.Empty;
 
+    public string CurrentImageUrl { get; private set; } = string.Empty;
+
     public bool IsReadOnly => CurrentStatus == CourseStatus.Canceled;
 
     public string StatusLabel => CurrentStatus switch
@@ -93,16 +95,17 @@ public sealed class EditModel(ICourseService courseService) : PageModel
             Type = detail.Type,
             Status = detail.Status,
             Title = detail.Title,
-            StartDateTime = detail.StartDateTime.ToLocalTime(),
-            EndDateTime = detail.EndDateTime?.ToLocalTime(),
+            CourseDate = detail.CourseDate,
+            TimeText = detail.TimeText,
             CityOrArea = detail.CityOrArea,
-            VenueText = detail.VenueText,
             PriceText = detail.PriceText,
             CapacityInfo = detail.CapacityInfo,
-            RegistrationDeadline = detail.RegistrationDeadline?.ToLocalTime(),
             ShortDescription = detail.ShortDescription,
             FullDescription = detail.FullDescription,
-            WhatToExpect = detail.WhatToExpect
+            IsFullDescriptionVisible = detail.IsFullDescriptionVisible,
+            WhatToExpect = detail.WhatToExpect,
+            IsWhatToExpectVisible = detail.IsWhatToExpectVisible
         };
+        CurrentImageUrl = detail.ImageUrl;
     }
 }

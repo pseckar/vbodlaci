@@ -91,16 +91,16 @@ public class CourseVisibilityTests
             Type = published.Type,
             Status = CourseStatus.Canceled,
             Title = published.Title,
-            StartDateTime = published.StartDateTime,
-            EndDateTime = published.EndDateTime,
+            CourseDate = published.CourseDate,
+            TimeText = published.TimeText,
             CityOrArea = published.CityOrArea,
-            VenueText = published.VenueText,
             PriceText = published.PriceText,
             CapacityInfo = published.CapacityInfo,
-            RegistrationDeadline = published.RegistrationDeadline,
             ShortDescription = published.ShortDescription,
             FullDescription = published.FullDescription,
-            WhatToExpect = published.WhatToExpect
+            IsFullDescriptionVisible = published.IsFullDescriptionVisible,
+            WhatToExpect = published.WhatToExpect,
+            IsWhatToExpectVisible = published.IsWhatToExpectVisible
         });
 
         Assert.False(changeBackResult.Succeeded);
@@ -119,10 +119,9 @@ public class CourseVisibilityTests
             Status = status,
             Title = $"Kurz {slug}",
             Slug = slug,
-            StartDateTime = now.AddDays(4),
-            EndDateTime = now.AddDays(4).AddHours(2),
+            CourseDate = DateOnly.FromDateTime(now.AddDays(4).DateTime),
+            TimeText = "18:00-20:00",
             CityOrArea = "Vysočina",
-            VenueText = "Pastvina",
             PriceText = "2 000 Kč",
             ShortDescription = "Krátce",
             FullDescription = "Dlouze",

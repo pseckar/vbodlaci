@@ -13,6 +13,10 @@ public interface ICourseService
 
     Task<CourseDetailViewModel?> GetCourseByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<CourseTextDefaultItem>> GetTextDefaultsAsync(CancellationToken cancellationToken = default);
+
+    Task<ServiceResult> UpdateTextDefaultAsync(CourseType type, CourseTextField field, string text, CancellationToken cancellationToken = default);
+
     Task<(ServiceResult Result, Guid? Id)> CreateAsync(CourseEditModel model, CancellationToken cancellationToken = default);
 
     Task<ServiceResult> UpdateAsync(Guid id, CourseEditModel model, CancellationToken cancellationToken = default);

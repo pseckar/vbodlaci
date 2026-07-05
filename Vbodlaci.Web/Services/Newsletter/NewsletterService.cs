@@ -92,10 +92,9 @@ public sealed class NewsletterService(
             var unsubscribeUrl = $"{siteOptions.Value.SiteUrl.TrimEnd('/')}/newsletter/odhlaseni/{subscriber.UnsubscribeToken}";
             var courseUrl = $"{siteOptions.Value.SiteUrl.TrimEnd('/')}/kurzy/{course.Slug}";
             var subject = $"Nový termín: {course.Title}";
-            var localCourseStart = course.StartDateTime.ToLocalTime();
             var body = $"Ahoj,\n\nprávě jsme vypsali nový kurz:\n" +
                        $"{course.Title}\n" +
-                       $"Termín: {localCourseStart:dd.MM.yyyy HH:mm}\n" +
+                       $"Termín: {course.CourseDate:dd.MM.yyyy} {course.TimeText}\n" +
                        $"Místo: {course.CityOrArea}\n" +
                        $"Cena: {course.PriceText}\n\n" +
                        $"Detail a přihlášení: {courseUrl}\n\n" +

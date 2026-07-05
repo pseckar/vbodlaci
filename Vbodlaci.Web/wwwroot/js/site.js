@@ -106,4 +106,68 @@
       }
     });
   });
+
+  const defaultsScript = document.getElementById("courseDefaultsJson");
+  if (defaultsScript) {
+    const defaults = JSON.parse(defaultsScript.textContent || "[]");
+    const byKey = new Map(defaults.map((item) => [`${item.type}:${item.field}`, item.text || ""]));
+    const typeSelect = document.querySelector("[data-course-type-select]");
+    const fields = {
+      ShortDescription: document.getElementById("Input_ShortDescription"),
+      FullDescription: document.getElementById("Input_FullDescription"),
+      WhatToExpect: document.getElementById("Input_WhatToExpect")
+    };
+
+    const getDefault = (type, field) => byKey.get(`${type}:${field}`) || "This is placeholder for default text";
+    let previousType = typeSelect ? typeSelect.value : "Breathwork";
+
+    if (typeSelect) {
+      typeSelect.addEventListener("change", () => {
+        const nextType = typeSelect.value;
+        Object.entries(fields).forEach(([field, input]) => {
+          if (!input) {
+            return;
+          }
+
+          const previousDefault = getDefault(previousType, field);
+          if (input.value.trim() === previousDefault.trim()) {
+            input.value = getDefault(nextType, field);
+          }
+        });
+
+        previousType = nextType;
+      });
+    }
+
+    const modalElement = document.getElementById("defaultTextModal");
+    const modalType = document.getElementById("defaultTextType");
+    const modalField = document.getElementById("defaultTextField");
+    const modalText = document.getElementById("defaultTextValue");
+    const modalTitle = document.getElementById("defaultTextModalLabel");
+    const modal = modalElement && window.bootstrap ? new bootstrap.Modal(modalElement) : null;
+
+    document.querySelectorAll(".default-text-trigger").forEach((button) => {
+      button.addEventListener("click", () => {
+        const selectedType = typeSelect ? typeSelect.value : "Breathwork";
+        const selectedField = button.getAttribute("data-default-field") || "ShortDescription";
+
+        if (modalType) {
+          modalType.value = selectedType;
+        }
+        if (modalField) {
+          modalField.value = selectedField;
+        }
+        if (modalText) {
+          modalText.value = getDefault(selectedType, selectedField);
+        }
+        if (modalTitle) {
+          modalTitle.textContent = `Upravit výchozí text: ${selectedType}`;
+        }
+
+        if (modal) {
+          modal.show();
+        }
+      });
+    });
+  }
 })();
