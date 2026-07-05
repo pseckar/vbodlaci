@@ -1,0 +1,188 @@
+/* ==========================================================================
+   V bodláčí — admin + Identity styling (loaded only for those areas,
+   after site.css). Same tokens, simplified: no script font, no curves,
+   no watermarks. Bootstrap stays loaded here (default-text modal,
+   default Identity UI).
+   ========================================================================== */
+
+/* admin pages use tighter section rhythm than the public long-scroll */
+.admin-section {
+    padding: 2.2rem 0 3rem;
+}
+
+/* ---------- dashboard switcher ---------- */
+
+.switcher {
+    display: grid;
+    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.switcher a {
+    display: block;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 1.3rem 1.5rem;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.switcher a:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+}
+
+.switcher .title {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--moss);
+}
+
+.switcher .desc {
+    margin-top: 0.35rem;
+    color: var(--muted);
+}
+
+/* ---------- tables ---------- */
+
+.table-wrap {
+    overflow-x: auto;
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 0.4rem 1.2rem;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    padding: 0.7rem 0.5rem;
+    vertical-align: top;
+}
+
+.admin-table thead th {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table .status-badge {
+    margin-bottom: 0;
+}
+
+.inline-actions {
+    display: flex;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+}
+
+.inline-actions form {
+    margin: 0;
+}
+
+.inline-actions .btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.88rem;
+}
+
+/* ---------- forms ---------- */
+
+.form-grid label {
+    font-weight: 600;
+    color: var(--bark);
+}
+
+.form-grid input[type="file"] {
+    font: inherit;
+    color: var(--muted);
+}
+
+/* referenced by _CourseFormFields but previously never defined */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+}
+
+.admin-image-preview {
+    width: min(100%, 360px);
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+}
+
+/* Facebook helper panel on course edit */
+.panel-card {
+    background: var(--card-bg);
+    border-radius: 18px;
+    box-shadow: var(--shadow-soft);
+    padding: 1.4rem 1.5rem;
+}
+
+/* ---------- Bootstrap modal harmonization ---------- */
+
+.modal-content {
+    border-radius: 18px;
+    border: none;
+    font-family: var(--font-body);
+    color: var(--bark);
+}
+
+.modal-title {
+    font-family: var(--font-display);
+    color: var(--moss);
+}
+
+/* ---------- default Identity UI fixes ---------- */
+
+main > h1,
+main > h2,
+main > .row,
+main > p,
+main > hr,
+main > div:not(.wrap):not([class*="section"]) {
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.4rem;
+    padding-right: 1.4rem;
+}
+
+main > h1 {
+    margin-top: 2rem;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--moss);
+    --bs-btn-border-color: var(--moss-dark);
+    --bs-btn-hover-bg: var(--moss-dark);
+    --bs-btn-hover-border-color: var(--moss-dark);
+    --bs-btn-active-bg: var(--moss-dark);
+    --bs-btn-active-border-color: var(--moss-dark);
+    --bs-btn-border-radius: 999px;
+}
+
+.form-control:focus {
+    border-color: var(--moss);
+    box-shadow: 0 0 0 3px rgba(74, 90, 56, 0.18);
+}
+
+.form-check-input:checked {
+    background-color: var(--moss);
+    border-color: var(--moss-dark);
+}

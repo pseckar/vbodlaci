@@ -1,0 +1,18 @@
+@using Vbodlaci.Web.Application.Presentation
+@model SectionCurve
+@{
+    // fill/background go through style attributes so CSS variables resolve reliably
+    var svgStyle = Model.Background is null ? null : $"background:{Model.Background}";
+}
+@if (Model.Hero)
+{
+    <svg class="hero-curve" viewBox="0 0 1440 64" preserveAspectRatio="none" aria-hidden="true" style="@svgStyle">
+        <path d="M0,64 C420,8 1020,8 1440,64 L1440,64 L0,64 Z" style="fill:@Model.Fill" />
+    </svg>
+}
+else
+{
+    <svg class="curve" viewBox="0 0 1440 58" preserveAspectRatio="none" aria-hidden="true" style="@svgStyle">
+        <path d="M0,58 C420,6 1020,6 1440,58 L1440,58 L0,58 Z" style="fill:@Model.Fill" />
+    </svg>
+}

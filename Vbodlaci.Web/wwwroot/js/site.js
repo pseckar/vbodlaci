@@ -170,4 +170,23 @@
       });
     });
   }
+
+  const revealElements = Array.from(document.querySelectorAll(".reveal"));
+  if (revealElements.length > 0) {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reducedMotion || !("IntersectionObserver" in window)) {
+      revealElements.forEach((element) => element.classList.add("in"));
+    } else {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("in");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      revealElements.forEach((element) => observer.observe(element));
+    }
+  }
 })();

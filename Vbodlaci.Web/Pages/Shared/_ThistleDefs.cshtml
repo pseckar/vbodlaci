@@ -1,0 +1,36 @@
+@* Shared thistle mark definition (SPECIFICATION.md §25.1). Included once per
+   page by _Layout; instances are rendered via _Thistle.cshtml using svg use.
+   Colors are controlled by CSS custom properties on the consuming svg:
+   currentColor (line work), --t-bloom (flower), --t-fill (bulb), --t-leaf (leaves). *@
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+        <clipPath id="bulb-clip">
+            <path d="M32 36 C22 36 16 44 16 52 C16 62 23 68 32 68 C41 68 48 62 48 52 C48 44 42 36 32 36 Z" />
+        </clipPath>
+        <g id="thistle-mark" fill="none" stroke-linecap="round">
+            <g stroke="var(--t-bloom, #8e76a3)" stroke-width="2.6">
+                <path d="M32 37 C31.5 28 32 19 32 11" />
+                <path d="M30 37 C26 28 23 22 20 16" />
+                <path d="M34 37 C38 28 41 22 44 16" />
+                <path d="M28 38 C22 32 17 28 12 24" />
+                <path d="M36 38 C42 32 47 28 52 24" />
+            </g>
+            <path d="M32 36 C22 36 16 44 16 52 C16 62 23 68 32 68 C41 68 48 62 48 52 C48 44 42 36 32 36 Z"
+                  fill="var(--t-fill, rgba(176,219,114,0.16))" stroke="currentColor" stroke-width="2.6" />
+            <g clip-path="url(#bulb-clip)" stroke="currentColor" stroke-width="1.6" opacity="0.75">
+                <path d="M18 42 L46 62" /><path d="M24 38 L50 56" /><path d="M14 50 L38 68" />
+                <path d="M46 42 L18 62" /><path d="M40 38 L14 56" /><path d="M50 50 L26 68" />
+            </g>
+            <g stroke="currentColor" stroke-width="2.2">
+                <path d="M16 48 L9.5 45" /><path d="M16 57 L9 59" /><path d="M21 64.5 L15.5 69.5" />
+                <path d="M48 48 L54.5 45" /><path d="M48 57 L55 59" /><path d="M43 64.5 L48.5 69.5" />
+            </g>
+            <path d="M32 68 C33 78 31 90 32 106" stroke="currentColor" stroke-width="2.6" />
+            <g stroke="currentColor" stroke-width="2">
+                <path d="M31.4 78 L26.5 74.5" /><path d="M32.4 92 L37.5 88.5" />
+            </g>
+            <path d="M31.8 84 C24 84 15.5 78 11.5 68 C19.5 70 28 75 31.9 81 Z" fill="var(--t-leaf, rgba(176,219,114,0.55))" stroke="currentColor" stroke-width="1.9" />
+            <path d="M32.2 98 C40 98 48.5 92 52.5 82 C44.5 84 36 89 32.1 95 Z" fill="var(--t-leaf, rgba(176,219,114,0.55))" stroke="currentColor" stroke-width="1.9" />
+        </g>
+    </defs>
+</svg>

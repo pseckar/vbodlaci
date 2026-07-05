@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Options
 @using Vbodlaci.Web.Application.Configuration
 @inject IOptions<SiteOptions> SiteOptionsAccessor
@@ -8,6 +8,9 @@
     var flashMessage = TempData["FlashMessage"] as string;
     var flashType = TempData["FlashType"] as string ?? "info";
     var isSignedIn = SignInManager.IsSignedIn(User);
+    var area = ViewContext.RouteData.Values["area"] as string;
+    var isAdminUi = string.Equals(area, "Admin", StringComparison.OrdinalIgnoreCase)
+        || string.Equals(area, "Identity", StringComparison.OrdinalIgnoreCase);
 }
 <!DOCTYPE html>
 <html lang="cs">
@@ -15,11 +18,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - V bodláčí</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script>document.documentElement.classList.add("js");</script>
+    @if (isAdminUi)
+    {
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    }
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Vbodlaci.Web.styles.css" asp-append-version="true" />
+    @if (isAdminUi)
+    {
+        <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+    }
 </head>
 <body>
+<partial name="_ThistleDefs" />
 <div class="shell">
     @if (isSignedIn)
     {
@@ -41,26 +52,59 @@
     </main>
 
     <footer class="footer">
-        <div class="footer-main">
-            <div class="footer-brand">V bodláčí</div>
-            @if (!isSignedIn)
-            {
-                <a class="admin-link footer-admin-link" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Admin">Admin přihlášení</a>
-            }
-        </div>
-        <div class="footer-links">
-            <a href="@site.FacebookUrl" target="_blank" rel="noopener">Facebook</a>
-            <a href="@site.InstagramUrl" target="_blank" rel="noopener">Instagram</a>
-            <a asp-page="/Legal/PersonalData">Zásady zpracování osobních údajů</a>
-            <a asp-page="/Legal/Cookies">Zásady cookies</a>
-            <a asp-page="/Legal/CourseTerms">Podmínky kurzu</a>
+        @if (!isAdminUi)
+        {
+            <partial name="_Thistle" model='new ThistleMark("footer-thistle")' />
+        }
+        <div class="wrap">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <partial name="_Thistle" model='new ThistleMark("thistle-mini footer-brand-mark", "--t-bloom:#c9b3dd; --t-fill:rgba(176,219,114,0.15); --t-leaf:rgba(176,219,114,0.4)")' />
+                        V bodláčí
+                    </div>
+                    <p class="footer-tag">Dech, koně a laskavá veterinární péče v jednom místě. Hlinsko a okolí.</p>
+                </div>
+                <div>
+                    <h4>Rozcestník</h4>
+                    <ul>
+                        <li><a asp-page="/Services/Breathwork">Breathwork v bodláčí</a></li>
+                        <li><a asp-page="/Services/Horses">Koně v bodláčí</a></li>
+                        <li><a asp-page="/Services/Veterinary">Veterina v bodláčí</a></li>
+                        <li><a asp-page="/Index" asp-fragment="kurzy">Nejbližší kurzy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Sleduj mě</h4>
+                    <ul>
+                        <li><a href="@site.FacebookUrl" target="_blank" rel="noopener">Facebook</a></li>
+                        <li><a href="@site.InstagramUrl" target="_blank" rel="noopener">Instagram</a></li>
+                        <li><a asp-page="/Index" asp-fragment="kontakt">Kontakt</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>
+                    &copy; @DateTime.Now.Year V bodláčí
+                    &middot; <a asp-page="/Legal/PersonalData">Zásady zpracování osobních údajů</a>
+                    &middot; <a asp-page="/Legal/Cookies">Zásady cookies</a>
+                    &middot; <a asp-page="/Legal/CourseTerms">Podmínky kurzu</a>
+                </span>
+                @if (!isSignedIn)
+                {
+                    <a class="footer-admin" asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="/Admin">Admin přihlášení</a>
+                }
+            </div>
         </div>
     </footer>
 </div>
 
-<button id="backToTop" type="button" class="back-to-top" aria-label="Jít nahoru">Jít nahoru</button>
+<button id="backToTop" type="button" class="back-to-top" aria-label="Jít nahoru">&#8593;</button>
 
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+@if (isAdminUi)
+{
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+}
 <script src="~/js/site.js" asp-append-version="true"></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
