@@ -3,76 +3,112 @@
 @{
     ViewData["Title"] = "V bodláčí";
     var returnUrl = HttpContext.Request.Path + HttpContext.Request.QueryString;
-    const string heroImage = "/images/title-image.jpeg";
 }
 
-<section class="image-hero">
-    <img src="@heroImage" alt="" />
-    <div class="image-hero-overlay">
-        <div class="container">
+<header class="hero" style="--photo-src:url('@SiteImages.HeroHome')">
+    <div class="hero-inner">
+        <div class="wrap">
+            <div class="hero-script">
+                <partial name="_Thistle" model='new ThistleMark("thistle-mini", "--t-bloom:#c9b3dd; --t-fill:rgba(251,248,238,0.1); --t-leaf:rgba(255,205,60,0.35); color:#fbf8ee")' />
+                Veronika Bodláková
+            </div>
             <h1>V bodláčí</h1>
-            <p>Veronika Bodláková</p>
+            <p class="hero-tagline">Dech, koně a laskavá veterinární péče. Tři cesty, jak být blíž sobě, zvířatům i přírodě.</p>
+            <div class="hero-ctas">
+                <a class="btn btn-gold" href="#kurzy">Nejbližší kurzy</a>
+                <a class="btn btn-ghost-light" href="#kontakt">Kontakt</a>
+            </div>
         </div>
     </div>
-</section>
+    <partial name="_Curve" model='new SectionCurve("var(--cream)", Hero: true)' />
+</header>
 
-<section class="section section-green">
-    <div class="container py-5">
-        <div class="service-card-grid">
-            <article class="service-card">
-                <img src="@heroImage" alt="" loading="lazy" />
-                <div class="service-card-body">
-                    <h2>Breathwork</h2>
-                    <div class="service-kicker">V BODLÁČÍ</div>
+<section class="section section-cream" id="sluzby">
+    <div class="wrap">
+        <div class="section-head centered reveal">
+            <span class="kicker">čemu se věnuji</span>
+            <h2>Tři cesty v bodláčí</h2>
+        </div>
+        <div class="service-grid">
+            <article class="card reveal">
+                <div class="card-photo-frame">
+                    <div class="card-photo-clip">
+                        <div class="card-photo photo-breath" style="--photo-src:url('@SiteImages.ServiceCardBreathwork')" role="img" aria-label="Breathwork"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Breathwork</h3>
+                    <span class="service-kicker">v bodláčí</span>
                     <p>Práce s dechem pro zklidnění, regulaci a lepší kontakt se sebou.</p>
-                    <a class="button button-primary" asp-page="/Services/Breathwork">Zjistit více</a>
+                    <a class="link-arrow" asp-page="/Services/Breathwork">Zjistit více</a>
                 </div>
             </article>
-            <article class="service-card">
-                <img src="@heroImage" alt="" loading="lazy" />
-                <div class="service-card-body">
-                    <h2>Koně</h2>
-                    <div class="service-kicker">V BODLÁČÍ</div>
+            <article class="card reveal reveal-d1">
+                <div class="card-photo-frame">
+                    <div class="card-photo-clip">
+                        <div class="card-photo photo-horses" style="--photo-src:url('@SiteImages.ServiceCardHorses')" role="img" aria-label="Koně"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Koně</h3>
+                    <span class="service-kicker">v bodláčí</span>
                     <p>Facilitovaná setkání s koňmi pro sebepoznání a vztahovou transformaci.</p>
-                    <a class="button button-primary" asp-page="/Services/Horses">Zjistit více</a>
+                    <a class="link-arrow" asp-page="/Services/Horses">Zjistit více</a>
                 </div>
             </article>
-            <article class="service-card">
-                <img src="@heroImage" alt="" loading="lazy" />
-                <div class="service-card-body">
-                    <h2>Veterina</h2>
-                    <div class="service-kicker">V BODLÁČÍ</div>
+            <article class="card reveal reveal-d2">
+                <div class="card-photo-frame">
+                    <div class="card-photo-clip">
+                        <div class="card-photo photo-vet" style="--photo-src:url('@SiteImages.ServiceCardVeterinary')" role="img" aria-label="Veterina"></div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h3>Veterina</h3>
+                    <span class="service-kicker">v bodláčí</span>
                     <p>Veterinární péče s lidským přístupem, konzultacemi a domácími návštěvami.</p>
-                    <a class="button button-primary" asp-page="/Services/Veterinary">Zjistit více</a>
+                    <a class="link-arrow" asp-page="/Services/Veterinary">Zjistit více</a>
                 </div>
             </article>
         </div>
     </div>
 </section>
 
-<section class="section section-light">
-    <div class="container py-5">
-        <div class="split-content align-items-center">
-            <div>
+<section class="section section-leaf" id="o-mne">
+    <div class="wrap">
+        <div class="about-grid">
+            <div class="about-photo-wrap reveal">
+                <div class="about-photo" style="--photo-src:url('@SiteImages.AboutPortrait')" role="img" aria-label="Veronika Bodláková"></div>
+                <partial name="_Thistle" model='new ThistleMark("about-thistle")' />
+            </div>
+            <div class="about-text reveal reveal-d1">
+                <span class="kicker">pár slov o mně</span>
                 <h2>Kdo je Veronika</h2>
-                <p>
+                <p style="margin-top:1rem">
                     Jsem Veronika Bodláková. Propojuji zkušenost veterinární lékařky s prací v oblasti sebepoznání,
                     mindfulness a vztahu člověka se zvířetem i se sebou samým.
                 </p>
+                <p>
+                    Ať už přicházíš za dechem, za koňmi, nebo kvůli svému zvířeti, najdeš u mě klidný
+                    prostor, kde se nemusíš na nic hrát.
+                </p>
+                <p class="about-quote">„Všechno důležité začíná nádechem.“</p>
+                <p class="about-signature">— Veronika</p>
             </div>
-            <img class="split-image" src="@heroImage" alt="Veronika Bodláková" loading="lazy" />
         </div>
     </div>
 </section>
 
-<section class="section section-pale" id="kurzy">
-    <div class="container py-5">
-        <div class="section-heading-row">
-            <h2>Nejbližší kurzy</h2>
-            <div class="filter-row" data-course-filter-root data-selected-type="@Model.SelectedType">
-                <button type="button" class="filter-pill @(Model.SelectedType == "all" ? "active" : null)" data-course-filter="all">Vše</button>
-                <button type="button" class="filter-pill @(Model.SelectedType == "breathwork" ? "active" : null)" data-course-filter="breathwork">Breathwork</button>
-                <button type="button" class="filter-pill @(Model.SelectedType == "kone" ? "active" : null)" data-course-filter="kone">Koně</button>
+<section class="section section-white" id="kurzy">
+    <div class="wrap">
+        <div class="courses-head reveal">
+            <div class="section-head" style="margin-bottom:0">
+                <span class="kicker">přidej se</span>
+                <h2>Nejbližší kurzy</h2>
+            </div>
+            <div class="filter-row" role="group" aria-label="Filtr kurzů" data-course-filter-root data-selected-type="@Model.SelectedType">
+                <button type="button" class="pill @(Model.SelectedType == "all" ? "active" : null)" data-course-filter="all">Vše</button>
+                <button type="button" class="pill @(Model.SelectedType == "breathwork" ? "active" : null)" data-course-filter="breathwork">Breathwork</button>
+                <button type="button" class="pill @(Model.SelectedType == "kone" ? "active" : null)" data-course-filter="kone">Koně</button>
             </div>
         </div>
 
@@ -83,65 +119,48 @@
         else
         {
             <partial name="_CourseCards" model="Model.Courses" />
-            <p class="muted" data-course-filter-empty hidden>Pro zvolený filtr teď nejsou vypsané žádné kurzy.</p>
+            <p class="courses-empty" data-course-filter-empty hidden>Pro zvolený filtr teď nejsou vypsané žádné kurzy.</p>
         }
     </div>
 </section>
 
-<section class="section section-white">
-    <div class="container py-5">
-        <h2>Ohlasy</h2>
+<partial name="_Curve" model='new SectionCurve("var(--moss)", "#fffdf6")' />
+<section class="section section-moss section-snug" id="ohlasy">
+    <div class="wrap">
+        <div class="section-head centered reveal">
+            <span class="kicker">co říkají ostatní</span>
+            <h2>Ohlasy</h2>
+        </div>
         <div class="testimonial-grid">
-            <article class="testimonial-card">
-                <p>"Jemné a přitom silné vedení. Odcházela jsem klidnější a víc ukotvená."</p>
-                <div class="testimonial-author">Lenka</div>
-            </article>
-            <article class="testimonial-card">
-                <p>"Setkání s koňmi mi ukázalo věci, které jsem dlouho neviděl."</p>
-                <div class="testimonial-author">Ondřej</div>
-            </article>
-            <article class="testimonial-card">
-                <p>"Důstojné rozloučení s naším pejskem doma pro nás znamenalo opravdu hodně."</p>
-                <div class="testimonial-author">Martina</div>
-            </article>
-        </div>
-    </div>
-</section>
-
-<section class="section section-gold" id="kontakt">
-    <div class="container py-5">
-        <div class="split-content">
-            <div>
-                <h2>Kontakt</h2>
-                <p>Pro dotaz nebo individuální domluvu mi napiš.</p>
-                <form method="post" asp-page="/Actions/Contact" class="form-grid">
-                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-                    <input type="hidden" name="SourcePage" value="home" />
-                    <label class="hidden-honeypot" for="home-contact-honeypot">Nechte prázdné</label>
-                    <input class="hidden-honeypot" id="home-contact-honeypot" type="text" name="Honeypot" autocomplete="off" />
-
-                    <input type="text" name="FullName" placeholder="Jméno" required maxlength="120" />
-                    <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
-                    <textarea name="Message" placeholder="Zpráva" required maxlength="2500"></textarea>
-                    <button class="button button-dark" type="submit">Odeslat zprávu</button>
-                </form>
+            <div class="testimonial reveal">
+                <span class="quote-mark" aria-hidden="true">„</span>
+                <blockquote>Jemné a přitom silné vedení. Odcházela jsem klidnější a víc ukotvená.</blockquote>
+                <span class="author">Lenka</span>
             </div>
-
-            <div id="newsletter">
-                <h2>Newsletter</h2>
-                <p>Přihlas se a pošlu ti nové termíny kurzů.</p>
-                <form method="post" asp-page="/Actions/Newsletter" class="form-grid">
-                    <input type="hidden" name="ReturnUrl" value="@returnUrl" />
-                    <label class="hidden-honeypot" for="home-news-honeypot">Nechte prázdné</label>
-                    <input class="hidden-honeypot" id="home-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
-
-                    <input type="email" name="Email" placeholder="E-mail" required maxlength="180" />
-                    <label class="checkbox-row"><input type="checkbox" name="PrefBreathwork" checked /> Breathwork</label>
-                    <label class="checkbox-row"><input type="checkbox" name="PrefHorses" checked /> Koně</label>
-                    <label class="checkbox-row"><input type="checkbox" name="PrefVeterinary" /> Veterina</label>
-                    <button class="button button-dark" type="submit">Přihlásit k odběru</button>
-                </form>
+            <div class="testimonial reveal reveal-d1">
+                <span class="quote-mark" aria-hidden="true">„</span>
+                <blockquote>Setkání s koňmi mi ukázalo věci, které jsem dlouho neviděl.</blockquote>
+                <span class="author">Ondřej</span>
+            </div>
+            <div class="testimonial reveal reveal-d2">
+                <span class="quote-mark" aria-hidden="true">„</span>
+                <blockquote>Důstojné rozloučení s naším pejskem doma pro nás znamenalo opravdu hodně.</blockquote>
+                <span class="author">Martina</span>
             </div>
         </div>
     </div>
 </section>
+<partial name="_Curve" model='new SectionCurve("var(--honey-tint)", "var(--moss-dark)")' />
+
+<partial name="_ContactNewsletter" model='new ContactNewsletterViewModel
+{
+    SourcePage = "home",
+    HoneypotIdPrefix = "home",
+    ReturnUrl = returnUrl,
+    SectionId = "kontakt",
+    ContactIntro = "Pro dotaz nebo individuální domluvu mi napiš. Odpovídám obvykle do dvou dnů.",
+    ContactNote = "těším se na tvou zprávu",
+    NewsletterIntro = "Přihlas se a pošlu ti nové termíny kurzů. Nic víc, žádný spam.",
+    PrefBreathworkChecked = true,
+    PrefHorsesChecked = true
+}' />

@@ -3,22 +3,44 @@
 @{
     var source = ViewData["CourseSource"] as string;
     source = string.IsNullOrWhiteSpace(source) ? null : source;
+    var currentYear = DateTime.Now.Year;
+    var index = 0;
 }
 
 <div class="course-grid" role="list">
     @foreach (var course in Model)
     {
-        <article class="course-card" role="listitem" data-course-type="@(course.Type == Vbodlaci.Web.Domain.Courses.CourseType.Breathwork ? "breathwork" : "kone")">
-            <img class="course-card-image" src="@course.ThumbnailImageUrl" alt="" loading="lazy" />
-            <div class="course-card-body">
-                <div class="course-meta">
-                    <span class="course-type">@(course.Type == Vbodlaci.Web.Domain.Courses.CourseType.Breathwork ? "Breathwork" : "Koně")</span>
-                    <span>@course.CourseDate.ToString("dd.MM.yyyy")</span>
+        var isBreathwork = course.Type == Vbodlaci.Web.Domain.Courses.CourseType.Breathwork;
+        var revealDelay = (index % 3) switch
+        {
+            1 => " reveal-d1",
+            2 => " reveal-d2",
+            _ => string.Empty
+        };
+        index++;
+
+        <article class="card course-card reveal@(revealDelay)" role="listitem" data-course-type="@(isBreathwork ? "breathwork" : "kone")">
+            <div class="card-photo-frame">
+                <div class="card-photo-clip">
+                    <img class="card-photo course-card-photo" src="@course.ThumbnailImageUrl" alt="" loading="lazy" />
                 </div>
+                <span class="type-chip @(isBreathwork ? "chip-breathwork" : "chip-kone")">@(isBreathwork ? "Breathwork" : "Koně")</span>
+                <div class="date-block">
+                    <span class="day">@course.CourseDate.Day</span>
+                    <span class="month">@CzechMonths.MonthLabel(course.CourseDate, currentYear)</span>
+                </div>
+            </div>
+            <div class="card-body course-body">
                 <h3>@course.Title</h3>
-                <div class="course-place">@course.CityOrArea</div>
+                <span class="course-place">
+                    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1a5 5 0 0 0-5 5c0 3.5 5 9 5 9s5-5.5 5-9a5 5 0 0 0-5-5zm0 7a2 2 0 1 1 0-4 2 2 0 0 1 0 4z"/></svg>
+                    @course.CityOrArea
+                </span>
                 <p>@course.ShortDescription</p>
-                <a class="button button-primary" asp-page="/Courses/Detail" asp-route-slug="@course.Slug" asp-route-from="@source">Detail kurzu</a>
+                <div class="course-foot">
+                    <span class="course-price">@course.PriceText</span>
+                    <a class="btn btn-gold btn-sm" asp-page="/Courses/Detail" asp-route-slug="@course.Slug" asp-route-from="@source">Detail kurzu</a>
+                </div>
             </div>
         </article>
     }

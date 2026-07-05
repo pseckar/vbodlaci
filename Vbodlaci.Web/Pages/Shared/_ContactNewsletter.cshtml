@@ -1,0 +1,57 @@
+@model ContactNewsletterViewModel
+
+<section class="section section-honey" id="@Model.SectionId">
+    @if (Model.ShowThistleWatermark)
+    {
+        <partial name="_Thistle" model='new ThistleMark("honey-thistle")' />
+    }
+    <div class="wrap">
+        <div class="contact-grid">
+            <div class="reveal">
+                <span class="kicker">@Model.ContactKicker</span>
+                <h2>@Model.ContactHeading</h2>
+                @if (!string.IsNullOrWhiteSpace(Model.ContactIntro))
+                {
+                    <p class="contact-intro">@Model.ContactIntro</p>
+                }
+                <form method="post" asp-page="/Actions/Contact" class="form-grid">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                    <input type="hidden" name="SourcePage" value="@Model.SourcePage" />
+                    <label class="hidden-honeypot" for="@(Model.HoneypotIdPrefix)-contact-honeypot">Nechte prázdné</label>
+                    <input class="hidden-honeypot" id="@(Model.HoneypotIdPrefix)-contact-honeypot" type="text" name="Honeypot" autocomplete="off" />
+
+                    <input type="text" name="FullName" placeholder="Jméno" aria-label="Jméno" required maxlength="120" />
+                    <input type="email" name="Email" placeholder="E-mail" aria-label="E-mail" required maxlength="180" />
+                    <textarea name="Message" placeholder="@Model.MessagePlaceholder" aria-label="@Model.MessagePlaceholder" required maxlength="2500"></textarea>
+                    <button class="btn btn-moss" type="submit">@Model.ContactSubmitLabel</button>
+                </form>
+                @if (!string.IsNullOrWhiteSpace(Model.ContactNote))
+                {
+                    <p class="contact-note">@Model.ContactNote</p>
+                }
+            </div>
+
+            <div id="newsletter" class="reveal reveal-d1">
+                <span class="kicker">@Model.NewsletterKicker</span>
+                <h2>Newsletter</h2>
+                @if (!string.IsNullOrWhiteSpace(Model.NewsletterIntro))
+                {
+                    <p class="contact-intro">@Model.NewsletterIntro</p>
+                }
+                <form method="post" asp-page="/Actions/Newsletter" class="form-grid">
+                    <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
+                    <label class="hidden-honeypot" for="@(Model.HoneypotIdPrefix)-news-honeypot">Nechte prázdné</label>
+                    <input class="hidden-honeypot" id="@(Model.HoneypotIdPrefix)-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
+
+                    <input type="email" name="Email" placeholder="E-mail" aria-label="E-mail pro newsletter" required maxlength="180" />
+                    <div class="pref-row">
+                        <label class="pref"><input type="checkbox" name="PrefBreathwork" checked="@Model.PrefBreathworkChecked" /><span class="dot"></span>Breathwork</label>
+                        <label class="pref"><input type="checkbox" name="PrefHorses" checked="@Model.PrefHorsesChecked" /><span class="dot"></span>Koně</label>
+                        <label class="pref"><input type="checkbox" name="PrefVeterinary" checked="@Model.PrefVeterinaryChecked" /><span class="dot"></span>Veterina</label>
+                    </div>
+                    <button class="btn btn-moss" type="submit">Přihlásit k odběru</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
