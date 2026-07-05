@@ -1,0 +1,9 @@
+The fonts in this directory are licensed under the SIL Open Font License, Version 1.1.
+
+- Lora — Copyright 2011 The Lora Project Authors (https://github.com/cyrealtype/Lora-Cyrillic)
+- Caveat — Copyright 2014 The Caveat Project Authors (https://github.com/googlefonts/caveat)
+- Source Sans 3 — Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'
+
+Full license text: https://openfontlicense.org/open-font-license-official-text/
+
+The fonts are self-hosted (no external font CDN is used at runtime).
