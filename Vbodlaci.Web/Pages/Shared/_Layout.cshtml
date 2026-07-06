@@ -105,7 +105,9 @@
 {
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 }
-<script src="~/js/site.js" asp-append-version="true"></script>
+@* defer: site.js reads elements rendered later in the document (e.g. the
+   course-defaults JSON emitted by the admin Scripts section) *@
+<script src="~/js/site.js" asp-append-version="true" defer></script>
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

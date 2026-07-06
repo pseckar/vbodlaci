@@ -17,22 +17,22 @@
     }));
 }
 
-<a class="button button-secondary page-back-link"
+<a class="btn btn-outline page-back-link"
    asp-page="/Courses/Index"
    data-confirm-dirty
    data-dirty-form-id="course-create-form"
    data-confirm-message="Máš neuložené změny. Opravdu se chceš vrátit na přehled?">← Zpět na přehled</a>
 
-<section class="section">
-    <div class="container py-4">
+<section class="section admin-section">
+    <div class="wrap">
         <h1>Nový kurz</h1>
 
-        <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Create" class="form-grid" id="course-create-form" data-dirty-form>
+        <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Create" class="form-grid admin-form" id="course-create-form" data-dirty-form>
             <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
 
             <div class="inline-actions">
-                <button type="submit" asp-page-handler="Publish" class="button button-primary" onclick="return confirm('Kurz bude publikovaný a newsletter odběratelé mohou dostat e-mail. Pokračovat?');">Publikovat</button>
-                <button type="submit" asp-page-handler="Draft" class="button button-secondary">Uložit jako draft</button>
+                <button type="submit" asp-page-handler="Publish" class="btn btn-gold" onclick="return confirm('Kurz bude publikovaný a newsletter odběratelé mohou dostat e-mail. Pokračovat?');">Publikovat</button>
+                <button type="submit" asp-page-handler="Draft" class="btn btn-outline">Uložit jako draft</button>
             </div>
         </form>
     </div>
@@ -53,8 +53,8 @@
                     <textarea asp-for="DefaultText" id="defaultTextValue" rows="8"></textarea>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="button button-secondary" data-bs-dismiss="modal">Zrušit</button>
-                    <button type="submit" class="button button-primary">Uložit výchozí text</button>
+                    <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Zrušit</button>
+                    <button type="submit" class="btn btn-gold">Uložit výchozí text</button>
                 </div>
             </form>
         </div>

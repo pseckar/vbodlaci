@@ -1,4 +1,4 @@
-﻿@page "{id:guid}"
+@page "{id:guid}"
 @model Vbodlaci.Web.Areas.Admin.Pages.Contacts.DetailModel
 @{
     ViewData["Title"] = "Detail zprávy";
@@ -6,21 +6,25 @@
 
 @if (Model.Message is null)
 {
-    <section class="section"><h1>Zpráva nebyla nalezena</h1></section>
+    <section class="section admin-section"><div class="wrap"><h1>Zpráva nebyla nalezena</h1></div></section>
     return;
 }
 
-<a class="button button-secondary page-back-link" asp-page="/Contacts/Index">← Zpět na přehled</a>
+<a class="btn btn-outline page-back-link" asp-page="/Contacts/Index">← Zpět na přehled</a>
 
-<section class="section">
-    <h1>Detail zprávy</h1>
-    <p><strong>Datum:</strong> @Model.Message.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
-    <p><strong>Jméno:</strong> @Model.Message.FullName</p>
-    <p><strong>E-mail:</strong> @Model.Message.Email</p>
-    <p><strong>Zdroj:</strong> @Model.Message.SourcePage</p>
-    <p><strong>IP:</strong> @Model.Message.ClientIp</p>
-    <div class="section">
-        <h2>Zpráva</h2>
-        <p>@Model.Message.Message</p>
+<section class="section admin-section">
+    <div class="wrap">
+        <h1>Detail zprávy</h1>
+        <div class="panel-card">
+            <p><strong>Datum:</strong> @Model.Message.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</p>
+            <p><strong>Jméno:</strong> @Model.Message.FullName</p>
+            <p><strong>E-mail:</strong> @Model.Message.Email</p>
+            <p><strong>Zdroj:</strong> @Model.Message.SourcePage</p>
+            <p><strong>IP:</strong> @Model.Message.ClientIp</p>
+        </div>
+        <div class="panel-card mt-4">
+            <h2>Zpráva</h2>
+            <p>@Model.Message.Message</p>
+        </div>
     </div>
 </section>

@@ -9,14 +9,14 @@
     };
 }
 
-<a class="button button-secondary page-back-link"
+<a class="btn btn-outline page-back-link"
    asp-page="/Courses/Index"
    data-confirm-dirty
    data-dirty-form-id="course-edit-form"
    data-confirm-message="Máš neuložené změny. Opravdu se chceš vrátit na přehled?">← Zpět na přehled</a>
 
-<section class="section">
-    <div class="container py-4">
+<section class="section admin-section">
+    <div class="wrap">
         <h1>Úprava kurzu</h1>
 
         <div class="status-badge status-@Model.CurrentStatus.ToString().ToLowerInvariant()">
@@ -34,11 +34,11 @@
         }
         else
         {
-            <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid" id="course-edit-form" data-dirty-form>
+            <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid admin-form" id="course-edit-form" data-dirty-form>
                 <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
 
                 <div class="inline-actions">
-                    <button type="submit" class="button button-primary">Uložit kurz</button>
+                    <button type="submit" class="btn btn-gold">Uložit kurz</button>
                 </div>
             </form>
         }
@@ -50,6 +50,7 @@
         </div>
     </div>
 </section>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,41 +1,44 @@
-﻿@page
+@page
 @model Vbodlaci.Web.Areas.Admin.Pages.Newsletter.IndexModel
 @{
     ViewData["Title"] = "Newsletter odběratelé";
 }
 
-<a class="button button-secondary page-back-link" asp-page="/Index">← Zpět do administrace</a>
+<a class="btn btn-outline page-back-link" asp-page="/Index">← Zpět do administrace</a>
 
-<section class="section">
-    <h1>Newsletter odběratelé</h1>
-    <a class="button button-secondary" asp-page="/Newsletter/Index" asp-page-handler="Export">Export CSV</a>
+<section class="section admin-section">
+    <div class="wrap">
+        <div class="admin-head">
+            <h1>Newsletter odběratelé</h1>
+            <a class="btn btn-outline" asp-page="/Newsletter/Index" asp-page-handler="Export">Export CSV</a>
+        </div>
 
-    <div class="table-wrap">
-        <table class="admin-table">
-            <thead>
-            <tr>
-                <th>E-mail</th>
-                <th>Breathwork</th>
-                <th>Koně</th>
-                <th>Veterina</th>
-                <th>Aktivní</th>
-                <th>Vytvořeno</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var subscriber in Model.Subscribers)
-            {
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
                 <tr>
-                    <td>@subscriber.Email</td>
-                    <td>@subscriber.PrefBreathwork</td>
-                    <td>@subscriber.PrefHorses</td>
-                    <td>@subscriber.PrefVeterinary</td>
-                    <td>@subscriber.IsSubscribed</td>
-                    <td>@subscriber.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    <th>E-mail</th>
+                    <th>Breathwork</th>
+                    <th>Koně</th>
+                    <th>Veterina</th>
+                    <th>Aktivní</th>
+                    <th>Vytvořeno</th>
                 </tr>
-            }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @foreach (var subscriber in Model.Subscribers)
+                {
+                    <tr>
+                        <td>@subscriber.Email</td>
+                        <td>@subscriber.PrefBreathwork</td>
+                        <td>@subscriber.PrefHorses</td>
+                        <td>@subscriber.PrefVeterinary</td>
+                        <td>@subscriber.IsSubscribed</td>
+                        <td>@subscriber.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
-

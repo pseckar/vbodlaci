@@ -1,36 +1,38 @@
-﻿@page
+@page
 @model Vbodlaci.Web.Areas.Admin.Pages.Contacts.IndexModel
 @{
     ViewData["Title"] = "Kontaktní zprávy";
 }
 
-<a class="button button-secondary page-back-link" asp-page="/Index">← Zpět do administrace</a>
+<a class="btn btn-outline page-back-link" asp-page="/Index">← Zpět do administrace</a>
 
-<section class="section">
-    <h1>Kontaktní zprávy</h1>
-    <div class="table-wrap">
-        <table class="admin-table">
-            <thead>
-            <tr>
-                <th>Datum</th>
-                <th>Jméno</th>
-                <th>E-mail</th>
-                <th>Zdroj</th>
-                <th>Akce</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var message in Model.Messages)
-            {
+<section class="section admin-section">
+    <div class="wrap">
+        <h1>Kontaktní zprávy</h1>
+        <div class="table-wrap">
+            <table class="admin-table">
+                <thead>
                 <tr>
-                    <td>@message.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
-                    <td>@message.FullName</td>
-                    <td>@message.Email</td>
-                    <td>@message.SourcePage</td>
-                    <td><a class="button button-secondary" asp-page="/Contacts/Detail" asp-route-id="@message.Id">Detail</a></td>
+                    <th>Datum</th>
+                    <th>Jméno</th>
+                    <th>E-mail</th>
+                    <th>Zdroj</th>
+                    <th>Akce</th>
                 </tr>
-            }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                @foreach (var message in Model.Messages)
+                {
+                    <tr>
+                        <td>@message.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
+                        <td>@message.FullName</td>
+                        <td>@message.Email</td>
+                        <td>@message.SourcePage</td>
+                        <td><a class="btn btn-outline" asp-page="/Contacts/Detail" asp-route-id="@message.Id">Detail</a></td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
