@@ -1,0 +1,32 @@
+@model Vbodlaci.Web.Areas.Admin.Pages.Courses.EditModel
+
+@if (Model.IsDraft)
+{
+    <div class="status-bar status-bar-draft">
+        <p>Kurz je uložen jako návrh. Aby byl viditelný na webu, je potřeba ho publikovat.</p>
+        <div class="inline-actions">
+            <form method="post" asp-page-handler="Publish" asp-route-id="@Model.CourseId"
+                  onsubmit="return confirm('Opravdu chceš kurz publikovat? Při první publikaci se odešle newsletter.');">
+                <button type="submit" class="btn btn-gold">Publikovat</button>
+            </form>
+            <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CourseId"
+                  onsubmit="return confirm('Opravdu chceš kurz smazat? Návrh bude odstraněn z administrace.');">
+                <button type="submit" class="btn btn-outline">Smazat</button>
+            </form>
+            <button type="submit" class="btn btn-outline" form="course-edit-form">Uložit návrh</button>
+        </div>
+    </div>
+}
+else if (Model.IsPublished)
+{
+    <div class="status-bar status-bar-published">
+        <p>Publikován @Model.PublishedAtLabel</p>
+        <div class="inline-actions">
+            <button type="submit" class="btn btn-gold" form="course-edit-form">Uložit změny</button>
+            <form method="post" asp-page-handler="Cancel" asp-route-id="@Model.CourseId"
+                  onsubmit="return confirm('Opravdu chceš kurz zrušit? Účastníkům bude odeslán e-mail o zrušení.');">
+                <button type="submit" class="btn btn-outline">Zrušit kurz</button>
+            </form>
+        </div>
+    </div>
+}

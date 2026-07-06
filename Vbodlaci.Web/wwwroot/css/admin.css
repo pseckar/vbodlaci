@@ -182,6 +182,46 @@
     font-size: 0.85rem;
 }
 
+/* the whole generated post incl. course link should fit without scrolling */
+.panel-card textarea.facebook-text {
+    min-height: 250px;
+}
+
+/* ---------- course detail status bars ---------- */
+
+.status-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    border-radius: 14px;
+    padding: 0.9rem 1.3rem;
+    margin-top: 1.2rem;
+}
+
+.status-bar p {
+    margin: 0;
+    font-weight: 600;
+    color: inherit;
+}
+
+.status-bar .inline-actions {
+    flex: none;
+}
+
+.status-bar-draft {
+    background: var(--honey-tint);
+    border: 1.5px solid var(--amber);
+    color: #7a4d00;
+}
+
+.status-bar-published {
+    background: var(--leaf-tint);
+    border: 1.5px solid var(--leaf);
+    color: var(--moss-dark);
+}
+
 /* ---------- course detail (combined edit + preview) ---------- */
 
 .edit-grid {

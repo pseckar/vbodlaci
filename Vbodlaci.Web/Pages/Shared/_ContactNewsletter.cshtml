@@ -14,7 +14,7 @@
                 {
                     <p class="contact-intro">@Model.ContactIntro</p>
                 }
-                <form method="post" asp-page="/Actions/Contact" class="form-grid">
+                <form method="post" asp-page="/Actions/Contact" class="form-grid" id="@(Model.HoneypotIdPrefix)-contact-form" data-ajax-flash>
                     <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
                     <input type="hidden" name="SourcePage" value="@Model.SourcePage" />
                     <label class="hidden-honeypot" for="@(Model.HoneypotIdPrefix)-contact-honeypot">Nechte prázdné</label>
@@ -38,7 +38,7 @@
                 {
                     <p class="contact-intro">@Model.NewsletterIntro</p>
                 }
-                <form method="post" asp-page="/Actions/Newsletter" class="form-grid">
+                <form method="post" asp-page="/Actions/Newsletter" class="form-grid" id="@(Model.HoneypotIdPrefix)-newsletter-form" data-ajax-flash>
                     <input type="hidden" name="ReturnUrl" value="@Model.ReturnUrl" />
                     <label class="hidden-honeypot" for="@(Model.HoneypotIdPrefix)-news-honeypot">Nechte prázdné</label>
                     <input class="hidden-honeypot" id="@(Model.HoneypotIdPrefix)-news-honeypot" type="text" name="Honeypot" autocomplete="off" />

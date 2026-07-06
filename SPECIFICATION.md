@@ -209,7 +209,7 @@ On submit:
 - send confirmation email to participant,
 - persist registration in DB for audit/history.
 - successful submit redirects to the same course detail URL without registration-section fragment,
-- form outcome messages (course registration, contact, newsletter) are shown as a centered dialog that can be dismissed with its close button, the Escape key, or a click outside the dialog; without JavaScript the message renders as a plain notice bar at the top of the page,
+- form outcome messages (course registration, contact, newsletter) are shown as a centered dialog that can be dismissed with its close button, the Escape key, or a click outside the dialog; with JavaScript available the forms submit in place (no page reload or scroll jump), otherwise the standard redirect flow applies and the message renders as a plain notice bar at the top of the page,
 - validation failure keeps user in-place at the registration section and does not jump to page top.
 
 ### 7.4 Admin Interface
@@ -224,11 +224,13 @@ Admin-only pages (protected by authentication):
 Admin course workflow (two-step):
 1. Create page: admin fills all course fields and continues with a single `Pokračovat` action, which saves the course as a draft and opens the admin course detail.
 2. Admin course detail (combined edit + preview) shows:
-- editable course fields with a save action,
+- editable course fields,
 - preview of the public course card,
 - copyable public course URL (copy button; the link works after publication),
-- copyable Facebook post text (copy button),
-- status actions: `Publikovat` (draft only), `Zrušit kurz` (published only), `Smazat` (draft only), and back navigation.
+- copyable Facebook post text including the course URL (copy button),
+- a status bar rendered above and below the form: drafts show a distinctive notice (`Kurz je uložen jako návrh. Aby byl viditelný na webu, je potřeba ho publikovat.`) with `Publikovat`, `Smazat`, and `Uložit návrh`; published courses show the publication date (`Publikován {datum}`) with `Uložit změny` and `Zrušit kurz`,
+- creating a course does not show a confirmation dialog — the draft notice bar carries that information; publishing and saving changes confirm via the standard dialog.
+- Czech label for the draft state is `Návrh`.
 
 Course list rules:
 - the overview shows all non-deleted courses (including canceled) with a single `Upravit` action per row,
@@ -628,7 +630,7 @@ This section supersedes older MVP clauses where they conflict.
 ### 25.4 Course Detail
 
 - Course detail starts with an image hero overlaid with the course name.
-- The detailed description section is shown only when enabled for the course. It includes a CTA back to the relevant service page (`Více o breathworku` or `Více o koních`).
+- The `O kurzu` section is always shown: the first paragraph is the short description, followed by the detailed description only when it is enabled for the course. It includes a CTA back to the relevant service page (`Více o breathworku` or `Více o koních`).
 - The next content block has two columns: basic course information in a lightweight table and, when enabled, `Co tě čeká`.
 - Registration remains unchanged in purpose and behavior.
 - `Další termíny` shows all other future published courses of the same type, sorted nearest date first.

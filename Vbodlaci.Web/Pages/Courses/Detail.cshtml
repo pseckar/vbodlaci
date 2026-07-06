@@ -23,7 +23,6 @@
 @{
     var servicePage = Model.Course.Type == CourseType.Breathwork ? "/Services/Breathwork" : "/Services/Horses";
     var serviceCta = Model.Course.Type == CourseType.Breathwork ? "Více o breathworku" : "Více o koních";
-    var heroCurveFill = Model.Course.IsFullDescriptionVisible ? "var(--cream)" : "var(--leaf-tint)";
 }
 
 <header class="hero hero-small" style="--photo-src:url('@Model.Course.ImageUrl')">
@@ -47,22 +46,23 @@
             <h1>@Model.Course.Title</h1>
         </div>
     </div>
-    <partial name="_Curve" model='new SectionCurve(heroCurveFill, Hero: true)' />
+    <partial name="_Curve" model='new SectionCurve("var(--cream)", Hero: true)' />
 </header>
 
-@if (Model.Course.IsFullDescriptionVisible)
-{
-    <section class="section section-cream">
-        <div class="wrap">
-            <div class="section-head reveal" style="margin-bottom:0">
-                <span class="kicker">o kurzu</span>
-                <h2>O kurzu</h2>
+<section class="section section-cream">
+    <div class="wrap">
+        <div class="section-head reveal" style="margin-bottom:0">
+            <span class="kicker">o kurzu</span>
+            <h2>O kurzu</h2>
+            <p class="lede">@Model.Course.ShortDescription</p>
+            @if (Model.Course.IsFullDescriptionVisible)
+            {
                 <p class="lede">@Model.Course.FullDescription</p>
-                <a class="btn btn-moss" style="margin-top:1.4rem" asp-page="@servicePage">@serviceCta</a>
-            </div>
+            }
+            <a class="btn btn-moss" style="margin-top:1.4rem" asp-page="@servicePage">@serviceCta</a>
         </div>
-    </section>
-}
+    </div>
+</section>
 
 <section class="section section-leaf">
     <div class="wrap">
@@ -109,7 +109,7 @@
         else
         {
             <div class="form-card">
-                <form method="post" asp-page="/Courses/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid">
+                <form method="post" asp-page="/Courses/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid" id="registration-form" data-ajax-flash>
                     <input type="hidden" name="from" value="@Model.SourceContext" />
 
                     <label class="hidden-honeypot" asp-for="Registration.Honeypot">Nechte prázdné</label>

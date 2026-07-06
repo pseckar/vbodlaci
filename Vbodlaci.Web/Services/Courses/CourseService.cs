@@ -120,7 +120,7 @@ public sealed class CourseService(
     {
         if (model.Status is not (CourseStatus.Draft or CourseStatus.Published))
         {
-            return (ServiceResult.Failure("Nový kurz lze uložit pouze jako draft nebo publikovat."), null);
+            return (ServiceResult.Failure("Nový kurz lze uložit pouze jako návrh nebo publikovat."), null);
         }
 
         var imagePath = string.Empty;
@@ -253,7 +253,7 @@ public sealed class CourseService(
 
         if (course.Status != CourseStatus.Draft)
         {
-            return ServiceResult.Failure("Smazat lze pouze kurz ve stavu draft.");
+            return ServiceResult.Failure("Smazat lze pouze návrh kurzu.");
         }
 
         course.IsDeleted = true;
@@ -292,7 +292,7 @@ public sealed class CourseService(
     {
         if (course.Status != CourseStatus.Draft)
         {
-            return ServiceResult.Failure("Publikovat lze pouze kurz ve stavu draft.");
+            return ServiceResult.Failure("Publikovat lze pouze návrh kurzu.");
         }
 
         course.Status = CourseStatus.Published;
@@ -419,7 +419,7 @@ public sealed class CourseService(
         };
     }
 
-    private static CourseDetailViewModel MapToDetail(Course course)
+    private CourseDetailViewModel MapToDetail(Course course)
     {
         return new CourseDetailViewModel
         {
@@ -445,14 +445,16 @@ public sealed class CourseService(
         };
     }
 
-    private static string BuildFacebookText(Course course)
+    private string BuildFacebookText(Course course)
     {
+        var courseUrl = $"{siteOptions.Value.SiteUrl.TrimEnd('/')}/kurzy/{course.Slug}";
+
         return $"{course.Title}\n" +
                $"Typ: {(course.Type == CourseType.Breathwork ? "Breathwork v bodláčí" : "Koně v bodláčí")}\n" +
                $"Termín: {FormatDate(course.CourseDate)} {course.TimeText}\n" +
                $"Místo: {course.CityOrArea}\n" +
                $"Cena: {course.PriceText}\n\n" +
-               "Přihlášení na webu V bodláčí.";
+               $"Více informací a přihlášení: {courseUrl}";
     }
 
     private static string ResolveImagePath(string value, string fallback)

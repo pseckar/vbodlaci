@@ -483,3 +483,5 @@ $RECYCLE.BIN/
 
 # Keys on filesystem
 **/.dpkeys/*
+# runtime course image uploads
+Vbodlaci.Web/wwwroot/uploads/

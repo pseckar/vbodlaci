@@ -63,14 +63,15 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
         }
 
         var (result, id) = await courseService.CreateAsync(Input, cancellationToken);
-        TempData["FlashMessage"] = result.Message;
-        TempData["FlashType"] = result.Succeeded ? "success" : "error";
 
         if (result.Succeeded && id.HasValue)
         {
+            // no dialog here — the draft notice bar on the detail page carries the information
             return RedirectToPage("/Courses/Edit", new { id = id.Value });
         }
 
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = "error";
         return Page();
     }
 

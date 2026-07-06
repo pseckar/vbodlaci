@@ -28,40 +28,14 @@ else
 
 <section class="section admin-section">
     <div class="wrap">
-        <div class="admin-head">
-            <div>
-                <h1>Detail kurzu</h1>
-                <span class="status-badge status-@Model.CurrentStatus.ToString().ToLowerInvariant()">Stav: @Model.StatusLabel</span>
-            </div>
-            @if (!Model.IsReadOnly)
-            {
-                <div class="inline-actions">
-                    @if (Model.IsDraft)
-                    {
-                        <form method="post" asp-page-handler="Publish" asp-route-id="@Model.CourseId"
-                              onsubmit="return confirm('Opravdu chceš kurz publikovat? Při první publikaci se odešle newsletter.');">
-                            <button type="submit" class="btn btn-gold">Publikovat</button>
-                        </form>
-                        <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CourseId"
-                              onsubmit="return confirm('Opravdu chceš kurz smazat? Kurz v draftu bude odstraněn z administrace.');">
-                            <button type="submit" class="btn btn-outline">Smazat</button>
-                        </form>
-                    }
-                    else if (Model.IsPublished)
-                    {
-                        <form method="post" asp-page-handler="Cancel" asp-route-id="@Model.CourseId"
-                              onsubmit="return confirm('Opravdu chceš kurz zrušit? Účastníkům bude odeslán e-mail o zrušení.');">
-                            <button type="submit" class="btn btn-outline">Zrušit kurz</button>
-                        </form>
-                    }
-                </div>
-            }
-        </div>
+        <h1>Detail kurzu</h1>
 
         @if (Model.IsReadOnly)
         {
             <p class="field-error">Kurz je zrušený a je dostupný pouze pro čtení.</p>
         }
+
+        <partial name="_CourseStatusBar" model="Model" />
 
         <div class="edit-grid">
             <div>
@@ -80,10 +54,6 @@ else
                 {
                     <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid admin-form" id="course-edit-form" data-dirty-form>
                         <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
-
-                        <div class="inline-actions">
-                            <button type="submit" class="btn btn-moss">Uložit změny</button>
-                        </div>
                     </form>
                 }
             </div>
@@ -110,7 +80,7 @@ else
 
                 <div class="panel-card">
                     <h2>Text pro Facebook</h2>
-                    <textarea id="facebookPostText" readonly>@Model.FacebookPostText</textarea>
+                    <textarea id="facebookPostText" class="facebook-text" readonly>@Model.FacebookPostText</textarea>
                     <div class="copy-row-end">
                         <button type="button" class="btn btn-outline btn-sm" data-copy="#facebookPostText">Kopírovat</button>
                     </div>
@@ -118,6 +88,8 @@ else
                 </div>
             </aside>
         </div>
+
+        <partial name="_CourseStatusBar" model="Model" />
     </div>
 </section>
 

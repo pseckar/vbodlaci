@@ -20,6 +20,10 @@ public sealed class EditModel(ICourseService courseService) : PageModel
 
     public string PublicUrl { get; private set; } = string.Empty;
 
+    public DateTimeOffset? PublishedAt { get; private set; }
+
+    public string PublishedAtLabel => PublishedAt?.ToLocalTime().ToString("d.M.yyyy") ?? string.Empty;
+
     public CourseListItem PreviewItem { get; private set; } = new();
 
     public bool IsReadOnly => CurrentStatus == CourseStatus.Canceled;
@@ -30,7 +34,7 @@ public sealed class EditModel(ICourseService courseService) : PageModel
 
     public string StatusLabel => CurrentStatus switch
     {
-        CourseStatus.Draft => "Draft",
+        CourseStatus.Draft => "Návrh",
         CourseStatus.Published => "Publikovaný",
         CourseStatus.Canceled => "Zrušen",
         _ => CurrentStatus.ToString()
@@ -126,6 +130,7 @@ public sealed class EditModel(ICourseService courseService) : PageModel
         CurrentStatus = detail.Status;
         FacebookPostText = detail.FacebookPostText;
         CurrentImageUrl = detail.ImageUrl;
+        PublishedAt = detail.PublishedAt;
         PublicUrl = Url.Page("/Courses/Detail", pageHandler: null,
             values: new { area = "", slug = detail.Slug }, protocol: Request.Scheme) ?? string.Empty;
         PreviewItem = new CourseListItem

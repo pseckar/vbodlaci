@@ -496,7 +496,7 @@ img {
     border-radius: 18px;
     overflow: hidden;
     box-shadow: var(--shadow-soft);
-    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    transition: transform 0.45s ease, box-shadow 0.45s ease;
     display: flex;
     flex-direction: column;
 }
@@ -1002,10 +1002,26 @@ img {
     pointer-events: none;
 }
 
+/* check/cross indicator driven by the selection state */
+.pref::before {
+    content: "✕";
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--muted);
+    opacity: 0.55;
+}
+
 .pref:has(input:checked) {
     border-color: var(--moss);
     color: var(--moss);
     background: var(--leaf-tint);
+}
+
+.pref:has(input:checked)::before {
+    content: "✓";
+    color: var(--moss);
+    opacity: 1;
 }
 
 .pref:has(input:focus-visible) {
@@ -1505,6 +1521,21 @@ img {
 
 .js .reveal-d2 {
     transition-delay: 0.16s;
+}
+
+/* cards are revealed AND hover-animated: .reveal's transition shorthand would
+   otherwise drop the transform/box-shadow transitions entirely, so list all
+   four properties (reveal delays must not delay the hover response) */
+.js .card.reveal {
+    transition: opacity 0.6s ease, translate 0.6s ease, transform 0.45s ease, box-shadow 0.45s ease;
+}
+
+.js .card.reveal-d1 {
+    transition-delay: 0.08s, 0.08s, 0s, 0s;
+}
+
+.js .card.reveal-d2 {
+    transition-delay: 0.16s, 0.16s, 0s, 0s;
 }
 
 /* ---------- utilities ---------- */

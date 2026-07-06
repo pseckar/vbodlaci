@@ -205,16 +205,15 @@
     });
   }
 
-  const flashOverlay = document.querySelector("[data-flash-overlay]");
-  if (flashOverlay) {
-    const closeFlash = () => flashOverlay.remove();
-    flashOverlay.addEventListener("click", (event) => {
-      if (event.target === flashOverlay) {
+  const bindFlashOverlay = (overlay) => {
+    const closeFlash = () => overlay.remove();
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) {
         closeFlash();
       }
     });
 
-    const closeButton = flashOverlay.querySelector("[data-flash-close]");
+    const closeButton = overlay.querySelector("[data-flash-close]");
     if (closeButton) {
       closeButton.addEventListener("click", closeFlash);
       closeButton.focus();
@@ -225,7 +224,71 @@
         closeFlash();
       }
     });
+  };
+
+  const initialFlashOverlay = document.querySelector("[data-flash-overlay]");
+  if (initialFlashOverlay) {
+    bindFlashOverlay(initialFlashOverlay);
   }
+
+  // public forms submit in place: the outcome dialog is lifted from the
+  // response so the page neither reloads nor scrolls; on validation errors
+  // the returned form (same id) replaces the current one
+  const bindAjaxFlashForm = (form) => {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (window.jQuery && jQuery.fn.validate && !jQuery(form).valid()) {
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      if (submitButton) {
+        submitButton.disabled = true;
+      }
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { "X-Requested-With": "fetch" }
+        });
+        const html = await response.text();
+        const parsed = new DOMParser().parseFromString(html, "text/html");
+        const overlay = parsed.querySelector("[data-flash-overlay]");
+        const replacement = form.id ? parsed.getElementById(form.id) : null;
+
+        if (!overlay && replacement) {
+          replacement.setAttribute("data-ajax-flash", "");
+          form.replaceWith(replacement);
+          if (window.jQuery && jQuery.validator && jQuery.validator.unobtrusive) {
+            jQuery.validator.unobtrusive.parse(replacement);
+          }
+          bindAjaxFlashForm(replacement);
+          return;
+        }
+
+        if (overlay) {
+          if (response.ok) {
+            form.reset();
+          }
+          document.body.appendChild(overlay);
+          bindFlashOverlay(overlay);
+          return;
+        }
+
+        window.location.href = response.url || window.location.href;
+      } catch {
+        form.submit();
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+        }
+      }
+    });
+  };
+
+  document.querySelectorAll("form[data-ajax-flash]").forEach(bindAjaxFlashForm);
 
   const revealElements = Array.from(document.querySelectorAll(".reveal"));
   if (revealElements.length > 0) {

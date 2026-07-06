@@ -34,7 +34,7 @@
                         <td>@(course.Type == CourseType.Breathwork ? "Breathwork" : "Koně")</td>
                         <td>
                             <span class="status-badge status-@course.Status.ToString().ToLowerInvariant()">
-                                @(course.Status switch { CourseStatus.Draft => "Draft", CourseStatus.Published => "Publikovaný", CourseStatus.Canceled => "Zrušen", _ => course.Status.ToString() })
+                                @(course.Status switch { CourseStatus.Draft => "Návrh", CourseStatus.Published => "Publikovaný", CourseStatus.Canceled => "Zrušen", _ => course.Status.ToString() })
                             </span>
                         </td>
                         <td>@course.CourseDate.ToString("dd.MM.yyyy") @course.TimeText</td>
