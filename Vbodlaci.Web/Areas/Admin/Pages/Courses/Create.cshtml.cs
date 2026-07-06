@@ -16,8 +16,10 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
     [BindProperty]
     public CourseTextField DefaultField { get; set; }
 
+    // nullable: posted only by the default-text dialog form; a non-nullable
+    // string would add an implicit required error to every course submit
     [BindProperty]
-    public string DefaultText { get; set; } = string.Empty;
+    public string? DefaultText { get; set; }
 
     public IReadOnlyList<CourseTextDefaultItem> DefaultTexts { get; private set; } = [];
 
@@ -49,7 +51,7 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
     public async Task<IActionResult> OnPostDefaultTextAsync(CancellationToken cancellationToken)
     {
         ModelState.Clear();
-        var result = await courseService.UpdateTextDefaultAsync(DefaultType, DefaultField, DefaultText, cancellationToken);
+        var result = await courseService.UpdateTextDefaultAsync(DefaultType, DefaultField, DefaultText ?? string.Empty, cancellationToken);
         TempData["FlashMessage"] = result.Message;
         TempData["FlashType"] = result.Succeeded ? "success" : "error";
         return RedirectToPage();

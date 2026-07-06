@@ -50,7 +50,8 @@ public sealed class EditModel(ICourseService courseService) : PageModel
             return NotFound();
         }
 
-        PopulateFromDetail(detail);
+        // populate page context only — replacing Input here would discard the posted edits
+        PopulateContext(detail);
 
         if (detail.Status == CourseStatus.Canceled)
         {
@@ -84,11 +85,17 @@ public sealed class EditModel(ICourseService courseService) : PageModel
         return RedirectToPage(new { id });
     }
 
-    private void PopulateFromDetail(CourseDetailViewModel detail)
+    private void PopulateContext(CourseDetailViewModel detail)
     {
         CourseId = detail.Id;
         CurrentStatus = detail.Status;
         FacebookPostText = detail.FacebookPostText;
+        CurrentImageUrl = detail.ImageUrl;
+    }
+
+    private void PopulateFromDetail(CourseDetailViewModel detail)
+    {
+        PopulateContext(detail);
         Input = new CourseEditModel
         {
             Id = detail.Id,
@@ -106,6 +113,5 @@ public sealed class EditModel(ICourseService courseService) : PageModel
             WhatToExpect = detail.WhatToExpect,
             IsWhatToExpectVisible = detail.IsWhatToExpectVisible
         };
-        CurrentImageUrl = detail.ImageUrl;
     }
 }
