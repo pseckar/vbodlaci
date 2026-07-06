@@ -41,32 +41,7 @@
                         <td>@course.CityOrArea</td>
                         <td>
                             <div class="inline-actions">
-                                @if (course.Status == CourseStatus.Draft)
-                                {
-                                    <a class="btn btn-outline" asp-page="/Courses/Edit" asp-route-id="@course.Id">Upravit</a>
-                                    <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz publikovat? Při první publikaci se odešle newsletter.');">
-                                        <input type="hidden" name="id" value="@course.Id" />
-                                        <input type="hidden" name="status" value="Published" />
-                                        <button type="submit" class="btn btn-gold">Publikovat</button>
-                                    </form>
-                                    <form method="post" asp-page-handler="Delete" onsubmit="return confirm('Opravdu chceš kurz smazat? Kurz v draftu bude odstraněn z administrace.');">
-                                        <input type="hidden" name="id" value="@course.Id" />
-                                        <button type="submit" class="btn btn-outline">Smazat</button>
-                                    </form>
-                                }
-                                else if (course.Status == CourseStatus.Published)
-                                {
-                                    <a class="btn btn-outline" asp-page="/Courses/Edit" asp-route-id="@course.Id">Upravit</a>
-                                    <form method="post" asp-page-handler="Status" onsubmit="return confirm('Opravdu chceš kurz zrušit? Účastníkům bude odeslán e-mail o zrušení.');">
-                                        <input type="hidden" name="id" value="@course.Id" />
-                                        <input type="hidden" name="status" value="Canceled" />
-                                        <button type="submit" class="btn btn-outline">Zrušit</button>
-                                    </form>
-                                }
-                                else
-                                {
-                                    <span class="muted">Bez dostupných akcí</span>
-                                }
+                                <a class="btn btn-outline" asp-page="/Courses/Edit" asp-route-id="@course.Id">Upravit</a>
                             </div>
                         </td>
                     </tr>

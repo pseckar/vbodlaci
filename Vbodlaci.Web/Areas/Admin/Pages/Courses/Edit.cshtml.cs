@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Vbodlaci.Web.Application.Courses;
 using Vbodlaci.Web.Domain.Courses;
@@ -18,7 +18,15 @@ public sealed class EditModel(ICourseService courseService) : PageModel
 
     public string CurrentImageUrl { get; private set; } = string.Empty;
 
+    public string PublicUrl { get; private set; } = string.Empty;
+
+    public CourseListItem PreviewItem { get; private set; } = new();
+
     public bool IsReadOnly => CurrentStatus == CourseStatus.Canceled;
+
+    public bool IsDraft => CurrentStatus == CourseStatus.Draft;
+
+    public bool IsPublished => CurrentStatus == CourseStatus.Published;
 
     public string StatusLabel => CurrentStatus switch
     {
@@ -85,12 +93,55 @@ public sealed class EditModel(ICourseService courseService) : PageModel
         return RedirectToPage(new { id });
     }
 
+    public async Task<IActionResult> OnPostPublishAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await courseService.ChangeStatusAsync(id, CourseStatus.Published, cancellationToken);
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = result.Succeeded ? "success" : "error";
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostCancelAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await courseService.ChangeStatusAsync(id, CourseStatus.Canceled, cancellationToken);
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = result.Succeeded ? "success" : "error";
+        return RedirectToPage(new { id });
+    }
+
+    public async Task<IActionResult> OnPostDeleteAsync(Guid id, CancellationToken cancellationToken)
+    {
+        var result = await courseService.SoftDeleteAsync(id, cancellationToken);
+        TempData["FlashMessage"] = result.Message;
+        TempData["FlashType"] = result.Succeeded ? "success" : "error";
+
+        return result.Succeeded
+            ? RedirectToPage("/Courses/Index")
+            : RedirectToPage(new { id });
+    }
+
     private void PopulateContext(CourseDetailViewModel detail)
     {
         CourseId = detail.Id;
         CurrentStatus = detail.Status;
         FacebookPostText = detail.FacebookPostText;
         CurrentImageUrl = detail.ImageUrl;
+        PublicUrl = Url.Page("/Courses/Detail", pageHandler: null,
+            values: new { area = "", slug = detail.Slug }, protocol: Request.Scheme) ?? string.Empty;
+        PreviewItem = new CourseListItem
+        {
+            Id = detail.Id,
+            Type = detail.Type,
+            Status = detail.Status,
+            Title = detail.Title,
+            Slug = detail.Slug,
+            CourseDate = detail.CourseDate,
+            TimeText = detail.TimeText,
+            CityOrArea = detail.CityOrArea,
+            PriceText = detail.PriceText,
+            ShortDescription = detail.ShortDescription,
+            ThumbnailImageUrl = detail.ThumbnailImageUrl
+        };
     }
 
     private void PopulateFromDetail(CourseDetailViewModel detail)

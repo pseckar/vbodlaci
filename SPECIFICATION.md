@@ -221,13 +221,19 @@ Admin-only pages (protected by authentication):
 - newsletter subscriber overview/export (minimum read/export support),
 - read-only message inbox view for contact forms.
 
-Admin course actions:
-- create course,
-- update course,
-- delete draft course (soft delete),
-- cancel published course,
-- preview public card/detail rendering,
-- create/edit courses.
+Admin course workflow (two-step):
+1. Create page: admin fills all course fields and continues with a single `Pokračovat` action, which saves the course as a draft and opens the admin course detail.
+2. Admin course detail (combined edit + preview) shows:
+- editable course fields with a save action,
+- preview of the public course card,
+- copyable public course URL (copy button; the link works after publication),
+- copyable Facebook post text (copy button),
+- status actions: `Publikovat` (draft only), `Zrušit kurz` (published only), `Smazat` (draft only), and back navigation.
+
+Course list rules:
+- the overview shows all non-deleted courses (including canceled) with a single `Upravit` action per row,
+- the detail of a canceled course opens read-only with no actions available,
+- deleted draft courses are not listed anywhere.
 
 ## 8. Content Model And Business Rules
 

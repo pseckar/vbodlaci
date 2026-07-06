@@ -2,55 +2,124 @@
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 @model Vbodlaci.Web.Areas.Admin.Pages.Courses.EditModel
 @{
-    ViewData["Title"] = "Úprava kurzu";
+    ViewData["Title"] = "Detail kurzu";
     var formViewData = new ViewDataDictionary(ViewData)
     {
         ["CurrentImageUrl"] = Model.CurrentImageUrl
     };
+    var previewViewData = new ViewDataDictionary(ViewData)
+    {
+        ["CourseSource"] = null
+    };
 }
 
-<a class="btn btn-outline page-back-link"
-   asp-page="/Courses/Index"
-   data-confirm-dirty
-   data-dirty-form-id="course-edit-form"
-   data-confirm-message="Máš neuložené změny. Opravdu se chceš vrátit na přehled?">← Zpět na přehled</a>
+@if (Model.IsReadOnly)
+{
+    <a class="btn btn-outline page-back-link" asp-page="/Courses/Index">← Zpět na přehled</a>
+}
+else
+{
+    <a class="btn btn-outline page-back-link"
+       asp-page="/Courses/Index"
+       data-confirm-dirty
+       data-dirty-form-id="course-edit-form"
+       data-confirm-message="Máš neuložené změny. Opravdu se chceš vrátit na přehled?">← Zpět na přehled</a>
+}
 
 <section class="section admin-section">
     <div class="wrap">
-        <h1>Úprava kurzu</h1>
-
-        <div class="status-badge status-@Model.CurrentStatus.ToString().ToLowerInvariant()">
-            Stav: @Model.StatusLabel
+        <div class="admin-head">
+            <div>
+                <h1>Detail kurzu</h1>
+                <span class="status-badge status-@Model.CurrentStatus.ToString().ToLowerInvariant()">Stav: @Model.StatusLabel</span>
+            </div>
+            @if (!Model.IsReadOnly)
+            {
+                <div class="inline-actions">
+                    @if (Model.IsDraft)
+                    {
+                        <form method="post" asp-page-handler="Publish" asp-route-id="@Model.CourseId"
+                              onsubmit="return confirm('Opravdu chceš kurz publikovat? Při první publikaci se odešle newsletter.');">
+                            <button type="submit" class="btn btn-gold">Publikovat</button>
+                        </form>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@Model.CourseId"
+                              onsubmit="return confirm('Opravdu chceš kurz smazat? Kurz v draftu bude odstraněn z administrace.');">
+                            <button type="submit" class="btn btn-outline">Smazat</button>
+                        </form>
+                    }
+                    else if (Model.IsPublished)
+                    {
+                        <form method="post" asp-page-handler="Cancel" asp-route-id="@Model.CourseId"
+                              onsubmit="return confirm('Opravdu chceš kurz zrušit? Účastníkům bude odeslán e-mail o zrušení.');">
+                            <button type="submit" class="btn btn-outline">Zrušit kurz</button>
+                        </form>
+                    }
+                </div>
+            }
         </div>
 
         @if (Model.IsReadOnly)
         {
             <p class="field-error">Kurz je zrušený a je dostupný pouze pro čtení.</p>
-            <p><strong>Typ:</strong> @Model.CourseTypeLabel</p>
-            <p><strong>Název:</strong> @Model.Input.Title</p>
-            <p><strong>Termín:</strong> @Model.Input.CourseDate.ToString("dd.MM.yyyy") @Model.Input.TimeText</p>
-            <p><strong>Místo:</strong> @Model.Input.CityOrArea</p>
-            <p><strong>Cena:</strong> @Model.Input.PriceText</p>
         }
-        else
-        {
-            <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid admin-form" id="course-edit-form" data-dirty-form>
-                <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
 
-                <div class="inline-actions">
-                    <button type="submit" class="btn btn-gold">Uložit kurz</button>
+        <div class="edit-grid">
+            <div>
+                @if (Model.IsReadOnly)
+                {
+                    <div class="panel-card">
+                        <h2>Informace o kurzu</h2>
+                        <p><strong>Typ:</strong> @Model.CourseTypeLabel</p>
+                        <p><strong>Název:</strong> @Model.Input.Title</p>
+                        <p><strong>Termín:</strong> @Model.Input.CourseDate.ToString("dd.MM.yyyy") @Model.Input.TimeText</p>
+                        <p><strong>Místo:</strong> @Model.Input.CityOrArea</p>
+                        <p><strong>Cena:</strong> @Model.Input.PriceText</p>
+                    </div>
+                }
+                else
+                {
+                    <form method="post" enctype="multipart/form-data" asp-area="Admin" asp-page="/Courses/Edit" asp-route-id="@Model.CourseId" class="form-grid admin-form" id="course-edit-form" data-dirty-form>
+                        <partial name="_CourseFormFields" model="Model.Input" view-data="formViewData" />
+
+                        <div class="inline-actions">
+                            <button type="submit" class="btn btn-moss">Uložit změny</button>
+                        </div>
+                    </form>
+                }
+            </div>
+
+            <aside class="edit-aside">
+                <div class="panel-card">
+                    <h2>Odkaz na kurz</h2>
+                    <div class="copy-row">
+                        <input type="text" id="coursePublicUrl" value="@Model.PublicUrl" readonly />
+                        <button type="button" class="btn btn-outline btn-sm" data-copy="#coursePublicUrl">Kopírovat</button>
+                    </div>
+                    @if (Model.IsDraft)
+                    {
+                        <p class="muted image-preview-note">Odkaz začne fungovat po publikaci kurzu.</p>
+                    }
                 </div>
-            </form>
-        }
 
-        <div class="panel-card mt-4">
-            <h2>Pomocný text pro Facebook</h2>
-            <textarea readonly>@Model.FacebookPostText</textarea>
-            <p class="muted">Text můžeš zkopírovat do Facebook příspěvku po publikaci nebo úpravě kurzu.</p>
+                <div class="panel-card">
+                    <h2>Náhled karty</h2>
+                    <div class="course-preview">
+                        <partial name="_CourseCards" model='new List<Vbodlaci.Web.Application.Courses.CourseListItem> { Model.PreviewItem }' view-data="previewViewData" />
+                    </div>
+                </div>
+
+                <div class="panel-card">
+                    <h2>Text pro Facebook</h2>
+                    <textarea id="facebookPostText" readonly>@Model.FacebookPostText</textarea>
+                    <div class="copy-row-end">
+                        <button type="button" class="btn btn-outline btn-sm" data-copy="#facebookPostText">Kopírovat</button>
+                    </div>
+                    <p class="muted image-preview-note">Text můžeš zkopírovat do Facebook příspěvku po publikaci nebo úpravě kurzu.</p>
+                </div>
+            </aside>
         </div>
     </div>
 </section>
-
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

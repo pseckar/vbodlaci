@@ -36,13 +36,9 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
         ApplyTextDefaults(Input.Type);
     }
 
-    public Task<IActionResult> OnPostPublishAsync(CancellationToken cancellationToken)
-    {
-        Input.Status = CourseStatus.Published;
-        return CreateCourseAsync(cancellationToken);
-    }
-
-    public Task<IActionResult> OnPostDraftAsync(CancellationToken cancellationToken)
+    // step 1 of the course workflow: always saves a draft and continues
+    // to the admin course detail (preview + publish live there)
+    public Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
         Input.Status = CourseStatus.Draft;
         return CreateCourseAsync(cancellationToken);
@@ -72,7 +68,7 @@ public sealed class CreateModel(ICourseService courseService) : PageModel
 
         if (result.Succeeded && id.HasValue)
         {
-            return RedirectToPage("/Courses/Index");
+            return RedirectToPage("/Courses/Edit", new { id = id.Value });
         }
 
         return Page();

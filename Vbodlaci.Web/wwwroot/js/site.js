@@ -171,6 +171,29 @@
     });
   }
 
+  document.querySelectorAll("[data-copy]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const target = document.querySelector(button.getAttribute("data-copy"));
+      if (!target) {
+        return;
+      }
+
+      const text = ("value" in target && target.value ? target.value : target.textContent || "").trim();
+      try {
+        await navigator.clipboard.writeText(text);
+        const originalLabel = button.textContent;
+        button.textContent = "Zkopírováno ✓";
+        button.disabled = true;
+        setTimeout(() => {
+          button.textContent = originalLabel;
+          button.disabled = false;
+        }, 1500);
+      } catch {
+        window.prompt("Zkopíruj text ručně:", text);
+      }
+    });
+  });
+
   const imagePreviewInput = document.querySelector("[data-image-preview-input]");
   const imagePreview = document.querySelector("[data-image-preview]");
   if (imagePreviewInput && imagePreview) {
