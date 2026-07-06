@@ -12,8 +12,8 @@
 
 @if (Model.Course is null)
 {
-    <section class="section section-light">
-        <div class="container py-5">
+    <section class="section section-cream">
+        <div class="wrap">
             <h1>Kurz nebyl nalezen</h1>
         </div>
     </section>
@@ -23,14 +23,13 @@
 @{
     var servicePage = Model.Course.Type == CourseType.Breathwork ? "/Services/Breathwork" : "/Services/Horses";
     var serviceCta = Model.Course.Type == CourseType.Breathwork ? "Více o breathworku" : "Více o koních";
+    var heroCurveFill = Model.Course.IsFullDescriptionVisible ? "var(--cream)" : "var(--leaf-tint)";
 }
 
-<a class="button button-secondary page-back-link" asp-page="@Model.BackLinkPage">@Model.BackLinkText</a>
-
-<section class="image-hero image-hero-small">
-    <img src="@Model.Course.ImageUrl" alt="" />
-    <div class="image-hero-overlay">
-        <div class="container">
+<header class="hero hero-small" style="--photo-src:url('@Model.Course.ImageUrl')">
+    <a class="btn btn-ghost-light page-back-link" asp-page="@Model.BackLinkPage">@Model.BackLinkText</a>
+    <div class="hero-inner">
+        <div class="wrap">
             <div class="status-badge status-@Model.Course.Status.ToString().ToLowerInvariant()">
                 @switch (Model.Course.Status)
                 {
@@ -48,23 +47,27 @@
             <h1>@Model.Course.Title</h1>
         </div>
     </div>
-</section>
+    <partial name="_Curve" model='new SectionCurve(heroCurveFill, Hero: true)' />
+</header>
 
 @if (Model.Course.IsFullDescriptionVisible)
 {
-    <section class="section section-light">
-        <div class="container py-5">
-            <h2>O kurzu</h2>
-            <p>@Model.Course.FullDescription</p>
-            <a class="button button-primary" asp-page="@servicePage">@serviceCta</a>
+    <section class="section section-cream">
+        <div class="wrap">
+            <div class="section-head reveal" style="margin-bottom:0">
+                <span class="kicker">o kurzu</span>
+                <h2>O kurzu</h2>
+                <p class="lede">@Model.Course.FullDescription</p>
+                <a class="btn btn-moss" style="margin-top:1.4rem" asp-page="@servicePage">@serviceCta</a>
+            </div>
         </div>
     </section>
 }
 
-<section class="section section-green">
-    <div class="container py-5">
-        <div class="split-content">
-            <div class="panel-card">
+<section class="section section-leaf">
+    <div class="wrap">
+        <div class="split-2">
+            <div class="card card-pad reveal">
                 <h2>Základní informace</h2>
                 <table class="info-table">
                     <tbody>
@@ -82,7 +85,7 @@
 
             @if (Model.Course.IsWhatToExpectVisible)
             {
-                <div class="panel-card">
+                <div class="card card-pad reveal reveal-d1">
                     <h2>Co tě čeká</h2>
                     <p>@Model.Course.WhatToExpect</p>
                 </div>
@@ -91,46 +94,55 @@
     </div>
 </section>
 
-<section class="section section-gold" id="registrace">
-    <div class="container py-5">
-        <h2>Přihlášení na kurz</h2>
+<section class="section section-honey" id="registrace">
+    <partial name="_Thistle" model='new ThistleMark("honey-thistle")' />
+    <div class="wrap" style="position:relative; z-index:1">
+        <div class="section-head">
+            <span class="kicker">místo je tvoje</span>
+            <h2>Přihlášení na kurz</h2>
+        </div>
 
         @if (Model.IsCanceled)
         {
-            <p class="field-error">Tento kurz je zrušený. Přihlášení je uzavřené.</p>
+            <p class="notice-canceled">Tento kurz je zrušený. Přihlášení je uzavřené.</p>
         }
         else
         {
-            <form method="post" asp-page="/Courses/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid registration-form">
-                <input type="hidden" name="from" value="@Model.SourceContext" />
+            <div class="form-card">
+                <form method="post" asp-page="/Courses/Detail" asp-route-slug="@Model.Course.Slug" class="form-grid">
+                    <input type="hidden" name="from" value="@Model.SourceContext" />
 
-                <label class="hidden-honeypot" asp-for="Registration.Honeypot">Nechte prázdné</label>
-                <input class="hidden-honeypot" asp-for="Registration.Honeypot" autocomplete="off" />
+                    <label class="hidden-honeypot" asp-for="Registration.Honeypot">Nechte prázdné</label>
+                    <input class="hidden-honeypot" asp-for="Registration.Honeypot" autocomplete="off" />
 
-                <input asp-for="Registration.FullName" placeholder="Jméno" />
-                <span asp-validation-for="Registration.FullName" class="field-error"></span>
+                    <input asp-for="Registration.FullName" placeholder="Jméno" />
+                    <span asp-validation-for="Registration.FullName" class="field-error"></span>
 
-                <input asp-for="Registration.Email" placeholder="E-mail" />
-                <span asp-validation-for="Registration.Email" class="field-error"></span>
+                    <input asp-for="Registration.Email" placeholder="E-mail" />
+                    <span asp-validation-for="Registration.Email" class="field-error"></span>
 
-                <textarea asp-for="Registration.Note" placeholder="Poznámka"></textarea>
-                <span asp-validation-for="Registration.Note" class="field-error"></span>
+                    <textarea asp-for="Registration.Note" placeholder="Poznámka"></textarea>
+                    <span asp-validation-for="Registration.Note" class="field-error"></span>
 
-                <label class="checkbox-row">
-                    <input asp-for="Registration.TermsConsent" />
-                    Souhlasím s podmínkami kurzu.
-                </label>
-                <span asp-validation-for="Registration.TermsConsent" class="field-error"></span>
+                    <label class="checkbox-row">
+                        <input asp-for="Registration.TermsConsent" />
+                        Souhlasím s podmínkami kurzu.
+                    </label>
+                    <span asp-validation-for="Registration.TermsConsent" class="field-error"></span>
 
-                <button type="submit" class="button button-dark">Závazně přihlásit</button>
-            </form>
+                    <button type="submit" class="btn btn-gold">Závazně přihlásit</button>
+                </form>
+            </div>
         }
     </div>
 </section>
 
-<section class="section section-pale">
-    <div class="container py-5">
-        <h2>Další termíny</h2>
+<section class="section section-white">
+    <div class="wrap">
+        <div class="section-head reveal">
+            <span class="kicker">přidej se</span>
+            <h2>Další termíny</h2>
+        </div>
         @if (Model.RelatedCourses.Count == 0)
         {
             <p class="muted">Další termíny zatím nejsou vypsané.</p>

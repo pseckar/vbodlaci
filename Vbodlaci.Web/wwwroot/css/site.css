@@ -553,6 +553,11 @@ img {
     display: block;
 }
 
+.card-pad h2 {
+    font-size: 1.35rem;
+    margin-bottom: 0.7rem;
+}
+
 .split-2 {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
