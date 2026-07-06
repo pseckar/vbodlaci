@@ -30,10 +30,10 @@
                 {
                     <tr>
                         <td>@subscriber.Email</td>
-                        <td>@subscriber.PrefBreathwork</td>
-                        <td>@subscriber.PrefHorses</td>
-                        <td>@subscriber.PrefVeterinary</td>
-                        <td>@subscriber.IsSubscribed</td>
+                        <td><partial name="_BoolIcon" model="subscriber.PrefBreathwork" /></td>
+                        <td><partial name="_BoolIcon" model="subscriber.PrefHorses" /></td>
+                        <td><partial name="_BoolIcon" model="subscriber.PrefVeterinary" /></td>
+                        <td><partial name="_BoolIcon" model="subscriber.IsSubscribed" /></td>
                         <td>@subscriber.CreatedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                     </tr>
                 }

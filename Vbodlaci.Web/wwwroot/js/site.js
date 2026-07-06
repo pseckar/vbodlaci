@@ -171,6 +171,39 @@
     });
   }
 
+  const imagePreviewInput = document.querySelector("[data-image-preview-input]");
+  const imagePreview = document.querySelector("[data-image-preview]");
+  if (imagePreviewInput && imagePreview) {
+    imagePreviewInput.addEventListener("change", () => {
+      const file = imagePreviewInput.files && imagePreviewInput.files[0];
+      if (file && file.type.startsWith("image/")) {
+        imagePreview.src = URL.createObjectURL(file);
+      }
+    });
+  }
+
+  const flashOverlay = document.querySelector("[data-flash-overlay]");
+  if (flashOverlay) {
+    const closeFlash = () => flashOverlay.remove();
+    flashOverlay.addEventListener("click", (event) => {
+      if (event.target === flashOverlay) {
+        closeFlash();
+      }
+    });
+
+    const closeButton = flashOverlay.querySelector("[data-flash-close]");
+    if (closeButton) {
+      closeButton.addEventListener("click", closeFlash);
+      closeButton.focus();
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeFlash();
+      }
+    });
+  }
+
   const revealElements = Array.from(document.querySelectorAll(".reveal"));
   if (revealElements.length > 0) {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -44,7 +44,27 @@
 
     @if (!string.IsNullOrWhiteSpace(flashMessage))
     {
-        <div class="flash flash-@flashType">@flashMessage</div>
+        @* with JS: centered closable dialog; without JS: plain top bar *@
+        <div class="flash-overlay" data-flash-overlay>
+            <div class="flash flash-@flashType" role="alertdialog" aria-live="assertive" aria-label="Oznámení">
+                <button type="button" class="flash-close" data-flash-close aria-label="Zavřít">&times;</button>
+                <span class="flash-icon" aria-hidden="true">
+                    @if (flashType == "success")
+                    {
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5 6.5 12 13 4.5" /></svg>
+                    }
+                    else if (flashType == "error")
+                    {
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 4.5 11.5 11.5 M11.5 4.5 4.5 11.5" /></svg>
+                    }
+                    else
+                    {
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M8 7.2 V12 M8 4.2 V4.4" /></svg>
+                    }
+                </span>
+                <p class="flash-text">@flashMessage</p>
+            </div>
+        </div>
     }
 
     <main class="main-content" role="main">

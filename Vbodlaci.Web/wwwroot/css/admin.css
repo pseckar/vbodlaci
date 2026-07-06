@@ -125,6 +125,31 @@
     font-size: 0.88rem;
 }
 
+.bool-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+}
+
+.bool-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.bool-yes {
+    background: var(--leaf-tint);
+    color: var(--moss);
+}
+
+.bool-no {
+    background: var(--cream);
+    color: var(--line);
+    border: 1px solid var(--line);
+}
+
 /* ---------- forms ---------- */
 
 .form-grid label {
@@ -150,6 +175,11 @@
     object-fit: cover;
     border-radius: 14px;
     border: 1px solid var(--line);
+}
+
+.image-preview-note {
+    margin: 0;
+    font-size: 0.85rem;
 }
 
 /* content panels (Facebook helper, contact message detail) */

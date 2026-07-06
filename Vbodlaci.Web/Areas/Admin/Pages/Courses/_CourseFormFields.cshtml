@@ -1,8 +1,12 @@
+@using Vbodlaci.Web.Application.Courses
 @using Vbodlaci.Web.Domain.Courses
 @model Vbodlaci.Web.Application.Courses.CourseEditModel
 @{
     var allowDefaultEditing = ViewData["AllowDefaultEditing"] as bool? == true;
     var currentImageUrl = ViewData["CurrentImageUrl"] as string;
+    var hasOwnImage = !string.IsNullOrWhiteSpace(currentImageUrl)
+        && !string.Equals(currentImageUrl, CourseImageDefaults.DefaultImagePath, StringComparison.OrdinalIgnoreCase);
+    var previewImageUrl = hasOwnImage ? currentImageUrl : CourseImageDefaults.DefaultImagePath;
 }
 
 <div class="form-grid">
@@ -29,7 +33,7 @@
         </div>
     </div>
 
-    <label>Město / oblast</label>
+    <label>Místo</label>
     <input asp-for="CityOrArea" />
     <span asp-validation-for="CityOrArea" class="field-error"></span>
 
@@ -41,11 +45,12 @@
     <input asp-for="CapacityInfo" type="number" min="1" />
 
     <label>Fotka kurzu</label>
-    @if (!string.IsNullOrWhiteSpace(currentImageUrl))
+    <img class="admin-image-preview" src="@previewImageUrl" alt="Náhled fotky kurzu" data-image-preview />
+    @if (!hasOwnImage)
     {
-        <img class="admin-image-preview" src="@currentImageUrl" alt="Aktuální fotka kurzu" />
+        <p class="muted image-preview-note">Výchozí fotka. Pokud nevybereš vlastní, použije se tato.</p>
     }
-    <input asp-for="Image" type="file" accept="image/jpeg,image/png,image/webp" />
+    <input asp-for="Image" type="file" accept="image/jpeg,image/png,image/webp" data-image-preview-input />
     <span asp-validation-for="Image" class="field-error"></span>
 
     <div class="field-heading">

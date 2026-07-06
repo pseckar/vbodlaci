@@ -44,10 +44,11 @@
                     <input class="hidden-honeypot" id="@(Model.HoneypotIdPrefix)-news-honeypot" type="text" name="Honeypot" autocomplete="off" />
 
                     <input type="email" name="Email" placeholder="E-mail" aria-label="E-mail pro newsletter" required maxlength="180" />
+                    @* value="true": plain checkboxes would post "on", which the bool binder rejects *@
                     <div class="pref-row">
-                        <label class="pref"><input type="checkbox" name="PrefBreathwork" checked="@Model.PrefBreathworkChecked" /><span class="dot"></span>Breathwork</label>
-                        <label class="pref"><input type="checkbox" name="PrefHorses" checked="@Model.PrefHorsesChecked" /><span class="dot"></span>Koně</label>
-                        <label class="pref"><input type="checkbox" name="PrefVeterinary" checked="@Model.PrefVeterinaryChecked" /><span class="dot"></span>Veterina</label>
+                        <label class="pref"><input type="checkbox" name="PrefBreathwork" value="true" checked="@Model.PrefBreathworkChecked" />Breathwork</label>
+                        <label class="pref"><input type="checkbox" name="PrefHorses" value="true" checked="@Model.PrefHorsesChecked" />Koně</label>
+                        <label class="pref"><input type="checkbox" name="PrefVeterinary" value="true" checked="@Model.PrefVeterinaryChecked" />Veterina</label>
                     </div>
                     <button class="btn btn-moss" type="submit">Přihlásit k odběru</button>
                 </form>

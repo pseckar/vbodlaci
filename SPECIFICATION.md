@@ -208,7 +208,8 @@ On submit:
 - send notification email to Veronika with registration details,
 - send confirmation email to participant,
 - persist registration in DB for audit/history.
-- successful submit redirects to the same course detail URL without registration-section fragment so success flash is visible at page top,
+- successful submit redirects to the same course detail URL without registration-section fragment,
+- form outcome messages (course registration, contact, newsletter) are shown as a centered dialog that can be dismissed with its close button, the Escape key, or a click outside the dialog; without JavaScript the message renders as a plain notice bar at the top of the page,
 - validation failure keeps user in-place at the registration section and does not jump to page top.
 
 ### 7.4 Admin Interface

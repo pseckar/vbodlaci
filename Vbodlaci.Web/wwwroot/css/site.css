@@ -281,6 +281,14 @@ img {
     gap: 0.65rem;
 }
 
+/* stretches a card's main link over the whole card surface */
+.link-arrow.stretched::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+
 /* text-like secondary button (admin "Upravit výchozí text", logout) */
 .link-button {
     display: inline-block;
@@ -483,11 +491,12 @@ img {
 /* ---------- cards ---------- */
 
 .card {
+    position: relative;
     background: var(--card-bg);
     border-radius: 18px;
     overflow: hidden;
     box-shadow: var(--shadow-soft);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
     display: flex;
     flex-direction: column;
 }
@@ -515,7 +524,7 @@ img {
     background-image: var(--photo-src);
     background-size: cover;
     background-position: center;
-    transition: transform 0.4s ease;
+    transition: transform 0.7s ease;
 }
 
 .card:hover .card-photo {
@@ -870,6 +879,24 @@ img {
     margin: 0.8rem 0 0;
 }
 
+/* animated expand/collapse where supported (interpolate-size + ::details-content);
+   other browsers toggle instantly, which is fine */
+.faq-item {
+    interpolate-size: allow-keywords;
+}
+
+.faq-item::details-content {
+    opacity: 0;
+    block-size: 0;
+    overflow-y: clip;
+    transition: content-visibility 0.3s allow-discrete, opacity 0.3s ease, block-size 0.3s ease;
+}
+
+.faq-item[open]::details-content {
+    opacity: 1;
+    block-size: auto;
+}
+
 /* ---------- info table ---------- */
 
 .info-table {
@@ -975,22 +1002,10 @@ img {
     pointer-events: none;
 }
 
-.pref .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--line);
-    transition: background 0.2s ease;
-}
-
 .pref:has(input:checked) {
     border-color: var(--moss);
     color: var(--moss);
     background: var(--leaf-tint);
-}
-
-.pref:has(input:checked) .dot {
-    background: var(--moss);
 }
 
 .pref:has(input:focus-visible) {
@@ -1103,17 +1118,49 @@ img {
     pointer-events: none;
 }
 
-/* ---------- flash + status ---------- */
+/* ---------- flash (dialog with JS, plain top bar without) ---------- */
 
 .flash {
     max-width: 1140px;
     border-radius: 14px;
     padding: 0.85rem 1.2rem;
     margin: 1rem auto;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.flash-text {
+    margin: 0;
+    color: inherit;
+}
+
+.flash-close {
+    display: none;
+}
+
+.flash-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+}
+
+.flash-icon svg {
+    width: 15px;
+    height: 15px;
 }
 
 .flash-success {
     background: var(--leaf-tint);
+    color: var(--moss-dark);
+}
+
+.flash-success .flash-icon {
+    background: rgba(176, 219, 114, 0.55);
     color: var(--moss-dark);
 }
 
@@ -1122,9 +1169,95 @@ img {
     color: #8f1724;
 }
 
+.flash-error .flash-icon {
+    background: rgba(143, 23, 36, 0.12);
+    color: #8f1724;
+}
+
 .flash-info {
     background: var(--honey-tint);
     color: var(--bark);
+}
+
+.flash-info .flash-icon {
+    background: rgba(217, 159, 0, 0.18);
+    color: var(--gold-deep);
+}
+
+.js .flash-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(59, 58, 44, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.4rem;
+}
+
+.js .flash-overlay .flash {
+    position: relative;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.9rem;
+    margin: 0;
+    width: min(100%, 460px);
+    background: var(--card-bg);
+    color: var(--bark);
+    border-radius: 18px;
+    box-shadow: var(--shadow-lift);
+    padding: 2.2rem 2.4rem 2rem;
+    animation: flash-pop 0.25s ease;
+}
+
+.js .flash-overlay .flash-icon {
+    width: 52px;
+    height: 52px;
+}
+
+.js .flash-overlay .flash-icon svg {
+    width: 24px;
+    height: 24px;
+}
+
+.js .flash-overlay .flash-text {
+    font-size: 1.05rem;
+    line-height: 1.55;
+}
+
+.js .flash-overlay .flash-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.js .flash-overlay .flash-close:hover {
+    background: var(--cream);
+    color: var(--bark);
+}
+
+@keyframes flash-pop {
+    from {
+        opacity: 0;
+        scale: 0.94;
+    }
+
+    to {
+        opacity: 1;
+        scale: 1;
+    }
 }
 
 .status-badge {
@@ -1423,6 +1556,14 @@ img {
     .back-to-top,
     .link-arrow {
         transition: none;
+    }
+
+    .faq-item::details-content {
+        transition: none;
+    }
+
+    .js .flash-overlay .flash {
+        animation: none;
     }
 }
 

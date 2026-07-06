@@ -33,19 +33,18 @@ public class PublicFormPostTests
     }
 
     [Fact]
-    public async Task NewsletterPost_WithEmptyHoneypot_PersistsSubscriber()
+    public async Task NewsletterPost_WithEmptyHoneypot_PersistsSubscriberWithSelectedPreferences()
     {
         await using var factory = new TestWebApplicationFactory();
         using var client = factory.CreateClient();
 
+        // browsers omit unchecked checkboxes entirely; checked ones post value="true"
         var response = await client.PostAsync("/akce/newsletter", new FormUrlEncodedContent(new Dictionary<string, string>
         {
             ["ReturnUrl"] = "/",
             ["Honeypot"] = string.Empty,
             ["Email"] = "newsletter@example.com",
-            ["PrefBreathwork"] = "true",
-            ["PrefHorses"] = "true",
-            ["PrefVeterinary"] = "false"
+            ["PrefHorses"] = "true"
         }));
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -53,7 +52,10 @@ public class PublicFormPostTests
         using var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-        Assert.Single(db.NewsletterSubscribers);
+        var subscriber = Assert.Single(db.NewsletterSubscribers);
+        Assert.False(subscriber.PrefBreathwork);
+        Assert.True(subscriber.PrefHorses);
+        Assert.False(subscriber.PrefVeterinary);
     }
 
     [Fact]
