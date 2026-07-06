@@ -36,7 +36,12 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
             services.PostConfigure<RazorPagesOptions>(options =>
             {
+                // ConfigureFilter only reaches the main /Pages root; area pages need their own conventions
                 options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+                options.Conventions.AddAreaFolderApplicationModelConvention("Identity", "/",
+                    model => model.Filters.Add(new IgnoreAntiforgeryTokenAttribute()));
+                options.Conventions.AddAreaFolderApplicationModelConvention("Admin", "/",
+                    model => model.Filters.Add(new IgnoreAntiforgeryTokenAttribute()));
             });
 
             services.PostConfigure<MvcOptions>(options =>

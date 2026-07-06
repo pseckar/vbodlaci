@@ -500,8 +500,10 @@ The following decisions are finalized and must be implemented as defined:
 - no service subdomains in MVP.
 
 2. Admin authentication:
-- local ASP.NET Identity only (no external OAuth in MVP),
-- one primary admin account model, extensible later.
+- local ASP.NET Identity only; no external/OAuth login providers,
+- no user registration of any kind; admin accounts are provisioned manually (configured seeding / direct DB) for specific e-mails,
+- password recovery is supported: the admin requests a reset link by e-mail (`Zapomenuté heslo?`) and sets a new password via the emailed link; the flow never reveals whether an account exists and is rate limited,
+- authentication pages (login, password recovery) are custom, Czech-language, and follow the site design; the default Identity UI is not used.
 
 3. URL slugs:
 - ASCII slugs for services and course detail pages.

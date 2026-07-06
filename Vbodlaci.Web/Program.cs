@@ -32,6 +32,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(builder.Environment.ContentRootPath, ".dpkeys")));
 
+// no default Identity UI: only the custom Czech pages in Areas/Identity exist
+// (login, logout, access denied, password recovery) — registration and external
+// providers are intentionally unavailable; admin accounts are provisioned manually
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
         options.SignIn.RequireConfirmedAccount = false;
@@ -43,7 +46,13 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     })
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
-    .AddDefaultUI();
+    .AddErrorDescriber<CzechIdentityErrorDescriber>();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 
 builder.Services.Configure<AdminSeedOptions>(builder.Configuration.GetSection(AdminSeedOptions.SectionName));
 builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection(SmtpOptions.SectionName));
@@ -87,7 +96,6 @@ builder.Services.AddAuthorization(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizeAreaFolder("Admin", "/", "RequireAdminRole");
-    options.Conventions.AuthorizeAreaPage("Identity", "/Account/Register", "RequireAdminRole");
 });
 
 var app = builder.Build();
