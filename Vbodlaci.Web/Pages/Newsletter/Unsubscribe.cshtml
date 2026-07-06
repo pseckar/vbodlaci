@@ -1,12 +1,15 @@
-﻿@page "/newsletter/odhlaseni/{token}"
+@page "/newsletter/odhlaseni/{token}"
 @model Vbodlaci.Web.Pages.Newsletter.UnsubscribeModel
 @{
     ViewData["Title"] = "Odhlášení z newsletteru";
 }
 
-<section class="section">
-    <h1>Odhlášení z newsletteru</h1>
-    <p>@Model.Message</p>
-    <a class="button button-secondary" asp-page="/Index">Zpět na hlavní stránku</a>
+<section class="section section-cream">
+    <div class="wrap">
+        <div class="prose">
+            <h1>Odhlášení z newsletteru</h1>
+            <p>@Model.Message</p>
+            <a class="btn btn-moss" asp-page="/Index">Zpět na hlavní stránku</a>
+        </div>
+    </div>
 </section>
-
